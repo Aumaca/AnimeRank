@@ -4,9 +4,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
 import Navbar from '../../../components/navbar/navbar.tsx'
 import axios from "axios"
+import { setLogin } from '../../../state/index.ts'
+import { useDispatch } from 'react-redux'
+import type { Dispatch } from 'redux'
 
 import "../auth.css"
-
 
 const initialFormErrorState = {
   email: "",
@@ -14,6 +16,7 @@ const initialFormErrorState = {
 }
 
 const Login = () => {
+  const dispatch: Dispatch = useDispatch()
   const navigate = useNavigate()
 
   const [formData, setFormData] = useState({
@@ -65,7 +68,12 @@ const Login = () => {
 
     axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {...formData})
       .then(response => {
-        console.log(response)
+        dispatch(
+          setLogin({
+            user: response.data.userObject,
+            token: response.data.token,
+          })
+        )
         return navigate("/")
       })
       .catch(error => {
@@ -75,7 +83,6 @@ const Login = () => {
           const message = error.response.data.message
           setFormError(previousState => ({ ...previousState, [field]:  message, [field2]:  message}))
         }
-        console.log(error.response)
       })
   }
 
@@ -88,11 +95,11 @@ const Login = () => {
             <div className="field">
               <label>Email</label>
               <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={`${formError.email ? "error" : ""}`}
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className={`${formError.email ? "error" : ""}`}
               />
               <label className="error">{formError.email}</label>
             </div>
@@ -100,11 +107,11 @@ const Login = () => {
             <div className="field">
               <label>Password</label>
               <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className={`${formError.password ? "error" : ""}`}
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className={`${formError.password ? "error" : ""}`}
               />
               <label className="error">{formError.password}</label>
             </div>

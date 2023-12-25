@@ -79,8 +79,6 @@ export const login = async (req, res) => {
         const userObject = user.toObject()
         delete userObject.password
 
-        console.log(userObject)
-
         res.status(200).json({ token, userObject })
     } catch (err) {
         res.status(500).json({ error: err.message })
