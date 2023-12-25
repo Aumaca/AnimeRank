@@ -1,6 +1,6 @@
 import "./navbar.css"
 import Sidemenu from "./sidemenu/sidemenu"
-import UserDropdown from "./userDropdown/userDropdown"
+import UserDropdown from "./userDropdown/userDropdown.tsx"
 import { useState } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUser } from "@fortawesome/free-solid-svg-icons/faUser"
