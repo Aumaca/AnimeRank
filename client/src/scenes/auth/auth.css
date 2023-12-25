@@ -1,86 +1,95 @@
 .auth {
-    width: 100vw;
-    background-color: var(--body-background-color);
-    color: white;
+	width: 100vw;
+	background-color: var(--body-background-color);
+	color: white;
+}
+
+.auth button {
+	cursor: pointer;
 }
 
 .auth .container {
-    display: flex;
-    justify-content: center;
-    padding: 3rem;
+	display: flex;
+	justify-content: center;
+	padding: 3rem;
 }
 
 .auth form {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
 }
 
 .auth .field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    width: 60vw;
-    max-width: 400px;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	width: 60vw;
+	max-width: 400px;
 }
 
 .auth .field label {
-    font-size: 1.5rem;
+	font-size: 1.5rem;
 }
 
 .auth .field input,
 .auth .field select {
-    width: 100%;
-    padding: 1rem;
-    border-radius: 5px;
-    border: none;
-    transition: outline 0.1s ease-in-out;
-    outline: 0px solid rgb(34, 179, 247);
+	width: 100%;
+	padding: 1rem;
+	border-radius: 5px;
+	border: none;
+	transition: outline 0.1s ease-in-out;
+	outline: 0px solid rgb(34, 179, 247);
+}
+
+.auth .field select {
+	cursor: pointer;
 }
 
 .auth .field input:focus {
-    outline: 3px solid rgb(34, 179, 247);
+	outline: 3px solid rgb(34, 179, 247);
 }
 
 .auth .field select:focus {
-    outline: 3px solid rgb(34, 179, 247);
+	outline: 3px solid rgb(34, 179, 247);
 }
 
 .auth .field input.error {
-    border: 1px solid red;
+	border: 1px solid red;
 }
 
 .auth .field select.error {
-    border: 1px solid red;
+	border: 1px solid red;
 }
 
 .auth .field label.error {
-    font-size: 1rem;
-    color: red;
+	font-size: 1rem;
+	color: red;
 }
 
 .auth .field .dropzone {
-    text-align: center;
-    border: 2px solid white;
-    padding: 2rem;
-    border-style: dashed;
+	text-align: center;
+	border: 2px solid white;
+	padding: 2rem;
+	border-style: dashed;
+	cursor: move;
 }
 
 .auth button {
-    margin-top: 1rem;
-    padding: 1rem;
-    background-color: rgb(80, 200, 120);
-    border-radius: 10px;
-    border: 0;
-    color: white;
-    text-transform: uppercase;
-    font-size: 1.5rem;
-    font-weight: 700;
-    border: 2px solid white;
+	margin-top: 1rem;
+	padding: 1rem;
+	background-color: rgb(80, 200, 120);
+	border-radius: 10px;
+	border: 0;
+	color: white;
+	text-transform: uppercase;
+	font-size: 1.5rem;
+	font-weight: 700;
+	border: 2px solid white;
 }
 
 .auth .redirect {
-    color: cornflowerblue;
-    font-size: 1.3rem;
-    text-align: center;
+	color: cornflowerblue;
+	font-size: 1.3rem;
+	text-align: center;
 }

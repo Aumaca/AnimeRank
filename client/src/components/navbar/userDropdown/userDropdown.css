@@ -1,41 +1,48 @@
 .userDropdown {
-    position: fixed;
-    right: 100%;
-    top: 95px;
+	position: fixed;
+	right: 100%;
+	top: 95px;
 }
 
 .userDropdown.active {
-    right: 0;
+	right: 0;
 }
 
 .userDropdown_container {
-    background-color: var(--body-background-color);
-    padding: 2rem;
-    border-radius: 8px;
-    border: 1px solid white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 1.5rem;
-    font-size: 1.3rem;
-    font-weight: 700;
+	background-color: var(--body-background-color);
+	padding: 2rem;
+	border-radius: 8px;
+	border: 1px solid white;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 1.5rem;
+	font-size: 1.3rem;
+	font-weight: 700;
 }
 
 .userDropdown .userDropdown_container .username {
-    text-align: center;
+	text-align: center;
 }
 
 .userDropdown .userDropdown_container .picture {
-    text-align: center;
+	text-align: center;
 }
 
 .userDropdown .userDropdown_container .picture img {
-    border-radius: 50%;
+	border-radius: 50%;
 }
 
 .userDropdown .userDropdown_container .item {
-    color: white;
-    display: flex;
-    gap: 0.8rem;
-    align-items: center;
+	color: white;
+	display: flex;
+	gap: 0.8rem;
+	align-items: center;
+	cursor: pointer;
+}
+
+@media screen and (min-width: 992px) {
+	.userDropdown {
+		top: 136px;
+	}
 }

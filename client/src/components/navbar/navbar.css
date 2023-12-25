@@ -1,43 +1,47 @@
 nav {
-    background-color: var(--navbar-background-color);
-    border-radius: 0 0 10px 10px;
-    color: white;
-    transition: border-radius 0.5s ease-in-out;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+	background-color: var(--navbar-background-color);
+	border-radius: 0 0 10px 10px;
+	color: white;
+	transition: border-radius 0.5s ease-in-out;
+	position: sticky;
+	top: 0;
+	z-index: 1000;
 }
 
 nav.active {
-    border-radius: 0;
+	border-radius: 0;
 }
 
 nav .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 2.5rem;
-    height: 95px;
-    max-height: 95px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0 2.5rem;
+	height: 95px;
+	max-height: 95px;
+}
+
+nav .container div {
+	cursor: pointer;
 }
 
 .logo img {
-    width: 150px;
-    height: 97px;
+	width: 150px;
+	height: 97px;
 }
 
 @media screen and (min-width: 576px) {
-    nav .container {
-        padding: 0 5rem;
-    }
+	nav .container {
+		padding: 0 5rem;
+	}
 }
 
 @media screen and (min-width: 992px) {
-    .options_icon {
-        display: none;
-    }
+	.options_icon {
+		display: none;
+	}
 
-    nav .container {
-        justify-content: space-around;
-    }
+	nav .container {
+		justify-content: space-between;
+	}
 }

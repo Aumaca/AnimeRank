@@ -1,22 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,700&family=Permanent+Marker&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,700&family=Permanent+Marker&display=swap");
 
-*, 
+*,
 *:after,
 *:before {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    text-decoration: none;
-    font-family: 'Montserrat', sans-serif;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	text-decoration: none;
+	font-family: "Montserrat", sans-serif;
 }
 
 :root {
-    font-size: 62.5%;
-    --navbar-background-color: rgb(52, 52, 52);
-    --body-background-color: rgb(40, 40, 43);
+	font-size: 62.5%;
+	--navbar-background-color: rgb(52, 52, 52);
+	--body-background-color: rgb(40, 40, 43);
 }
 
 html {
-    font-size: 1.6rem;
-    background-color: var(--body-background-color);
+	font-size: 1.6rem;
+	background-color: var(--body-background-color);
 }

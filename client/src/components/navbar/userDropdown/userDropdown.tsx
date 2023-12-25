@@ -11,57 +11,72 @@ import { AuthState } from "../../../state"
 import "./userDropdown.css"
 
 interface userDropdownProps {
-  isActive: boolean,
+	isActive: boolean
 }
 
 const UserDropdown = ({ isActive }: userDropdownProps) => {
-  const dispatcher: Dispatch = useDispatch()
+	const dispatcher: Dispatch = useDispatch()
 
-  const isAuth = Boolean(useSelector((state: AuthState) => state.token))
-  const picture = useSelector((state: AuthState) => state.user?.picture || null)
-  const username = useSelector((state: AuthState) => state.user?.username || null)
+	const isAuth = Boolean(useSelector((state: AuthState) => state.token))
+	const picture = useSelector((state: AuthState) => state.user?.picture || null)
+	const username = useSelector(
+		(state: AuthState) => state.user?.username || null
+	)
 
-  const logoutUser = () => {
-    dispatcher(
-      setLogin({
-        user: null,
-        token: null,
-      })
-    )
-  }
+	const logoutUser = () => {
+		dispatcher(
+			setLogin({
+				user: null,
+				token: null,
+			})
+		)
+	}
 
-  return (
-    <>
-      <div className={`userDropdown ${isActive ? 'active' : ''}`}>
-        <div className="userDropdown_container">
+	return (
+		<>
+			<div className={`userDropdown ${isActive ? "active" : ""}`}>
+				<div className="userDropdown_container">
+					{isAuth ? (
+						<>
+							<div className="username">
+								<h2>{username}</h2>
+							</div>
+							<div className="picture">
+								<ProfilePicture
+									image={picture}
+									size={60}
+								/>
+							</div>
+						</>
+					) : (
+						""
+					)}
 
-          {isAuth ? (
-            <>
-              <div className="username">
-                <h2>{username}</h2>
-              </div>
-              <div className="picture">
-                <ProfilePicture image={picture} size={60} />
-              </div>
-            </>
-          ) : ""}
-          
-          <Link to="/" className="item">
-            <FontAwesomeIcon icon={faUser} />
-            My profile
-          </Link>
-          <Link to="/" className="item">
-            <FontAwesomeIcon icon={faList} />
-            My anime list
-          </Link>
-          <a className="item" onClick={() => logoutUser()}>
-            <FontAwesomeIcon icon={faRightFromBracket} />
-            Logout
-          </a>
-        </div>
-      </div>
-    </>
-  )
+					<Link
+						to="/"
+						className="item"
+					>
+						<FontAwesomeIcon icon={faUser} />
+						My profile
+					</Link>
+					<Link
+						to="/"
+						className="item"
+					>
+						<FontAwesomeIcon icon={faList} />
+						My anime list
+					</Link>
+					<a
+						className="item"
+						onClick={() => logoutUser()}
+					>
+						<FontAwesomeIcon icon={faRightFromBracket} />
+						Logout
+					</a>
+				</div>
+			</div>
+		</>
+	)
 }
 
 export default UserDropdown
