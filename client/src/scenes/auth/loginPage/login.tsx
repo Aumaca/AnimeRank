@@ -98,7 +98,7 @@ const Login = () => {
 				return navigate("/")
 			})
 			.catch((error) => {
-				if (error.response.status === 400) {
+				if (error.response?.status === 400) {
 					const field = error.response.data.field
 					const field2 = error.response.data.field2
 					const message = error.response.data.message
