@@ -1,0 +1,54 @@
+.homepage .news {
+	width: 100%;
+	height: 30vh;
+}
+
+.homepage .news .swiper {
+	height: 100%;
+}
+
+.homepage .news .new {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	background-color: white;
+	color: black;
+	
+}
+
+.homepage .news .new .content {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	padding: 0 0 5rem 2.5rem;
+}
+
+.homepage .container > h1 {
+	padding: 2rem 0rem 1rem 2rem;
+}
+
+.homepage .container .slide {
+	display: flex;
+	flex-direction: column;
+	width: 100px;
+	height: 230px;
+}
+
+.homepage .container .slide .content {
+	border-radius: 0px 0px 8px 8px;
+	padding: 1rem 0.5rem;
+	background-color: white;
+	color: black;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: 1rem;
+}
+
+.homepage .container .slide img {
+	object-fit: cover;
+	border-radius: 8px 8px 0px 0px;
+}
