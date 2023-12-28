@@ -17,7 +17,7 @@ const Navbar = () => {
 	const isAuth = Boolean(useSelector((state: AuthState) => state.token))
 
 	return (
-		<>
+		<header>
 			{isAuth ? (
 				<nav className={`${sidemenuActive ? "active" : ""}`}>
 					<div className="container">
@@ -65,7 +65,7 @@ const Navbar = () => {
 					</div>
 				</nav>
 			)}
-		</>
+		</header>
 	)
 }
 
