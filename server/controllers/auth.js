@@ -20,12 +20,10 @@ export const register = async (req, res) => {
 		}
 
 		if (password.length < 8) {
-			res
-				.status(400)
-				.json({
-					field: "password",
-					message: "Password with less than 8 characters",
-				})
+			res.status(400).json({
+				field: "password",
+				message: "Password with less than 8 characters",
+			})
 			return
 		}
 
@@ -49,7 +47,7 @@ export const register = async (req, res) => {
 			username,
 			email,
 			password: pwdHash,
-			picture: req.file ? req.file.filename : "",
+			picture: req.file ? req.file.filename : "default_user.png",
 			country,
 		})
 		const savedUser = await newUser.save()
@@ -79,13 +77,11 @@ export const login = async (req, res) => {
 
 		const isMatch = await bcrypt.compare(password, user.password)
 		if (!isMatch || !user)
-			return res
-				.status(400)
-				.json({
-					field: "email",
-					field2: "password",
-					message: "Invalid credentials",
-				})
+			return res.status(400).json({
+				field: "email",
+				field2: "password",
+				message: "Invalid credentials",
+			})
 
 		const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET)
 
