@@ -43,7 +43,7 @@ const Register = () => {
 
 	const [isModalOpen, setIsModalOpen] = useState(false)
 
-	const [isLoaderOpen, setIsLoaderOpen] = useState(false)
+	const [isLoading, setIsLoading] = useState(false)
 
 	const [countries, setCountries] = useState<string[]>([])
 
@@ -104,7 +104,7 @@ const Register = () => {
 			newFormData.append(key, value)
 		}
 
-		setIsLoaderOpen(true)
+		setIsLoading(true)
 		axios
 			.post(`${import.meta.env.VITE_API_URL}/auth/register`, newFormData)
 			.then(() => {
@@ -128,7 +128,7 @@ const Register = () => {
 				}
 			})
 			.finally(() => {
-				setIsLoaderOpen(false)
+				setIsLoading(false)
 			})
 	}
 
@@ -274,7 +274,7 @@ const Register = () => {
 			>
 				{messageState.children}
 			</Message>
-			<Loader isActive={isLoaderOpen} />
+			<Loader isActive={isLoading} />
 		</>
 	)
 }

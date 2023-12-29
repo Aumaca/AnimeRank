@@ -9,7 +9,7 @@
 }
 
 .userDropdown_container {
-	background-color: var(--body-background-color);
+	background-color: var(--body-primary);
 	padding: 2rem;
 	border-radius: 8px;
 	border: 1px solid white;

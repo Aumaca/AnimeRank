@@ -5,7 +5,7 @@ import { AuthState } from "./state/index.ts"
 import Register from "./scenes/auth/registerPage/register.tsx"
 import Login from "./scenes/auth/loginPage/login.tsx"
 import Homepage from "./scenes/homePage/homepage.tsx"
-import ProfilePage from "./scenes/profilePage/profilePage.tsx"
+import ProfilePage from "./scenes/profilePage/profile.tsx"
 
 import "./index.css"
 

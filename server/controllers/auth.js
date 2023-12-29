@@ -49,7 +49,9 @@ export const register = async (req, res) => {
 			password: pwdHash,
 			picture: req.file ? req.file.filename : "default_user.png",
 			country,
+			createdAt: new Date().toLocaleDateString("en-US"),
 		})
+
 		const savedUser = await newUser.save()
 		res.status(201).json(savedUser)
 	} catch (err) {

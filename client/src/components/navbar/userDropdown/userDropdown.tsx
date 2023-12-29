@@ -19,8 +19,8 @@ const UserDropdown = ({ isActive }: userDropdownProps) => {
 
 	const isAuth = Boolean(useSelector((state: AuthState) => state.token))
 	const picture = useSelector((state: AuthState) => state.user?.picture || null)
-	const username = useSelector(
-		(state: AuthState) => state.user?.username || null
+	const user = useSelector(
+		(state: AuthState) => state.user || null
 	)
 
 	const logoutUser = () => {
@@ -39,7 +39,7 @@ const UserDropdown = ({ isActive }: userDropdownProps) => {
 					{isAuth ? (
 						<>
 							<div className="username">
-								<h2>{username}</h2>
+								<h2>{user!.username}</h2>
 							</div>
 							<div className="picture">
 								<ProfilePicture
@@ -53,7 +53,7 @@ const UserDropdown = ({ isActive }: userDropdownProps) => {
 					)}
 
 					<Link
-						to="/"
+						to={`/profile/${user!._id}`}
 						className="item"
 					>
 						<FontAwesomeIcon icon={faUser} />

@@ -36,6 +36,9 @@ const UserSchema = new mongoose.Schema({
 	country: {
 		type: String,
 	},
+	createdAt: {
+		type: String
+	},
 })
 UserSchema.methods.countWatchedAnimes = () => {
 	return this.watchedAnimes.length
