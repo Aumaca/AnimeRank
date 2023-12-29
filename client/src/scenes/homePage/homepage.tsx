@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faPlus } from "@fortawesome/free-solid-svg-icons"
 
 import { Swiper, SwiperSlide } from "swiper/react"
 import { Navigation, Pagination } from "swiper/modules"
@@ -9,6 +11,9 @@ import "swiper/css/pagination"
 import "swiper/css/scrollbar"
 
 import Navbar from "../../components/navbar/navbar"
+import Loader from "../../components/loader/loader"
+import jujutsu from "../../imgs/jujutsu.jpg"
+import drstone from "../../imgs/drstone.png"
 
 import "./homepage.css"
 
@@ -21,7 +26,7 @@ interface Title {
 }
 
 interface CoverImage {
-	medium: string
+	large: string
 }
 
 interface Media {
@@ -39,13 +44,14 @@ interface PageData {
 interface GraphQLResponse {
 	data: {
 		popularAnimes: PageData
-		bestScoredAnimes: PageData
+		mostScoredAnimes: PageData
 	}
 }
 
 const Homepage = () => {
 	const [popularAnimes, setPopularAnimes] = useState<Media[] | null>(null)
-	const [bestScoredAnimes, setBestScoredAnimes] = useState<Media[] | null>(null)
+	const [mostScoredAnimes, setMostScoredAnimes] = useState<Media[] | null>(null)
+	const [isLoading, setIsLoading] = useState(true)
 
 	const graphqlQuery = `
 		query ($id: Int, $page: Int, $perPage: Int, $search: String) {
@@ -60,12 +66,12 @@ const Homepage = () => {
 					}
 					averageScore
 					coverImage {
-						medium
+						large
 					}
 				}
 			}
 
-			bestScoredAnimes: Page(page: $page, perPage: $perPage) {
+			mostScoredAnimes: Page(page: $page, perPage: $perPage) {
 				pageInfo {
 					currentPage
 				}
@@ -76,7 +82,7 @@ const Homepage = () => {
 					}
 					averageScore
 					coverImage {
-						medium
+						large
 					}
 				}
 			}
@@ -91,12 +97,15 @@ const Homepage = () => {
 			.then((response) => {
 				const data = response.data.data
 				setPopularAnimes(data.popularAnimes.media)
-				setBestScoredAnimes(data.bestScoredAnimes.media)
+				setMostScoredAnimes(data.mostScoredAnimes.media)
 			})
 			.catch((error) => {
 				console.error("GraphQL request error:", error)
 			})
-	}, [])
+			.finally(() => {
+				setIsLoading(false)
+			})
+	}, [graphqlQuery])
 
 	return (
 		<>
@@ -108,20 +117,21 @@ const Homepage = () => {
 						<Swiper
 							modules={[Pagination]}
 							pagination={{ clickable: true }}
+							loop={true}
 						>
 							<SwiperSlide className="new">
 								<img
-									src=""
+									src={jujutsu}
 									alt=""
 								/>
 								<div className="content">
-									<h1>News 1!</h1>
-									<p>Somethiong about</p>
+									<h1>JUJUTSU KAISEN Season 2</h1>
+									<h3>Released last episode of the season!</h3>
 								</div>
 							</SwiperSlide>
 							<SwiperSlide className="new">
 								<img
-									src=""
+									src={drstone}
 									alt=""
 								/>
 								<div className="content">
@@ -147,12 +157,9 @@ const Homepage = () => {
 						<Swiper
 							modules={[Navigation]}
 							spaceBetween={20}
-							loop={true}
 							slidesPerView={"auto"}
 							navigation
 							pagination={{ clickable: true }}
-							onSwiper={(swiper) => console.log(swiper)}
-							onSlideChange={() => console.log("slide change")}
 						>
 							{popularAnimes.map((anime) => (
 								<SwiperSlide
@@ -160,17 +167,16 @@ const Homepage = () => {
 									className="slide"
 								>
 									<img
-										src={anime.coverImage.medium}
+										src={anime.coverImage.large}
 										alt=""
 									/>
+									<FontAwesomeIcon
+										icon={faPlus}
+										size="2x"
+									/>
+
 									<div className="content">
 										<h3>{anime.title.english}</h3>
-										<h3 className="score">
-											Score:{" "}
-											<span style={{ color: "green" }}>
-												{anime.averageScore}
-											</span>
-										</h3>
 									</div>
 								</SwiperSlide>
 							))}
@@ -182,30 +188,52 @@ const Homepage = () => {
 						<Swiper
 							modules={[Navigation]}
 							spaceBetween={20}
-							loop={true}
 							slidesPerView={"auto"}
 							navigation
 							pagination={{ clickable: true }}
-							onSwiper={(swiper) => console.log(swiper)}
-							onSlideChange={() => console.log("slide change")}
 						>
-							{bestScoredAnimes?.map((anime) => (
+							{mostScoredAnimes!.map((anime) => (
 								<SwiperSlide
 									key={anime.id}
 									className="slide"
 								>
 									<img
-										src={anime.coverImage.medium}
+										src={anime.coverImage.large}
+										alt=""
+									/>
+									<FontAwesomeIcon
+										icon={faPlus}
+										size="2x"
+									/>
+
+									<div className="content">
+										<h3>{anime.title.english}</h3>
+									</div>
+								</SwiperSlide>
+							))}
+						</Swiper>
+					</div>
+
+					<div className="container">
+						<h1>Most Scored</h1>
+						<Swiper
+							modules={[Navigation]}
+							spaceBetween={20}
+							slidesPerView={"auto"}
+							navigation
+							pagination={{ clickable: true }}
+						>
+							{mostScoredAnimes!.map((anime) => (
+								<SwiperSlide
+									key={anime.id}
+									className="slide"
+								>
+									<img
+										src={anime.coverImage.large}
 										alt=""
 									/>
 									<div className="content">
 										<h3>{anime.title.english}</h3>
-										<h3 className="score">
-											Score:{" "}
-											<span style={{ color: "green" }}>
-												{anime.averageScore}
-											</span>
-										</h3>
 									</div>
 								</SwiperSlide>
 							))}
@@ -214,9 +242,7 @@ const Homepage = () => {
 				</div>
 			) : (
 				<>
-					<div className="latest container">
-						<h1>ERROR</h1>
-					</div>
+					<Loader isActive={isLoading} />
 				</>
 			)}
 		</>
