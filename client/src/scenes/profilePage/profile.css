@@ -1,0 +1,66 @@
+.profile .username_container {
+    padding: 1rem;
+    background-color: var(--body-secondary);
+}
+
+.profile .user {
+    display: flex;
+    align-items: start;
+    justify-content: start;
+    padding: 2rem;
+    background-color: var(--body-terciary);
+}
+
+.profile .user .picture {
+    color: black;
+    display: flex;
+    gap: 1rem;
+}
+
+.profile .user .username {
+    height: 100%;
+    width: 100%;
+    padding: 1rem 0 0 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.profile .user .username button {
+    padding: 1rem;
+    border-radius: 10px;
+    border: none;
+}
+
+.profile .anime_stats > h1 {
+    padding: 3rem 0 1rem 1rem;
+    border-bottom: 2px solid white;
+}
+
+.profile .anime_stats .stats_container {
+    font-size: 1.5rem;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 3rem;
+}
+
+.profile .anime_stats .stats_container div {
+    width: 100%;
+}
+
+.profile .anime_stats .stats_container div ul {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.profile .anime_stats .stats_container div ul li {
+    display: flex;
+    justify-content: space-between;
+    
+}
+
+.profile .anime_stats .stats_container div ul li a {
+    color: white;
+}

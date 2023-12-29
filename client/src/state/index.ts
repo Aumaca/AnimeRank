@@ -5,12 +5,22 @@ export interface AuthState {
 	token: string | null
 }
 
+interface watchedAnime {
+	anime: string,
+	score: number,
+	comment: string,
+}
+
 interface userState {
 	username: string
 	email: string
 	password: string
 	country: string
 	picture: string | null
+	createdAt: string
+	watchedAnimes: watchedAnime[]
+	toWatchAnimes: string[]
+	_id: string
 }
 
 const initialState: AuthState = {
