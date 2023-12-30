@@ -22,4 +22,5 @@ html {
 	color: white;
 	font-size: 1.6rem;
 	background-color: var(--body-primary);
+	overflow-x: hidden;
 }

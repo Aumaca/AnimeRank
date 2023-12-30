@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 import axios from "axios"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPlus } from "@fortawesome/free-solid-svg-icons"
 
 import { Swiper, SwiperSlide } from "swiper/react"
-import { Navigation, Pagination } from "swiper/modules"
+import { EffectCoverflow, Navigation, Pagination } from "swiper/modules"
 import "swiper/css"
 import "swiper/css/navigation"
 import "swiper/css/pagination"
 import "swiper/css/scrollbar"
+import "swiper/css/effect-coverflow"
 
 import Navbar from "../../components/navbar/navbar"
 import Loader from "../../components/loader/loader"
@@ -115,9 +117,17 @@ const Homepage = () => {
 				<div className="homepage">
 					<div className="news">
 						<Swiper
-							modules={[Pagination]}
+							modules={[Pagination, EffectCoverflow]}
 							pagination={{ clickable: true }}
 							loop={true}
+							slidesPerView={1}
+							centeredSlides={true}
+							effect="coverflow"
+							breakpoints={{
+								768: {
+									slidesPerView: 2,
+								},
+							}}
 						>
 							<SwiperSlide className="new">
 								<img
@@ -170,13 +180,16 @@ const Homepage = () => {
 										src={anime.coverImage.large}
 										alt=""
 									/>
+
 									<FontAwesomeIcon
 										icon={faPlus}
 										size="2x"
 									/>
 
 									<div className="content">
-										<h3>{anime.title.english}</h3>
+										<Link to={`/anime/${anime.id}`}>
+											<h3>{anime.title.english}</h3>
+										</Link>
 									</div>
 								</SwiperSlide>
 							))}
