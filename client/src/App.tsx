@@ -6,6 +6,7 @@ import Register from "./scenes/auth/registerPage/register.tsx"
 import Login from "./scenes/auth/loginPage/login.tsx"
 import Homepage from "./scenes/homePage/homepage.tsx"
 import ProfilePage from "./scenes/profilePage/profile.tsx"
+import Anime from "./scenes/animePage/anime.tsx"
 
 import "./index.css"
 
@@ -31,6 +32,10 @@ function App() {
 					<Route
 						path="/profile/:id"
 						element={isAuth ? <ProfilePage /> : <Navigate to="/login" />}
+					/>
+					<Route
+						path="/anime/:id"
+						element={isAuth ? <Anime /> : <Navigate to="/login" />}
 					/>
 				</Routes>
 			</BrowserRouter>
