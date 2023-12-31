@@ -1,4 +1,4 @@
 @echo off
 
-start cmd /k "cd client && npm run dev"
-start cmd /k "cd server && node index.js"
+start cmd /k "cd frontend && npm run dev"
+start cmd /k "cd backend && node index.js"
