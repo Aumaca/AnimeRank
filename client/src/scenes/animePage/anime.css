@@ -43,8 +43,6 @@
 .anime .info__title {
 	text-align: center;
 	background-color: black;
-	width: 80vw;
-	border-radius: 8px 8px 0 0;
 	padding: 1rem;
 }
 
@@ -53,7 +51,12 @@
 	background-color: var(--body-secondary);
 	display: flex;
 	flex-direction: column;
-	width: 80vw;
+	width: 350px;
+	max-width: 350px;
+}
+
+.info .info__container .info__title {
+	width: 100%;
 }
 
 .info .info__container .information {
@@ -64,22 +67,31 @@
 }
 
 .info .info__container .information:not(:last-child) {
-    border-bottom: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
 }
 
 @media screen and (min-width: 768px) {
+	.anime {
+		padding: 0 10vw;
+	}
+
 	.anime__container_image_buttons_info {
 		display: flex;
-        justify-content: space-around;
-        align-items: center;
-        margin-top: 3rem;
+		justify-content: center;
+		gap: 10vw;
+		align-items: center;
+		margin-top: 3rem;
+	}
+
+	.anime .info {
+		width: fit-content;
 	}
 
 	.anime .info__title {
-		width: 100%;
+		width: fit-content;
 	}
 
-	.anime .info__container {
-		width: 100%;
+	.info .info__container {
+		width: fit-content;
 	}
 }

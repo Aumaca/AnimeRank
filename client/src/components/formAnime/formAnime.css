@@ -1,0 +1,141 @@
+.form_anime-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	display: none;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+	transition: 0.3s ease-in-out;
+}
+
+.form_anime {
+	border: 2px solid white;
+	background-color: var(--body-primary);
+	color: white;
+	padding: 2.5rem 5rem;
+	border-radius: 8px;
+	width: 80%;
+	max-width: 400px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 3rem;
+    position: relative
+}
+
+.form_anime button {
+	cursor: pointer;
+}
+
+.form_anime .close_button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 1rem;
+}
+
+.form_anime .close_button button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    border: none;
+    background-color: var(--body-secondary);
+}
+
+.form_anime .close_button button svg {
+    margin-top: 2px;
+    color: red;
+}
+
+.form_anime .title {
+	text-align: center;
+}
+
+.form_anime form {
+	font-size: 1.3rem;
+}
+
+.form_anime form {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+}
+
+.form_anime form .field {
+	max-width: 400px;
+}
+
+.form_anime form .field.episodes div {
+	display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.form_anime form .field.episodes input {
+    width: 100px;
+    text-align: center;
+    font-size: 2rem;
+}
+
+.form_anime form .field input,
+.form_anime form .field select {
+	width: 100%;
+	padding: 1rem;
+	border-radius: 5px;
+	border: none;
+	transition: outline 0.1s ease-in-out;
+	outline: 0px solid rgb(34, 179, 247);
+}
+
+.form_anime form .field select {
+	cursor: pointer;
+}
+
+.form_anime form .field input:focus {
+	outline: 3px solid rgb(34, 179, 247);
+}
+
+.form_anime form .field select:focus {
+	outline: 3px solid rgb(34, 179, 247);
+}
+
+.form_anime form .field input.error {
+	border: 1px solid red;
+}
+
+.form_anime form .field select.error {
+	border: 1px solid red;
+}
+
+.form_anime form .field label.error {
+	font-size: 1rem;
+	color: red;
+}
+
+.form_anime form .field {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.form_anime button.submit {
+    margin-top: 2.5rem;
+	padding: 1rem;
+	border-radius: 8px;
+	border: none;
+	background-color: #89cff0;
+	color: white;
+	font-weight: 700;
+}
+
+.form_anime-overlay.open {
+	display: flex;
+}

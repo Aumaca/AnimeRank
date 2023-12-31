@@ -41,6 +41,10 @@
 	height: 260px;
 }
 
+.homepage .container .slide svg {
+	cursor: pointer;
+}
+
 .homepage .container .slide .content {
 	border-radius: 0px 0px 8px 8px;
 	padding: 1rem 0.5rem;
