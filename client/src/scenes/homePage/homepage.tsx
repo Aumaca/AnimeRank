@@ -14,58 +14,52 @@ import "swiper/css/effect-coverflow"
 
 import Navbar from "../../components/navbar/navbar"
 import Loader from "../../components/loader/loader"
+import FormAnime from "../../components/formAnime/formAnime"
 import jujutsu from "../../imgs/jujutsu.jpg"
 import drstone from "../../imgs/drstone.png"
+import psycho from "../../imgs/psycho.jpg"
+
+import { AnimeType } from "../../interfaces/common"
+import { HomePageGraphQLResponse } from "../../interfaces/homepage"
 
 import "./homepage.css"
 
-interface PageInfo {
-	currentPage: number
-}
-
-interface Title {
-	english: string
-}
-
-interface CoverImage {
-	large: string
-}
-
-interface Media {
-	id: number
-	title: Title
-	coverImage: CoverImage
-	averageScore: number
-}
-
-interface PageData {
-	pageInfo: PageInfo
-	media: Media[]
-}
-
-interface GraphQLResponse {
-	data: {
-		popularAnimes: PageData
-		mostScoredAnimes: PageData
-	}
-}
-
 const Homepage = () => {
-	const [popularAnimes, setPopularAnimes] = useState<Media[] | null>(null)
-	const [mostScoredAnimes, setMostScoredAnimes] = useState<Media[] | null>(null)
+	const [popularAnimes, setPopularAnimes] = useState<AnimeType[] | null>(null)
+	const [mostScoredAnimes, setMostScoredAnimes] = useState<AnimeType[] | null>(
+		null
+	)
+	const [animeSelected, setAnimeSelected] = useState<AnimeType | null>(null)
+
 	const [isLoading, setIsLoading] = useState(true)
+	const [isFormAnimeOpen, setIsFormAnimeOpen] = useState(false)
 
 	const graphqlQuery = `
 		query ($id: Int, $page: Int, $perPage: Int, $search: String) {
 			popularAnimes: Page(page: $page, perPage: $perPage) {
 				pageInfo {
-				currentPage
+					currentPage
 				}
 				media(id: $id, search: $search, sort: POPULARITY_DESC, type: ANIME) {
 					id
 					title {
 						english
 					}
+					startDate {
+						day
+						month
+						year
+					}
+					endDate {
+						day
+						month
+						year
+					}
+					status
+					episodes
+					duration
+					genres
+					popularity
 					averageScore
 					coverImage {
 						large
@@ -82,6 +76,21 @@ const Homepage = () => {
 					title {
 						english
 					}
+					startDate {
+						day
+						month
+						year
+					}
+					endDate {
+						day
+						month
+						year
+					}
+					status
+					episodes
+					duration
+					genres
+					popularity
 					averageScore
 					coverImage {
 						large
@@ -93,7 +102,7 @@ const Homepage = () => {
 
 	useEffect(() => {
 		axios
-			.post<GraphQLResponse>("https://graphql.anilist.co", {
+			.post<HomePageGraphQLResponse>("https://graphql.anilist.co", {
 				query: graphqlQuery,
 			})
 			.then((response) => {
@@ -108,6 +117,15 @@ const Homepage = () => {
 				setIsLoading(false)
 			})
 	}, [graphqlQuery])
+
+	const handleClickAdd = (anime: AnimeType): void => {
+		setAnimeSelected(anime)
+		setIsFormAnimeOpen(true)
+	}
+
+	const closeForm = (): void => {
+		setIsFormAnimeOpen(false)
+	}
 
 	return (
 		<>
@@ -151,11 +169,21 @@ const Homepage = () => {
 							</SwiperSlide>
 							<SwiperSlide className="new">
 								<img
-									src=""
+									src={psycho}
 									alt=""
 								/>
 								<div className="content">
-									<h1>News 3!</h1>
+									<h1>PsycoPass!!</h1>
+									<p>New teaser whatever</p>
+								</div>
+							</SwiperSlide>
+							<SwiperSlide className="new">
+								<img
+									src={drstone}
+									alt=""
+								/>
+								<div className="content">
+									<h1>News 2!</h1>
 									<p>Somethiong about</p>
 								</div>
 							</SwiperSlide>
@@ -184,6 +212,7 @@ const Homepage = () => {
 									<FontAwesomeIcon
 										icon={faPlus}
 										size="2x"
+										onClick={() => handleClickAdd(anime)}
 									/>
 
 									<div className="content">
@@ -252,6 +281,12 @@ const Homepage = () => {
 							))}
 						</Swiper>
 					</div>
+
+					<FormAnime
+						anime={animeSelected}
+						isOpen={isFormAnimeOpen}
+						closeForm={closeForm}
+					/>
 				</div>
 			) : (
 				<>
