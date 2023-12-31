@@ -1,11 +1,7 @@
-import { FC, ReactNode } from "react"
+import { FC } from "react"
 import "./modal.css"
+import { ModalProps } from "../../interfaces/components/modal"
 
-interface ModalProps {
-	isOpen: boolean
-	children: ReactNode
-	backgroundColor: string
-}
 
 const Modal: FC<ModalProps> = ({ isOpen, children, backgroundColor }) => {
 	return (

@@ -1,10 +1,5 @@
+import { ProfilePictureProps } from "../../interfaces/common"
 import "./profilePicture.css"
-
-interface ProfilePictureProps {
-	image: string | null
-	size: number
-	classname?: string
-}
 
 const ProfilePicture = ({
 	image,

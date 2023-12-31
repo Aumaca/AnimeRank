@@ -1,27 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 
-export interface AuthState {
-	user: userState | null
-	token: string | null
-}
 
-interface watchedAnime {
-	anime: string,
-	score: number,
-	comment: string,
-}
-
-interface userState {
-	username: string
-	email: string
-	password: string
-	country: string
-	picture: string | null
-	createdAt: string
-	watchedAnimes: watchedAnime[]
-	toWatchAnimes: string[]
-	_id: string
-}
 
 const initialState: AuthState = {
 	user: null,

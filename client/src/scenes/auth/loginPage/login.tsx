@@ -7,7 +7,7 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons"
 import axios from "axios"
 
 import { setLogin } from "../../../state/index.ts"
-import { MessageState } from "../interfaces.tsx"
+import { MessageState } from "../../../interfaces/components/message.ts"
 import Navbar from "../../../components/navbar/navbar.tsx"
 import Loader from "../../../components/loader/loader.tsx"
 import Message from "../../../components/message/message.tsx"

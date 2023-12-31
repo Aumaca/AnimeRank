@@ -6,13 +6,9 @@ import ProfilePicture from "../../../components/profilePicture/profilePicture.ts
 import { useSelector, useDispatch } from "react-redux"
 import type { Dispatch } from "redux"
 import { setLogin } from "../../../state"
-import { AuthState } from "../../../state"
-
+import { AuthState } from "../../../interfaces/user.ts"
+import { userDropdownProps } from "../../../interfaces/components/userDropdown.ts"
 import "./userDropdown.css"
-
-interface userDropdownProps {
-	isActive: boolean
-}
 
 const UserDropdown = ({ isActive }: userDropdownProps) => {
 	const dispatcher: Dispatch = useDispatch()

@@ -1,15 +1,8 @@
-import { FC, ReactNode } from "react"
+import { FC } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faClose } from "@fortawesome/free-solid-svg-icons"
+import { MessageProps } from "../../interfaces/common"
 import "./message.css"
-
-interface MessageProps {
-	isOpen: boolean
-	title: string
-	children: ReactNode
-	backgroundColor: string
-	closeMessage: VoidFunction
-}
 
 const Message: FC<MessageProps> = ({
 	isOpen,

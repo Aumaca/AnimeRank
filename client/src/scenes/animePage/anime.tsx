@@ -1,54 +1,23 @@
 import { useEffect, useState } from "react"
-import { useParams, Link } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import axios from "axios"
 import { useSelector } from "react-redux"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faHeart } from "@fortawesome/free-solid-svg-icons"
-import { AuthState } from "../../state/index.ts"
-import ProfilePicture from "../../components/profilePicture/profilePicture.tsx"
+
 
 import Navbar from "../../components/navbar/navbar.tsx"
 import Loader from "../../components/loader/loader"
 
+import { AuthState } from "../../interfaces/user.ts"
+import { AnimeType } from "../../interfaces/common.ts" 
+import { AnimeGraphQLResponse } from "../../interfaces/anime.ts"
+
 import "./anime.css"
-
-interface Title {
-	english: string
-}
-
-interface CoverImage {
-	large: string
-}
-
-interface Date {
-	day: number
-	month: number
-	year: number
-}
-
-interface Media {
-	id: number
-	title: Title
-	coverImage: CoverImage
-	startDate: Date
-	endDate: Date
-	status: string
-	episodes: number
-	duration: number
-	genres: string[]
-	popularity: number
-	averageScore: number
-}
-
-interface GraphQLResponse {
-	data: {
-		Media: Media
-	}
-}
 
 const Anime = () => {
 	const user = useSelector((state: AuthState) => state.user)
-	const [anime, setAnime] = useState<Media | null>()
+	const [anime, setAnime] = useState<AnimeType | null>()
 	const [isLoading, setIsLoading] = useState(true)
 	const { id } = useParams()
 
@@ -87,7 +56,7 @@ const Anime = () => {
 			id: id,
 		}
 		axios
-			.post<GraphQLResponse>("https://graphql.anilist.co", {
+			.post<AnimeGraphQLResponse>("https://graphql.anilist.co", {
 				query: graphqlQuery,
 				variables: variables,
 			})
@@ -122,17 +91,20 @@ const Anime = () => {
 								</div>
 								<div className="anime__buttons">
 									<button className="favorite">
-										Favorite <FontAwesomeIcon style={{marginLeft: 5}} icon={faHeart} />
+										Favorite{" "}
+										<FontAwesomeIcon
+											style={{ marginLeft: 5 }}
+											icon={faHeart}
+										/>
 									</button>
 									<button className="add">Add to list</button>
 								</div>
 							</div>
 							<div className="info">
-								<div className="info__title">
-									<h1>Informations</h1>
-								</div>
-
 								<div className="info__container">
+									<div className="info__title">
+										<h1>Informations</h1>
+									</div>
 									<div className="information">
 										<h2>Title</h2>
 										<p>{anime.title.english}</p>
@@ -161,7 +133,7 @@ const Anime = () => {
 									</div>
 									<div className="information">
 										<h2>Duration of episodes</h2>
-										<p>{anime.duration}</p>
+										<p>{anime.duration} minutes</p>
 									</div>
 									<div className="information">
 										<h2>Genres</h2>

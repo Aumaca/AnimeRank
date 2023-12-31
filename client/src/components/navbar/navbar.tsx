@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useSelector } from "react-redux"
-import { AuthState } from "../../state/index.ts"
+import { AuthState } from "../../interfaces/user.ts"
 import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUser, faBars } from "@fortawesome/free-solid-svg-icons"
@@ -14,11 +14,11 @@ import "./navbar.css"
 const Navbar = () => {
 	const [sidemenuActive, setSidemenuActive] = useState(false)
 	const [userDropdownActive, setUserDropdownActive] = useState(false)
-	const isAuth = Boolean(useSelector((state: AuthState) => state.token))
+	const user = useSelector((user: AuthState) => user.user)
 
 	return (
 		<header>
-			{isAuth ? (
+			{user ? (
 				<nav className={`${sidemenuActive ? "active" : ""}`}>
 					<div className="container">
 						<div className="options">
@@ -47,7 +47,10 @@ const Navbar = () => {
 							<UserDropdown isActive={userDropdownActive} />
 						</div>
 					</div>
-					<Sidemenu isActive={sidemenuActive} />
+					<Sidemenu
+						isActive={sidemenuActive}
+						id={user._id}
+					/>
 				</nav>
 			) : (
 				<nav>
