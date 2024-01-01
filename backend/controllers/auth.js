@@ -7,39 +7,6 @@ export const register = async (req, res) => {
 	try {
 		const { username, email, password, country } = req.body
 
-		if (username.length === 0) {
-			res.status(400).json({ field: "username", message: "Username invalid" })
-			return
-		}
-
-		const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/
-		const isEmailValid = emailRegex.test(email)
-		if (!isEmailValid) {
-			res.status(400).json({ field: "email", message: "Email invalid" })
-			return
-		}
-
-		if (password.length < 8) {
-			res.status(400).json({
-				field: "password",
-				message: "Password with less than 8 characters",
-			})
-			return
-		}
-
-		if (country === "") {
-			res.status(400).json({ field: "country", message: "Select a country" })
-			return
-		}
-
-		const existEmail = await User.findOne({ email: email })
-		if (existEmail) {
-			res
-				.status(400)
-				.json({ field: "email", message: "Email already registered" })
-			return
-		}
-
 		const salt = await bcrypt.genSalt()
 		const pwdHash = await bcrypt.hash(password, salt)
 
@@ -52,8 +19,15 @@ export const register = async (req, res) => {
 			createdAt: new Date().toLocaleDateString("en-US"),
 		})
 
-		const savedUser = await newUser.save()
-		res.status(201).json(savedUser)
+		try {
+			const savedUser = await newUser.save()
+			res.status(201).json(savedUser)
+		} catch (err) {
+			res.status(400).json({
+				field: err.errors[Object.keys(err.errors)[0]].properties.path,
+				message: err.errors[Object.keys(err.errors)[0]].message,
+			})
+		}
 	} catch (err) {
 		res.status(500).json({ error: err.message })
 	}
@@ -63,13 +37,6 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
 	try {
 		const { email, password } = req.body
-
-		const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/
-		const isEmailValid = emailRegex.test(email)
-		if (!isEmailValid) {
-			res.status(400).json({ field: "email", message: "Email invalid" })
-			return
-		}
 
 		const user = await User.findOne({ email: email })
 		if (!user) {
