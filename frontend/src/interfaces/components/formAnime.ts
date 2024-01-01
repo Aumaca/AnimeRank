@@ -10,7 +10,7 @@ export interface FormAnimeData {
 	id: string
 	status: string
 	episodes: number
-	score: string
+	score: number
 	notes: string
 }
 

@@ -11,6 +11,7 @@ import { storage } from "./multerConfig.js"
 import { fileURLToPath } from "url"
 import { compareSync } from "bcrypt"
 import authRoutes from "./routes/auth.js"
+import userRoutes from "./routes/users.js"
 import { register } from "./controllers/auth.js"
 
 /* CONFIG */
@@ -33,6 +34,7 @@ app.post("/auth/register", upload.single("picture"), register)
 
 /* ROUTES */
 app.use("/auth", authRoutes)
+app.use("/user", userRoutes)
 
 const PORT = process.env.PORT || 6001
 mongoose

@@ -1,4 +1,4 @@
-import { FC, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faClose } from "@fortawesome/free-solid-svg-icons"
 import {
@@ -6,214 +6,253 @@ import {
 	FormAnimeData,
 	FormAnimeDataError,
 } from "../../interfaces/components/formAnime"
+import { scoreLabels, status } from "../../interfaces/user"
+import { MessageState } from "../../interfaces/components/message.ts"
+
+import api from "../../api/api.ts"
+import Message from "../message/message"
+import Loader from "../loader/loader"
 
 import "./formAnime.css"
 
-const initialFormData: FormAnimeData = {
-	id: "",
-	title: "",
-	status: "",
-	episodes: 0,
-	score: 0,
-	startDate: {
-		month: "",
-		day: "",
-		year: "",
-	},
-	endDate: {
-		month: "",
-		day: "",
-		year: "",
-	},
-	notes: "",
-}
-
-const initialFormDataError: FormAnimeDataError = {
-	id: "",
-	title: "",
-	status: "",
-	episodes: "",
-	score: "",
-	startDate: "",
-	endDate: "",
-	notes: "",
-}
-
 const FormAnime: FC<FormAnimeProps> = ({ isOpen, anime, closeForm }) => {
-	const [formData, setFormData] = useState<FormAnimeData>(initialFormData)
-	const [formDataError, setFormDataError] =
-		useState<FormAnimeDataError>(initialFormDataError)
+	const initialFormData: FormAnimeData = {
+		id: anime ? anime.id : "",
+		status: "",
+		episodes: 0,
+		score: 10,
+		notes: "",
+	}
+
+	const initialFormAnimeDataError: FormAnimeDataError = {
+		status: "",
+		episodes: "",
+		score: "",
+		notes: "",
+	}
+
+	const disableInput = (): boolean => {
+		return (
+			formAnimeData.status === status[1] || formAnimeData.status === status[4]
+		)
+	}
+
+	const [formAnimeData, setFormAnimeData] =
+		useState<FormAnimeData>(initialFormData)
+	const [formAnimeDataError, setFormAnimeDataError] =
+		useState<FormAnimeDataError>(initialFormAnimeDataError)
+	const [isLoading, setIsLoading] = useState(false)
+	const [messageState, setMessageState] = useState<MessageState>({
+		isOpen: false,
+		title: "",
+		backgroundColor: "",
+		children: "",
+	})
+
+	useEffect(() => {
+		if (anime)
+			setFormAnimeData({
+				...formAnimeData,
+				id: anime!.id,
+			})
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [anime])
 
 	const handleChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
 	) => {
 		const { name, value } = e.target
-		setFormData((prevData) => ({
-			...prevData,
-			[name]: value,
-		}))
+
+		if (value === status[1]) {
+			setFormAnimeData((prevData) => ({
+				...prevData,
+				episodes: anime!.episodes,
+				[name]: value,
+			}))
+		} else if (value === status[4]) {
+			setFormAnimeData((prevData) => ({
+				...prevData,
+				episodes: 0,
+				[name]: value,
+			}))
+		} else {
+			setFormAnimeData((prevData) => ({
+				...prevData,
+				[name]: value,
+			}))
+		}
 	}
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
+
+		setIsLoading(true)
+		api
+			.post(`/user/addAnime`, { formAnimeData: formAnimeData, anime: anime })
+			.then(() => {
+				setMessageState({
+					isOpen: true,
+					backgroundColor: "green",
+					title: "Anime added to your list!",
+					children: "Anime added to your list successfully",
+				})
+			})
+			.catch((error) => {
+				if (error.response?.status === 400) {
+					const field = error.response.data.field
+					const message = error.response.data.message
+					setFormAnimeDataError((previousState) => ({
+						...previousState,
+						[field]: message,
+					}))
+				} else {
+					setMessageState({
+						isOpen: true,
+						backgroundColor: "#D2042D",
+						title: "Error",
+						children: "An error occurred when connecting to the server",
+					})
+				}
+			})
+			.finally(() => {
+				setIsLoading(false)
+			})
+	}
+
+	const closeMessage = (): void => {
+		setMessageState({ ...messageState, isOpen: false })
 	}
 
 	return (
 		<>
 			{anime ? (
-				<div className={`form_anime-overlay ${isOpen ? "open" : ""}`}>
-					<div className="form_anime">
-						<div
-							className="close_button"
-							onClick={() => closeForm()}
-						>
-							<button>
-								<FontAwesomeIcon
-									icon={faClose}
-									size="2x"
-								/>
-							</button>
-						</div>
-						<h1 className="title">{anime!.title.english}</h1>
-						<form onClick={handleSubmit}>
-							{/* STATUS FIELD */}
-							<div className="field">
-								<label>Status</label>
-								<select
-									name="status"
-									onChange={handleChange}
-									value={formData.status}
-									className={`${formDataError.status ? "error" : ""}`}
-								>
-									<option
-										key={1}
-										value="Watching"
-									>
-										Watching
-									</option>
-									<option
-										key={2}
-										value="Completed"
-									>
-										Completed
-									</option>
-									<option
-										key={3}
-										value="On-Hold"
-									>
-										On-Hold
-									</option>
-									<option
-										key={4}
-										value="Dropped"
-									>
-										Dropped
-									</option>
-									<option
-										key={5}
-										value="Plan to Watch"
-									>
-										Plan to Watch
-									</option>
-								</select>
-								<label className="error">{formDataError.status}</label>
-							</div>
-
-							{/* EPISODES FIELD */}
-							<div className="field episodes">
-								<label>Episodes Watched</label>
-								<div>
-									<input
-										type="number"
-										name="episodes"
-										value={formData.episodes}
-										onChange={handleChange}
-										className={`${formDataError.episodes ? "error" : ""}`}
+				<>
+					<div className={`form_anime-overlay ${isOpen ? "open" : ""}`}>
+						<div className="form_anime">
+							<div
+								className="close_button"
+								onClick={() => {
+									closeForm()
+									setFormAnimeData(initialFormData)
+									setFormAnimeDataError(initialFormAnimeDataError)
+								}}
+							>
+								<button>
+									<FontAwesomeIcon
+										icon={faClose}
+										size="2x"
 									/>
-									<h1>/ {anime.episodes}</h1>
+								</button>
+							</div>
+							<h1 className="title">{anime!.title.english}</h1>
+							<form onSubmit={handleSubmit}>
+								{/* STATUS FIELD */}
+								<div className="field">
+									<label>Status</label>
+									<select
+										name="status"
+										onChange={handleChange}
+										value={formAnimeData.status}
+										className={`${formAnimeDataError.status ? "error" : ""}`}
+									>
+										<option
+											key={0}
+											value={"-----"}
+										>
+											{"-----"}
+										</option>
+										{status.map((value, key) => (
+											<option
+												key={key}
+												value={value}
+											>
+												{value}
+											</option>
+										))}
+									</select>
+									<label className="error">{formAnimeDataError.status}</label>
 								</div>
-								<label className="error">{formDataError.episodes}</label>
-							</div>
 
-							{/* SCORE FIELD */}
-							<div className="field">
-								<label>Your Score</label>
-								<select
-									name="score"
-									onChange={handleChange}
-									value={formData.score}
-									className={`${formDataError.status ? "error" : ""}`}
+								{/* EPISODES FIELD */}
+								<div className="field episodes">
+									<label>Episodes Watched</label>
+									<div>
+										<input
+											disabled={disableInput()}
+											type="number"
+											name="episodes"
+											value={formAnimeData.episodes}
+											onChange={handleChange}
+											className={`${
+												formAnimeDataError.episodes ? "error" : ""
+											}`}
+										/>
+										<h1>/ {anime.episodes}</h1>
+									</div>
+									<label className="error">{formAnimeDataError.episodes}</label>
+								</div>
+
+								{/* SCORE FIELD */}
+								<div className="field">
+									<label>Your Score</label>
+									<select
+										name="score"
+										onChange={handleChange}
+										value={formAnimeData.score}
+										className={`${formAnimeDataError.score ? "error" : ""}`}
+									>
+										<option
+											key={0}
+											value={"-----"}
+										>
+											{"-----"}
+										</option>
+										{Object.entries(scoreLabels)
+											.reverse()
+											.map(([key]) => (
+												<option
+													key={key}
+													value={key}
+												>
+													{scoreLabels[parseInt(key)]}
+												</option>
+											))}
+									</select>
+									<label className="error">{formAnimeDataError.score}</label>
+								</div>
+
+								{/* NOTES FIELD */}
+								<div className="field">
+									<label>Notes</label>
+									<input
+										type="text"
+										name="notes"
+										value={formAnimeData.notes}
+										onChange={handleChange}
+										maxLength={100}
+									/>
+									<label className="error">{formAnimeDataError.notes}</label>
+								</div>
+
+								<button
+									type="submit"
+									className="submit"
 								>
-									<option
-										key={1}
-										value={10}
-									>
-										(10) Masterpiece
-									</option>
-									<option
-										key={2}
-										value={9}
-									>
-										(9) Great
-									</option>
-									<option
-										key={3}
-										value={8}
-									>
-										(8) Very Good
-									</option>
-									<option
-										key={4}
-										value={7}
-									>
-										(7) Good
-									</option>
-									<option
-										key={5}
-										value={6}
-									>
-										(6) Fine
-									</option>
-									<option
-										key={6}
-										value={5}
-									>
-										(5) Average
-									</option>
-									<option
-										key={7}
-										value={4}
-									>
-										(4) Bad
-									</option>
-									<option
-										key={8}
-										value={3}
-									>
-										(3) Very Bad
-									</option>
-									<option
-										key={9}
-										value={2}
-									>
-										(2) Horrible
-									</option>
-									<option
-										key={10}
-										value={1}
-									>
-										(1) Appalling
-									</option>
-								</select>
-								<label className="error">{formDataError.score}</label>
-							</div>
-
-							<button className="submit">
-								<h3>Submit</h3>
-							</button>
-						</form>
+									<h3>Submit</h3>
+								</button>
+							</form>
+						</div>
 					</div>
-				</div>
+					<Message
+						closeMessage={closeMessage}
+						isOpen={messageState.isOpen}
+						title={messageState.title}
+						backgroundColor={messageState.backgroundColor}
+					>
+						{messageState.children}
+					</Message>
+					<Loader isActive={isLoading} />
+				</>
 			) : (
 				<></>
 			)}
