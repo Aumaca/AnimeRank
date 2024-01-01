@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux"
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
-import { AuthState } from "./state/index.ts"
+import { AuthState } from "./interfaces/user.ts"
 
 import Register from "./scenes/auth/registerPage/register.tsx"
 import Login from "./scenes/auth/loginPage/login.tsx"

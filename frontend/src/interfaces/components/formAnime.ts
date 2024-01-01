@@ -8,23 +8,16 @@ export interface FormAnimeProps {
 
 export interface FormAnimeData {
 	id: string
-	title: string
 	status: string
 	episodes: number
-	score: number
-	startDate: Date
-	endDate: Date
+	score: string
 	notes: string
 }
 
 export interface FormAnimeDataError {
-	id: string
-	title: string
 	status: string
 	episodes: string
 	score: string
-	startDate: string
-	endDate: string
 	notes: string
 }
 

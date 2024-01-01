@@ -10,7 +10,7 @@ interface PageInfo {
 }
 
 export interface AnimeType {
-	id: number
+	id: string
 	title: Title
 	coverImage: CoverImage
 	startDate: Date
