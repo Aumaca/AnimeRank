@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react"
-import axios from "axios"
 import { Link } from "react-router-dom"
 import Navbar from "../../../components/navbar/navbar.tsx"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -15,6 +14,7 @@ import {
 } from "../interfaces.tsx"
 import checkForm from "./checkForm.ts"
 import Loader from "../../../components/loader/loader.tsx"
+import api from "../../../api/api.ts"
 import "../auth.css"
 
 const Register = () => {
@@ -105,8 +105,9 @@ const Register = () => {
 		}
 
 		setIsLoading(true)
-		axios
-			.post(`${import.meta.env.VITE_API_URL}/auth/register`, newFormData)
+
+		api
+			.post("/auth/register", newFormData)
 			.then(() => {
 				setIsModalOpen(true)
 			})

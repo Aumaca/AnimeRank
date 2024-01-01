@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom"
 import { useSelector } from "react-redux"
-import { AuthState } from "../../state/index.ts"
+import { AuthState } from "../../interfaces/user.ts"
 import ProfilePicture from "../../components/profilePicture/profilePicture.tsx"
 
 import Navbar from "../../components/navbar/navbar.tsx"
