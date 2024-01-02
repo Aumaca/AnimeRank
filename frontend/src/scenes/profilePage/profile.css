@@ -64,3 +64,28 @@
 .profile .anime_stats .stats_container div ul li a {
     color: white;
 }
+
+.profile .delete {
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    padding-top: 5rem;
+}
+
+.profile .delete button {
+    padding: 1rem;
+    border-radius: 10px;
+    border: 2px solid red;
+    color: white;
+    font-weight: 700;
+    background-color: transparent;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    transition: 0.2s ease-in-out;
+}
+
+.profile .delete button:hover {
+    background-color: black;
+    cursor: pointer;
+}

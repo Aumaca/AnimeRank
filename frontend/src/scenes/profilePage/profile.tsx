@@ -1,14 +1,56 @@
-import { useParams, Link } from "react-router-dom"
-import { useSelector } from "react-redux"
+import { Link } from "react-router-dom"
+import { useSelector, useDispatch } from "react-redux"
+import type { Dispatch } from "redux"
+import { setLogin } from "../../state/index.ts"
 import { AuthState } from "../../interfaces/user.ts"
 import ProfilePicture from "../../components/profilePicture/profilePicture.tsx"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faTrash } from "@fortawesome/free-solid-svg-icons"
 
+import api from "../../api/api.ts"
 import Navbar from "../../components/navbar/navbar.tsx"
+import Message from "../../components/message/message.tsx"
 
 import "./profile.css"
+import { useState } from "react"
+import { MessageState } from "../../interfaces/components/message.ts"
 
-const Homepage = () => {
+const Profile = () => {
+	const dispatcher: Dispatch = useDispatch()
 	const user = useSelector((state: AuthState) => state.user)
+
+	const [messageState, setMessageState] = useState<MessageState>({
+		isOpen: false,
+		title: "",
+		backgroundColor: "",
+		children: "",
+	})
+
+	const closeMessage = (): void => {
+		setMessageState({ ...messageState, isOpen: false })
+	}
+
+	const deleteUser = (): void => {
+		api
+			.delete("/user/deleteUser")
+			.then(() => {
+				dispatcher(
+					setLogin({
+						user: null,
+						token: null,
+					})
+				)
+			})
+			.catch(() => {
+				setMessageState({
+					isOpen: true,
+					backgroundColor: "#D2042D",
+					title: "Error",
+					children: "An error occurred when deleting the user",
+				})
+			})
+	}
+
 	return (
 		<>
 			<Navbar />
@@ -77,6 +119,19 @@ const Homepage = () => {
 								</div>
 							</div>
 						</div>
+						<div className="delete">
+							<button onClick={() => deleteUser()}>
+								Delete profile <FontAwesomeIcon icon={faTrash} />
+							</button>
+						</div>
+						<Message
+							closeMessage={closeMessage}
+							isOpen={messageState.isOpen}
+							title={messageState.title}
+							backgroundColor={messageState.backgroundColor}
+						>
+							{messageState.children}
+						</Message>
 					</>
 				) : (
 					<>
@@ -88,4 +143,4 @@ const Homepage = () => {
 	)
 }
 
-export default Homepage
+export default Profile
