@@ -8,7 +8,7 @@
 	"description": "",
 	"type": "module",
 	"scripts": {
-		"test": "dps"
+		"test": "cross-env NODE_ENV=test mocha"
 	},
 	"dependencies": {
 		"bcrypt": "^5.1.1",
@@ -25,7 +25,9 @@
 		"multer-gridfs-storage": "^5.0.2"
 	},
 	"devDependencies": {
-		"chai": "^4.3.10",
-		"mocha": "^10.2.0"
+		"chai": "^5.0.0",
+		"cross-env": "^7.0.3",
+		"mocha": "^10.2.0",
+		"supertest": "^6.3.3"
 	}
 }
