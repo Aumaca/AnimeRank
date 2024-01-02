@@ -1,5 +1,3 @@
-import { AnimeType } from "./common"
-
 export interface AuthState {
 	user: userState | null
 	token: string | null
@@ -12,13 +10,13 @@ export interface userState {
 	country: string
 	picture: string | null
 	createdAt: string
-	watchedAnimes: watchedAnimes[]
-	toWatchAnimes: AnimeType[]
+	animes: Anime[]
 	_id: string
 }
 
-interface watchedAnimes {
-	anime: AnimeType
+export interface Anime {
+	animeId: string
+	episodes: number
 	score: number
 	comment: string
 }

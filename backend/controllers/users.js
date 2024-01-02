@@ -23,7 +23,6 @@ export const addAnimeUserList = async (req, res) => {
 	}
 
 	try {
-		const user = await User.findById(req.userId)
 		const formAnimeData = req.body.formAnimeData
 		const anime = req.body.anime
 
@@ -77,13 +76,13 @@ export const addAnimeUserList = async (req, res) => {
 			},
 			{
 				$push: {
-					watchedAnimes: formAnimeData,
+					animes: formAnimeData,
 				},
 			},
 			{ new: true }
 		)
-			.then(() => {
-				res.status(200).json({ message: "Anime added to user list" })
+			.then((updatedUser) => {
+				res.status(200).json(updatedUser.animes)
 			})
 			.catch((err) => {
 				res.status(404).json({ error: err.message })

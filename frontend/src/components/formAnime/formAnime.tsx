@@ -1,5 +1,8 @@
 import { FC, useEffect, useState } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { useDispatch } from "react-redux"
+import type { Dispatch } from "redux"
+import { setAnimes } from "../../state/index.ts"
 import { faClose } from "@fortawesome/free-solid-svg-icons"
 import {
 	FormAnimeProps,
@@ -37,6 +40,7 @@ const FormAnime: FC<FormAnimeProps> = ({ isOpen, anime, closeForm }) => {
 		)
 	}
 
+	const dispatch: Dispatch = useDispatch()
 	const [formAnimeData, setFormAnimeData] =
 		useState<FormAnimeData>(initialFormData)
 	const [formAnimeDataError, setFormAnimeDataError] =
@@ -89,7 +93,10 @@ const FormAnime: FC<FormAnimeProps> = ({ isOpen, anime, closeForm }) => {
 		setIsLoading(true)
 		api
 			.post(`/user/addAnime`, { formAnimeData: formAnimeData, anime: anime })
-			.then(() => {
+			.then((res) => {
+				dispatch(
+					setAnimes(res.data)
+				)
 				setMessageState({
 					isOpen: true,
 					backgroundColor: "green",

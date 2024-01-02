@@ -37,17 +37,12 @@ const UserSchema = new mongoose.Schema({
 		type: String,
 		default: "",
 	},
-	watchedAnimes: [
+	animes: [
 		{
 			id: String,
 			episodesWatched: Number,
 			score: Number,
-			comment: String,
-		},
-	],
-	toWatchAnimes: [
-		{
-			id: String,
+			notes: String,
 		},
 	],
 	country: {
@@ -57,12 +52,6 @@ const UserSchema = new mongoose.Schema({
 		type: String,
 	},
 })
-UserSchema.methods.countWatchedAnimes = () => {
-	return this.watchedAnimes.length
-}
-UserSchema.methods.countToWatchAnimes = () => {
-	return this.toWatchAnimes.length
-}
 
 const User = mongoose.model("User", UserSchema)
 

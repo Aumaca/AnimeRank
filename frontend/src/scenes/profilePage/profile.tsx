@@ -9,7 +9,6 @@ import "./profile.css"
 
 const Homepage = () => {
 	const user = useSelector((state: AuthState) => state.user)
-	const { id } = useParams()
 	return (
 		<>
 			<Navbar />
@@ -44,23 +43,23 @@ const Homepage = () => {
 									<ul>
 										<li>
 											<Link to={"/"}>Watching</Link>
-											<span>{user.watchedAnimes.length}</span>
+											<span>{user.animes.length}</span>
 										</li>
 										<li>
 											<Link to={"/"}>Completed</Link>
-											<span>{user.watchedAnimes.length}</span>
+											<span>{user.animes.length}</span>
 										</li>
 										<li>
 											<Link to={"/"}>On-Hold</Link>
-											<span>{user.watchedAnimes.length}</span>
+											<span>{user.animes.length}</span>
 										</li>
 										<li>
 											<Link to={"/"}>Dropped</Link>
-											<span>{user.watchedAnimes.length}</span>
+											<span>{user.animes.length}</span>
 										</li>
 										<li>
 											<Link to={"/"}>Plan to Watch</Link>
-											<span>{user.watchedAnimes.length}</span>
+											<span>{user.animes.length}</span>
 										</li>
 									</ul>
 								</div>
@@ -68,11 +67,11 @@ const Homepage = () => {
 									<ul>
 										<li>
 											<p>Total Animes</p>
-											<span>{user.watchedAnimes.length}</span>
+											<span>{user.animes.length}</span>
 										</li>
 										<li>
 											<p>Episodes</p>
-											<span>{user.watchedAnimes.length}</span>
+											<span>{user.animes.length}</span>
 										</li>
 									</ul>
 								</div>
