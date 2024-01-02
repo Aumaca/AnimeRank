@@ -82,13 +82,23 @@ export const addAnimeUserList = async (req, res) => {
 			},
 			{ new: true }
 		)
-			.then((updatedUser) => {
+			.then(() => {
 				res.status(200).json({ message: "Anime added to user list" })
 			})
 			.catch((err) => {
-				res.status(404).json({ message: error.message })
+				res.status(404).json({ error: err.message })
 			})
-	} catch (error) {
-		res.status(404).json({ message: error.message })
+	} catch (err) {
+		res.status(404).json({ error: err.message })
 	}
+}
+
+export const deleteUser = async (req, res) => {
+	User.findByIdAndDelete({ _id: req.userId })
+		.then(() => {
+			res.status(200).json({ message: "User deleted successfully" })
+		})
+		.catch((err) => {
+			res.status(400).json({ err: err.message })
+		})
 }

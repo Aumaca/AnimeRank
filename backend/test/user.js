@@ -81,3 +81,12 @@ describe("Add anime to user list", () => {
 		expect(res.statusCode).equal(200)
 	})
 })
+
+describe("Delete User", () => {
+	it("Delete user should return 200", async () => {
+		const res = await request(app)
+			.delete("/user/deleteUser")
+			.set("Authorization", `Bearer ${token}`)
+		expect(res.statusCode).equal(200)
+	})
+})
