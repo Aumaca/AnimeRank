@@ -24,7 +24,6 @@ export const addAnimeUserList = async (req, res) => {
 
 	try {
 		const user = await User.findById(req.userId)
-		console.log(user)
 		const formAnimeData = req.body.formAnimeData
 		const anime = req.body.anime
 
@@ -57,7 +56,6 @@ export const addAnimeUserList = async (req, res) => {
 		}
 
 		// score
-		console.log(formAnimeData)
 		if (!(formAnimeData.score >= 0 && formAnimeData.score <= 10)) {
 			res.status(400).json({
 				field: "status",
@@ -85,13 +83,11 @@ export const addAnimeUserList = async (req, res) => {
 			{ new: true }
 		)
 			.then((updatedUser) => {
-				console.log(updatedUser)
+				res.status(200).json({ message: "Anime added to user list" })
 			})
 			.catch((err) => {
-				console.error(err)
+				res.status(404).json({ message: error.message })
 			})
-
-		res.status(200).json({ message: "Anime added to user list" })
 	} catch (error) {
 		res.status(404).json({ message: error.message })
 	}

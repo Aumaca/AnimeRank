@@ -19,10 +19,14 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 dotenv.config()
 const app = express()
+
+if (process.env.NODE_ENV !== "test") {
+	app.use(morgan("common"))
+}
+
 app.use(express.json())
 app.use(helmet())
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }))
-app.use(morgan("common"))
 app.use(bodyParser.json({ limit: "30mb", extended: true }))
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }))
 app.use(cors())
@@ -40,6 +44,10 @@ const PORT = process.env.PORT || 6001
 mongoose
 	.connect(process.env.MONGO_URL)
 	.then(() => {
-		app.listen(PORT, () => console.log(`Server port: ${PORT}`))
+		app.listen(PORT, () => {
+			process.env.NODE_ENV !== "test" ? console.log(`Server port: ${PORT}`) : ""
+		})
 	})
 	.catch((err) => console.log(err))
+
+export default app
