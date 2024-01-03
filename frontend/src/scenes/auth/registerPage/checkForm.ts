@@ -1,6 +1,6 @@
-import { FormDataState, FormErrorState } from "../interfaces.tsx"
+import { RegisterFormData, RegisterFormDataError } from "../../../interfaces/register"
 
-const initialFormErrorState: FormErrorState = {
+const initialFormErrorState: RegisterFormDataError = {
 	username: "",
 	email: "",
 	password: "",
@@ -10,8 +10,8 @@ const initialFormErrorState: FormErrorState = {
 
 // Returns a bool to indicate if form is valid or not
 const checkForm = (
-	formData: FormDataState,
-	setFormError: React.Dispatch<React.SetStateAction<FormErrorState>>
+	formData: RegisterFormData,
+	setFormError: React.Dispatch<React.SetStateAction<RegisterFormDataError>>
 ): boolean => {
 	setFormError(initialFormErrorState)
 

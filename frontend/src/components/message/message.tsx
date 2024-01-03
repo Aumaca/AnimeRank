@@ -1,7 +1,10 @@
-import { FC } from "react"
+import { FC, useEffect } from "react"
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faClose } from "@fortawesome/free-solid-svg-icons"
-import { MessageProps } from "../../interfaces/common"
+
+import { MessageProps } from "../../interfaces/components/message"
+
 import "./message.css"
 
 const Message: FC<MessageProps> = ({
@@ -11,6 +14,15 @@ const Message: FC<MessageProps> = ({
 	backgroundColor,
 	closeMessage,
 }) => {
+	
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			closeMessage!()
+		}, 5000)
+
+		return () => clearTimeout(timer)
+	}, [isOpen, closeMessage])
+
 	return (
 		<div
 			className={`message ${isOpen ? "open" : ""}`}

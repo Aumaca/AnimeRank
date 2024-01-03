@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 import { AuthState } from "../interfaces/user"
-import { Anime } from "../interfaces/user"
+import { UserAnime } from "../interfaces/user"
 
 const initialState: AuthState = {
 	user: null,
@@ -19,7 +19,7 @@ export const authSlice = createSlice({
 			state.user = null
 			state.token = null
 		},
-		setAnimes: (state: AuthState, action: PayloadAction<Anime[]>): void => {
+		setAnimes: (state: AuthState, action: PayloadAction<UserAnime[]>): void => {
 			console.log(action.payload)
 			state.user!.animes = action.payload
 		},

@@ -1,14 +1,3 @@
-import { ReactNode } from "react"
-
-export interface PageData {
-	pageInfo: PageInfo
-	media: AnimeType[]
-}
-
-interface PageInfo {
-	currentPage: number
-}
-
 export interface AnimeType {
 	id: string
 	title: Title
@@ -37,16 +26,11 @@ export interface Date {
 	year: number
 }
 
-export interface MessageProps {
-	isOpen: boolean
-	title: string
-	children: ReactNode
-	backgroundColor: string
-	closeMessage: VoidFunction
+export interface PageData {
+	pageInfo: PageInfo
+	media: AnimeType[]
 }
 
-export interface ProfilePictureProps {
-	image: string | null
-	size: number
-	classname?: string
+interface PageInfo {
+	currentPage: number
 }

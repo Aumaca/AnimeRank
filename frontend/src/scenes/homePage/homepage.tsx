@@ -1,16 +1,11 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import axios from "axios"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faPlus } from "@fortawesome/free-solid-svg-icons"
 
 import { Swiper, SwiperSlide } from "swiper/react"
 import { EffectCoverflow, Navigation, Pagination } from "swiper/modules"
-import "swiper/css"
-import "swiper/css/navigation"
-import "swiper/css/pagination"
-import "swiper/css/scrollbar"
-import "swiper/css/effect-coverflow"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faPlus } from "@fortawesome/free-solid-svg-icons"
 
 import Navbar from "../../components/navbar/navbar"
 import Loader from "../../components/loader/loader"
@@ -20,9 +15,15 @@ import drstone from "../../imgs/drstone.png"
 import psycho from "../../imgs/psycho.jpg"
 
 import { AnimeType } from "../../interfaces/common"
-import { HomePageGraphQLResponse } from "../../interfaces/homepage"
+import { HomePageResponse } from "../../interfaces/responses"
 
 import "./homepage.css"
+import "swiper/css"
+import "swiper/css/navigation"
+import "swiper/css/pagination"
+import "swiper/css/scrollbar"
+import "swiper/css/effect-coverflow"
+
 
 const Homepage = () => {
 	const [popularAnimes, setPopularAnimes] = useState<AnimeType[] | null>(null)
@@ -102,7 +103,7 @@ const Homepage = () => {
 
 	useEffect(() => {
 		axios
-			.post<HomePageGraphQLResponse>("https://graphql.anilist.co", {
+			.post<HomePageResponse>("https://graphql.anilist.co", {
 				query: graphqlQuery,
 			})
 			.then((response) => {

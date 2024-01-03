@@ -1,24 +1,43 @@
 export interface AuthState {
-	user: userState | null
+	user: UserState | null
 	token: string | null
 }
 
-export interface userState {
+export interface UserState {
 	username: string
 	email: string
 	password: string
 	country: string
 	picture: string | null
 	createdAt: string
-	animes: Anime[]
+	animes: UserAnime[]
 	_id: string
 }
 
-export interface Anime {
-	animeId: string
+export interface ProfileState {
+	username: string
+	country: string
+	picture: string | null
+	createdAt: string
+	animes: UserAnime[]
+	countEpisodes: number
+	statusData: StatusData
+}
+
+export interface UserAnime {
+	id: string
+	status: string
 	episodes: number
 	score: number
-	comment: string
+	notes: string
+}
+
+export interface StatusData {
+	watching: number
+	completed: number
+	onHold: number
+	dropped: number
+	planToWatch: number
 }
 
 export const scoreLabels: Record<number, string> = {

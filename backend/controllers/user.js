@@ -79,7 +79,7 @@ export const addAnimeUserList = async (req, res) => {
 					animes: formAnimeData,
 				},
 			},
-			{ new: true }
+			{ new: true, runValidators: true }
 		)
 			.then((updatedUser) => {
 				res.status(200).json(updatedUser.animes)

@@ -1,20 +1,22 @@
 import { FC, useEffect, useState } from "react"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useDispatch } from "react-redux"
 import type { Dispatch } from "redux"
-import { setAnimes } from "../../state/index.ts"
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faClose } from "@fortawesome/free-solid-svg-icons"
+
 import {
 	FormAnimeProps,
 	FormAnimeData,
 	FormAnimeDataError,
 } from "../../interfaces/components/formAnime"
-import { scoreLabels, status } from "../../interfaces/user"
-import { MessageState } from "../../interfaces/components/message.ts"
-
-import api from "../../api/api.ts"
 import Message from "../message/message"
 import Loader from "../loader/loader"
+import { setAnimes } from "../../state/index.ts"
+import api from "../../api/api.ts"
+
+import { scoreLabels, status } from "../../interfaces/user"
+import { MessageProps } from "../../interfaces/components/message.ts"
 
 import "./formAnime.css"
 
@@ -46,7 +48,7 @@ const FormAnime: FC<FormAnimeProps> = ({ isOpen, anime, closeForm }) => {
 	const [formAnimeDataError, setFormAnimeDataError] =
 		useState<FormAnimeDataError>(initialFormAnimeDataError)
 	const [isLoading, setIsLoading] = useState(false)
-	const [messageState, setMessageState] = useState<MessageState>({
+	const [messageState, setMessageState] = useState<MessageProps>({
 		isOpen: false,
 		title: "",
 		backgroundColor: "",
@@ -94,9 +96,7 @@ const FormAnime: FC<FormAnimeProps> = ({ isOpen, anime, closeForm }) => {
 		api
 			.post(`/user/addAnime`, { formAnimeData: formAnimeData, anime: anime })
 			.then((res) => {
-				dispatch(
-					setAnimes(res.data)
-				)
+				dispatch(setAnimes(res.data))
 				setMessageState({
 					isOpen: true,
 					backgroundColor: "green",

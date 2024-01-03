@@ -30,11 +30,11 @@ function App() {
 						element={isAuth ? <Navigate to="/" /> : <Register />}
 					/>
 					<Route
-						path="/profile/:id"
+						path="/profile/:userId"
 						element={isAuth ? <ProfilePage /> : <Navigate to="/login" />}
 					/>
 					<Route
-						path="/anime/:id"
+						path="/anime/:animeId"
 						element={isAuth ? <Anime /> : <Navigate to="/login" />}
 					/>
 				</Routes>

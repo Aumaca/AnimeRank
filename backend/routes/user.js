@@ -1,5 +1,5 @@
 import express from "express"
-import { addAnimeUserList, deleteUser } from "../controllers/users.js"
+import { addAnimeUserList, deleteUser } from "../controllers/user.js"
 import { verifyToken } from "../middleware/auth.js"
 
 const router = express.Router()

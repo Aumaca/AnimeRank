@@ -40,7 +40,8 @@ const UserSchema = new mongoose.Schema({
 	animes: [
 		{
 			id: String,
-			episodesWatched: Number,
+			status: String,
+			episodes: Number,
 			score: Number,
 			notes: String,
 		},
@@ -52,6 +53,47 @@ const UserSchema = new mongoose.Schema({
 		type: String,
 	},
 })
+
+UserSchema.methods.filterAnimesStatus = function (cb) {
+	const statusData = {
+		watching: 0,
+		completed: 0,
+		onHold: 0,
+		dropped: 0,
+		planToWatch: 0,
+	}
+
+	this.animes.forEach((anime) => {
+		switch (anime.status) {
+			case "Watching":
+				statusData.watching++
+				break
+			case "Completed":
+				statusData.completed++
+				break
+			case "on-Hold":
+				statusData.onHold++
+				break
+			case "Dropped":
+				statusData.dropped++
+				break
+			case "Plan To Watch":
+				statusData.planToWatch++
+				break
+		}
+	})
+
+	return statusData
+}
+
+UserSchema.methods.countEpisodes = function (cb) {
+	let sum = 0
+	this.animes.forEach((anime) => {
+		sum += anime.episodes
+	})
+
+	return sum
+}
 
 const User = mongoose.model("User", UserSchema)
 

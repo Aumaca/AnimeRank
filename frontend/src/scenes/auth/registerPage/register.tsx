@@ -1,24 +1,28 @@
 import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import Navbar from "../../../components/navbar/navbar.tsx"
+import { useDropzone } from "react-dropzone"
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowRight, faCheckCircle } from "@fortawesome/free-solid-svg-icons"
-import { useDropzone } from "react-dropzone"
+
+import Navbar from "../../../components/navbar/navbar.tsx"
 import Modal from "../../../components/modal/modal.tsx"
 import Message from "../../../components/message/message.tsx"
-import {
-	MessageState,
-	Country,
-	FormDataState,
-	FormErrorState,
-} from "../interfaces.tsx"
-import checkForm from "./checkForm.ts"
 import Loader from "../../../components/loader/loader.tsx"
+import checkForm from "./checkForm.ts"
 import api from "../../../api/api.ts"
+
+import { MessageProps } from "../../../interfaces/components/message.ts"
+import {
+	Country,
+	RegisterFormData,
+	RegisterFormDataError,
+} from "../../../interfaces/register.ts"
+
 import "../auth.css"
 
 const Register = () => {
-	const [formData, setFormData] = useState<FormDataState>({
+	const [formData, setFormData] = useState<RegisterFormData>({
 		username: "",
 		email: "",
 		password: "",
@@ -26,7 +30,7 @@ const Register = () => {
 		picture: null,
 	})
 
-	const [formError, setFormError] = useState<FormErrorState>({
+	const [formError, setFormError] = useState<RegisterFormDataError>({
 		username: "",
 		email: "",
 		password: "",
@@ -34,7 +38,7 @@ const Register = () => {
 		picture: "",
 	})
 
-	const [messageState, setMessageState] = useState<MessageState>({
+	const [messageState, setMessageState] = useState<MessageProps>({
 		isOpen: false,
 		title: "",
 		backgroundColor: "",
@@ -70,16 +74,6 @@ const Register = () => {
 
 		fetchCountries()
 	}, [])
-
-	// Close message after 5 seconds
-	useEffect(() => {
-		if (messageState.isOpen) {
-			const timerId = setTimeout(() => {
-				setMessageState({ ...messageState, isOpen: false })
-			}, 5000)
-			return () => clearTimeout(timerId)
-		}
-	}, [messageState])
 
 	const handleChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>

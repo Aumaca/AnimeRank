@@ -11,7 +11,7 @@ import Loader from "../../components/loader/loader"
 
 import { AuthState } from "../../interfaces/user.ts"
 import { AnimeType } from "../../interfaces/common.ts" 
-import { AnimeGraphQLResponse } from "../../interfaces/anime.ts"
+import { AnimeResponse } from "../../interfaces/responses.ts"
 
 import "./anime.css"
 
@@ -19,7 +19,7 @@ const Anime = () => {
 	const user = useSelector((state: AuthState) => state.user)
 	const [anime, setAnime] = useState<AnimeType | null>()
 	const [isLoading, setIsLoading] = useState(true)
-	const { id } = useParams()
+	const { animeId } = useParams()
 
 	const graphqlQuery = `
 		query ($id: Int) {
@@ -53,10 +53,10 @@ const Anime = () => {
 
 	useEffect(() => {
 		const variables = {
-			id: id,
+			id: animeId,
 		}
 		axios
-			.post<AnimeGraphQLResponse>("https://graphql.anilist.co", {
+			.post<AnimeResponse>("https://graphql.anilist.co", {
 				query: graphqlQuery,
 				variables: variables,
 			})
@@ -71,7 +71,7 @@ const Anime = () => {
 				2
 				setIsLoading(false)
 			})
-	}, [graphqlQuery, id])
+	}, [graphqlQuery, animeId])
 
 	return (
 		<>

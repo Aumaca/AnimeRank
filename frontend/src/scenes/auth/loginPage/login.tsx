@@ -2,15 +2,17 @@ import { ChangeEvent, FormEvent, useState } from "react"
 import { useDispatch } from "react-redux"
 import type { Dispatch } from "redux"
 import { Link, useNavigate } from "react-router-dom"
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons"
 
-import { setLogin } from "../../../state/index.ts"
-import { MessageState } from "../../../interfaces/components/message.ts"
 import Navbar from "../../../components/navbar/navbar.tsx"
 import Loader from "../../../components/loader/loader.tsx"
 import Message from "../../../components/message/message.tsx"
+import { setLogin } from "../../../state/index.ts"
 import api from "../../../api/api.ts"
+
+import { MessageProps } from "../../../interfaces/components/message.ts"
 
 import "../auth.css"
 
@@ -33,7 +35,7 @@ const Login = () => {
 		password: "",
 	})
 
-	const [messageState, setMessageState] = useState<MessageState>({
+	const [messageState, setMessageState] = useState<MessageProps>({
 		isOpen: false,
 		title: "",
 		backgroundColor: "",

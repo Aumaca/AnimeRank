@@ -1,25 +1,33 @@
-import { Link } from "react-router-dom"
-import { useSelector, useDispatch } from "react-redux"
+import { useEffect, useState } from "react"
+import { Link, useParams } from "react-router-dom"
+import { useDispatch } from "react-redux"
 import type { Dispatch } from "redux"
-import { setLogin } from "../../state/index.ts"
-import { AuthState } from "../../interfaces/user.ts"
-import ProfilePicture from "../../components/profilePicture/profilePicture.tsx"
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTrash } from "@fortawesome/free-solid-svg-icons"
 
 import api from "../../api/api.ts"
 import Navbar from "../../components/navbar/navbar.tsx"
 import Message from "../../components/message/message.tsx"
+import Loader from "../../components/loader/loader.tsx"
+import ProfilePicture from "../../components/profilePicture/profilePicture.tsx"
+import { setLogin } from "../../state/index.ts"
+
+import { ProfileState } from "../../interfaces/user.ts"
+import { ProfileResponse } from "../../interfaces/responses.ts"
+import { MessageProps } from "../../interfaces/components/message.ts"
 
 import "./profile.css"
-import { useState } from "react"
-import { MessageState } from "../../interfaces/components/message.ts"
 
 const Profile = () => {
 	const dispatcher: Dispatch = useDispatch()
-	const user = useSelector((state: AuthState) => state.user)
+	const { userId } = useParams()
 
-	const [messageState, setMessageState] = useState<MessageState>({
+	const [userProfile, setUserProfile] = useState<ProfileState>()
+
+	const [isLoading, setIsLoading] = useState(false)
+
+	const [messageState, setMessageState] = useState<MessageProps>({
 		isOpen: false,
 		title: "",
 		backgroundColor: "",
@@ -29,6 +37,18 @@ const Profile = () => {
 	const closeMessage = (): void => {
 		setMessageState({ ...messageState, isOpen: false })
 	}
+
+	useEffect(() => {
+		api
+			.get(`/social/${userId}`)
+			.then((res: ProfileResponse) => {
+				setUserProfile(res.data)
+				setIsLoading(false)
+			})
+			.catch((err) => {
+				console.log("error!", err.message)
+			})
+	}, [userId])
 
 	const deleteUser = (): void => {
 		api
@@ -56,7 +76,7 @@ const Profile = () => {
 			<Navbar />
 
 			<div className="profile">
-				{user ? (
+				{userProfile ? (
 					<>
 						<div className="username_container">
 							<h1>Profile</h1>
@@ -64,61 +84,66 @@ const Profile = () => {
 						<div className="user">
 							<div className="picture">
 								<ProfilePicture
-									image={user.picture}
+									image={userProfile.picture}
 									size={100}
 									classname="rounded"
 								/>
 							</div>
 							<div className="username">
-								<h1>{user.username}</h1>
+								<h1>{userProfile.username}</h1>
 								<Link to="/">
 									<button>Anime List</button>
 								</Link>
 							</div>
 						</div>
 
-						<div className="anime_stats">
-							<h1>Anime Stats</h1>
+						<div className="anime_stats_container">
+							<div className="anime_stats">
+								<h1>Anime Stats</h1>
 
-							<div className="stats_container">
-								<div className="col1">
-									<ul>
-										<li>
-											<Link to={"/"}>Watching</Link>
-											<span>{user.animes.length}</span>
-										</li>
-										<li>
-											<Link to={"/"}>Completed</Link>
-											<span>{user.animes.length}</span>
-										</li>
-										<li>
-											<Link to={"/"}>On-Hold</Link>
-											<span>{user.animes.length}</span>
-										</li>
-										<li>
-											<Link to={"/"}>Dropped</Link>
-											<span>{user.animes.length}</span>
-										</li>
-										<li>
-											<Link to={"/"}>Plan to Watch</Link>
-											<span>{user.animes.length}</span>
-										</li>
-									</ul>
-								</div>
-								<div className="col2">
-									<ul>
-										<li>
-											<p>Total Animes</p>
-											<span>{user.animes.length}</span>
-										</li>
-										<li>
-											<p>Episodes</p>
-											<span>{user.animes.length}</span>
-										</li>
-									</ul>
+								<div className="anime_stats_bar">{}</div>
+
+								<div className="stats_container">
+									<div className="col1">
+										<ul>
+											<li>
+												<Link to={`/${userId}/list/1}`}>Watching</Link>
+												<span>{userProfile.statusData.watching}</span>
+											</li>
+											<li>
+												<Link to={`/${userId}/list/2}`}>Completed</Link>
+												<span>{userProfile.statusData.completed}</span>
+											</li>
+											<li>
+												<Link to={`/${userId}/list/3}`}>On-Hold</Link>
+												<span>{userProfile.statusData.onHold}</span>
+											</li>
+											<li>
+												<Link to={`/${userId}/list/4}`}>Dropped</Link>
+												<span>{userProfile.statusData.dropped}</span>
+											</li>
+											<li>
+												<Link to={`/${userId}/list/5}`}>Plan to Watch</Link>
+												<span>{userProfile.statusData.planToWatch}</span>
+											</li>
+										</ul>
+									</div>
+									<div className="col2">
+										<ul>
+											<li>
+												<p>Total Animes</p>
+												<span>{userProfile.animes.length}</span>
+											</li>
+											<li>
+												<p>Episodes</p>
+												<span>{userProfile.countEpisodes}</span>
+											</li>
+										</ul>
+									</div>
 								</div>
 							</div>
 						</div>
+
 						<div className="delete">
 							<button onClick={() => deleteUser()}>
 								Delete profile <FontAwesomeIcon icon={faTrash} />
@@ -135,7 +160,7 @@ const Profile = () => {
 					</>
 				) : (
 					<>
-						<h1>ERROR!!!</h1>
+						<Loader isActive={isLoading} />
 					</>
 				)}
 			</div>
