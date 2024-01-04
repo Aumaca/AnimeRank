@@ -13,6 +13,7 @@ import Loader from "../../components/loader/loader.tsx"
 import ProfilePicture from "../../components/profilePicture/profilePicture.tsx"
 import { setLogin } from "../../state/index.ts"
 
+import { status } from "../../interfaces/user.ts"
 import { ProfileState } from "../../interfaces/user.ts"
 import { ProfileResponse } from "../../interfaces/responses.ts"
 import { MessageProps } from "../../interfaces/components/message.ts"
@@ -101,31 +102,38 @@ const Profile = () => {
 							<div className="anime_stats">
 								<h1>Anime Stats</h1>
 
-								<div className="anime_stats_bar">{}</div>
+								<div className="anime_stats_bar">
+									{Object.keys(userProfile.statusData).map((status) => (
+										<div
+											key={status}
+											className={`bar ${status}`}
+											style={{
+												width: `${
+													(userProfile.statusData[status] /
+														userProfile.animes.length) *
+													100
+												}%`,
+											}}
+										/>
+									))}
+								</div>
 
 								<div className="stats_container">
 									<div className="col1">
 										<ul>
-											<li>
-												<Link to={`/${userId}/list/1}`}>Watching</Link>
-												<span>{userProfile.statusData.watching}</span>
-											</li>
-											<li>
-												<Link to={`/${userId}/list/2}`}>Completed</Link>
-												<span>{userProfile.statusData.completed}</span>
-											</li>
-											<li>
-												<Link to={`/${userId}/list/3}`}>On-Hold</Link>
-												<span>{userProfile.statusData.onHold}</span>
-											</li>
-											<li>
-												<Link to={`/${userId}/list/4}`}>Dropped</Link>
-												<span>{userProfile.statusData.dropped}</span>
-											</li>
-											<li>
-												<Link to={`/${userId}/list/5}`}>Plan to Watch</Link>
-												<span>{userProfile.statusData.planToWatch}</span>
-											</li>
+											{Object.keys(userProfile.statusData).map(
+												(statusKey, i) => (
+													<li key={statusKey}>
+														<Link to={`/${userId}/list/${i + 1}`}>
+															<div
+																className={`dot-color ${statusKey}`}
+															/>
+															{status[i]}	
+														</Link>
+														<span>{userProfile.statusData[statusKey]}</span>
+													</li>
+												)
+											)}
 										</ul>
 									</div>
 									<div className="col2">

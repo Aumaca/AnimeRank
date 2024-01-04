@@ -1,5 +1,5 @@
 import request from "supertest"
-import { assert, expect } from "chai"
+import { expect } from "chai"
 import app from "../index.js"
 
 const userRegister = {
@@ -51,9 +51,14 @@ const formAnimeData = {
 
 let token = ""
 
+let userId = ""
+
 describe("User Register", () => {
 	it("Register user should return 201", async () => {
 		const res = await request(app).post("/auth/register").send(userRegister)
+		if (res.statusCode === 201) {
+			userId = res.body._id
+		}
 		expect(res.statusCode).equal(201)
 	})
 })

@@ -71,13 +71,13 @@ UserSchema.methods.filterAnimesStatus = function (cb) {
 			case "Completed":
 				statusData.completed++
 				break
-			case "on-Hold":
+			case "On-Hold":
 				statusData.onHold++
 				break
 			case "Dropped":
 				statusData.dropped++
 				break
-			case "Plan To Watch":
+			case "Plan to Watch":
 				statusData.planToWatch++
 				break
 		}

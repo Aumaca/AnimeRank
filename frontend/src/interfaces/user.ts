@@ -38,6 +38,7 @@ export interface StatusData {
 	onHold: number
 	dropped: number
 	planToWatch: number
+	[key: string]: number
 }
 
 export const scoreLabels: Record<number, string> = {
