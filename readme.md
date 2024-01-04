@@ -10,6 +10,9 @@ This is a project created based on the website [MyAnimeList](https://myanimelist
   - Node.JS
 - Typescript/Javascript
 - Redux
+- Mocha, Chai and Supertest
+
+
 
 ## ...
 
