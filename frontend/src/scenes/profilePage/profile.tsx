@@ -11,7 +11,7 @@ import Navbar from "../../components/navbar/navbar.tsx"
 import Message from "../../components/message/message.tsx"
 import Loader from "../../components/loader/loader.tsx"
 import ProfilePicture from "../../components/profilePicture/profilePicture.tsx"
-import { setLogin } from "../../state/index.ts"
+import { setLogout } from "../../state/index.ts"
 
 import { status } from "../../interfaces/user.ts"
 import { ProfileState } from "../../interfaces/user.ts"
@@ -47,7 +47,7 @@ const Profile = () => {
 				setIsLoading(false)
 			})
 			.catch((err) => {
-				console.log("error!", err.message)
+				console.log("Error user request: ", err.message)
 			})
 	}, [userId])
 
@@ -56,10 +56,7 @@ const Profile = () => {
 			.delete("/user/deleteUser")
 			.then(() => {
 				dispatcher(
-					setLogin({
-						user: null,
-						token: null,
-					})
+					setLogout()
 				)
 			})
 			.catch(() => {
@@ -74,11 +71,11 @@ const Profile = () => {
 
 	return (
 		<>
-			<Navbar />
+			{userProfile ? (
+				<>
+					<Navbar />
 
-			<div className="profile">
-				{userProfile ? (
-					<>
+					<div className="profile">
 						<div className="username_container">
 							<h1>Profile</h1>
 						</div>
@@ -165,13 +162,13 @@ const Profile = () => {
 						>
 							{messageState.children}
 						</Message>
-					</>
-				) : (
-					<>
-						<Loader isActive={isLoading} />
-					</>
-				)}
-			</div>
+					</div>
+				</>
+			) : (
+				<>
+					<Loader isActive={isLoading} />
+				</>
+			)}
 		</>
 	)
 }

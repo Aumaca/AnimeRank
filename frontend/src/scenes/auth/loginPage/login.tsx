@@ -93,7 +93,6 @@ const Login = () => {
 			.then((response) => {
 				dispatch(
 					setLogin({
-						user: response.data.userObject,
 						token: response.data.token,
 					})
 				)
@@ -145,7 +144,7 @@ const Login = () => {
 							<label className="error">{formError.email}</label>
 						</div>
 
-						<div className="field">
+						<div className="field">	
 							<label>Password</label>
 							<input
 								type="password"

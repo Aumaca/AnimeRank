@@ -20,8 +20,8 @@ export const register = async (req, res) => {
 		})
 
 		try {
-			const savedUser = await newUser.save()
-			res.status(201).json(savedUser)
+			await newUser.save()
+			res.status(201).json({ msg: "user saved" })
 		} catch (err) {
 			res.status(400).json({
 				field: err.errors[Object.keys(err.errors)[0]].properties.path,
@@ -41,12 +41,11 @@ export const login = async (req, res) => {
 		const user = await User.findOne({ email: email })
 		if (!user) {
 			res.status(400).json({ field: "email", message: "Email invalid" })
-			return
 		}
 
 		const isMatch = await bcrypt.compare(password, user.password)
 		if (!isMatch || !user)
-			return res.status(400).json({
+			res.status(400).json({
 				field: "email",
 				field2: "password",
 				message: "Invalid credentials",
@@ -54,10 +53,7 @@ export const login = async (req, res) => {
 
 		const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET)
 
-		const userObject = user.toObject()
-		delete userObject.password
-
-		res.status(200).json({ token, userObject })
+		res.status(200).json({ token })
 	} catch (err) {
 		res.status(500).json({ error: err.message })
 	}

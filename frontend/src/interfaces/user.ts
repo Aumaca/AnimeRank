@@ -1,12 +1,10 @@
 export interface AuthState {
-	user: UserState | null
 	token: string | null
 }
 
 export interface UserState {
 	username: string
 	email: string
-	password: string
 	country: string
 	picture: string | null
 	createdAt: string

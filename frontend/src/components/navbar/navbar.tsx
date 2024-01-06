@@ -1,6 +1,5 @@
 import { useState } from "react"
-import { useSelector } from "react-redux"
-import { AuthState } from "../../interfaces/user.ts"
+import { UserState } from "../../interfaces/user.ts"
 import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUser, faBars } from "@fortawesome/free-solid-svg-icons"
@@ -11,10 +10,9 @@ import Logo from "../../../src/imgs/Logo.png"
 
 import "./navbar.css"
 
-const Navbar = () => {
+const Navbar = ({ user }: { user?: UserState }) => {
 	const [sidemenuActive, setSidemenuActive] = useState(false)
 	const [userDropdownActive, setUserDropdownActive] = useState(false)
-	const user = useSelector((user: AuthState) => user.user)
 
 	return (
 		<header>
@@ -44,7 +42,10 @@ const Navbar = () => {
 								size="2x"
 								onClick={() => setUserDropdownActive(!userDropdownActive)}
 							/>
-							<UserDropdown isActive={userDropdownActive} />
+							<UserDropdown
+								isActive={userDropdownActive}
+								user={user}
+							/>
 						</div>
 					</div>
 					<Sidemenu
