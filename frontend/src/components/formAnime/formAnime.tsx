@@ -24,6 +24,7 @@ const FormAnime: FC<FormAnimeProps> = ({ isOpen, anime, closeForm }) => {
 		episodes: 0,
 		score: 10,
 		notes: "",
+		isFavorite: "No",
 	}
 
 	const initialFormAnimeDataError: FormAnimeDataError = {
@@ -234,6 +235,29 @@ const FormAnime: FC<FormAnimeProps> = ({ isOpen, anime, closeForm }) => {
 										maxLength={100}
 									/>
 									<label className="error">{formAnimeDataError.notes}</label>
+								</div>
+
+								{/* FAVORITE FIELD */}
+								<div className="field">
+									<label>Is favorite?</label>
+									<select
+										name="isFavorite"
+										onChange={handleChange}
+										value={formAnimeData.isFavorite}
+									>
+										<option
+											key={0}
+											value={"No"}
+										>
+											{"No"}
+										</option>
+										<option
+											key={1}
+											value={"Yes"}
+										>
+											{"Yes"}
+										</option>
+									</select>
 								</div>
 
 								<button

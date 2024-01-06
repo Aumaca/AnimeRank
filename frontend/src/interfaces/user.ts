@@ -1,5 +1,6 @@
 export interface AuthState {
 	token: string | null
+	username: string | null
 }
 
 export interface UserState {
@@ -18,6 +19,7 @@ export interface ProfileState {
 	picture: string | null
 	createdAt: string
 	animes: UserAnime[]
+	favoriteAnimes: UserAnime[]
 	countEpisodes: number
 	statusData: StatusData
 }

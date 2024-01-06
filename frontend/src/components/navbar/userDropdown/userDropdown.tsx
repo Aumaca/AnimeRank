@@ -33,7 +33,7 @@ const UserDropdown = ({ isActive, user }: userDropdownProps) => {
 				</div>
 
 				<Link
-					to={`/profile/${user._id}`}
+					to={`/profile/${user.username}`}
 					className="item"
 				>
 					<FontAwesomeIcon icon={faUser} />

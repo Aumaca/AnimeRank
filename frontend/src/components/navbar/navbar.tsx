@@ -50,7 +50,7 @@ const Navbar = ({ user }: { user?: UserState }) => {
 					</div>
 					<Sidemenu
 						isActive={sidemenuActive}
-						id={user._id}
+						username={user.username}
 					/>
 				</nav>
 			) : (

@@ -1,6 +1,14 @@
-.profile .username_container {
+.profile .profile_container {
 	padding: 1rem;
 	background-color: var(--body-secondary);
+	text-align: center;
+}
+
+.profile .user_container {
+	display: flex;
+	justify-content: center;
+	background-color: var(--body-terciary);
+	width: 100%;
 }
 
 .profile .user {
@@ -8,7 +16,8 @@
 	align-items: start;
 	justify-content: start;
 	padding: 2rem;
-	background-color: var(--body-terciary);
+	max-width: 450px;
+	width: 450px;
 }
 
 .profile .user .picture {
@@ -76,8 +85,9 @@
 	background-color: #89CFF0;
 }
 
-.profile .anime_stats > h1 {
+.profile .title {
 	padding: 3rem 0 1rem 1rem;
+	margin-bottom: 2rem;
 	border-bottom: 2px solid white;
 }
 
@@ -140,4 +150,42 @@
 .profile .delete button:hover {
 	background-color: black;
 	cursor: pointer;
+}
+
+.profile .container {
+	max-width: 450px;
+	margin: 0 auto;
+}
+
+.profile .swiper-slide {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.profile .container .slide {
+	display: flex;
+	flex-direction: column;
+	width: 150px;
+	height: 260px;
+}
+
+.profile .container .slide img {
+	object-fit: cover;
+	width: 150px;
+	border-radius: 8px 8px 0px 0px;
+	position: relative;
+}
+
+.profile .container .slide .content {
+	width: 150px;
+	border-radius: 0px 0px 8px 8px;
+	padding: 1rem 0.5rem;
+	background-color: white;
+	color: black;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: 1rem;
 }

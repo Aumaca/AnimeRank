@@ -51,13 +51,13 @@ const formAnimeData = {
 
 let token = ""
 
-let userId = ""
+let username = ""
 
 describe("User Register", () => {
 	it("Register user should return 201", async () => {
 		const res = await request(app).post("/auth/register").send(userRegister)
 		if (res.statusCode === 201) {
-			userId = res.body._id
+			username = res.body.username
 		}
 		expect(res.statusCode).equal(201)
 	})
@@ -73,7 +73,7 @@ describe("User Login", () => {
 	it("Login should return token and user data", async () => {
 		const res = await request(app).post("/auth/login").send(userLogin)
 		expect(res.body).have.property("token")
-		expect(res.body).have.property("userObject")
+		expect(res.body).have.property("username")
 	})
 })
 

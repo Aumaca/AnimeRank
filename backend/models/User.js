@@ -4,8 +4,16 @@ const UserSchema = new mongoose.Schema({
 	username: {
 		type: String,
 		required: [true, "Missing username"],
+		unique: [true],
 		minlength: [3, "Username must have more than 3 characters"],
 		maxlength: [20, "Username must have less than 20 characters"],
+		validate: {
+			validator: async function (v) {
+				const usernameIsUsed = await mongoose.model("User").findOne({ username: v })
+				return !usernameIsUsed
+			},
+			message: "This username is already in use.",
+		},
 	},
 	email: {
 		type: String,
@@ -19,8 +27,8 @@ const UserSchema = new mongoose.Schema({
 			},
 			{
 				validator: async function (v) {
-					const userExists = await mongoose.model("User").findOne({ email: v })
-					return !userExists
+					const emailIsUsed = await mongoose.model("User").findOne({ email: v })
+					return !emailIsUsed
 				},
 				message: "This email is already in use.",
 			},
@@ -44,6 +52,7 @@ const UserSchema = new mongoose.Schema({
 			episodes: Number,
 			score: Number,
 			notes: String,
+			isFavorite: Boolean,
 		},
 	],
 	country: {
@@ -93,6 +102,16 @@ UserSchema.methods.countEpisodes = function (cb) {
 	})
 
 	return sum
+}
+
+UserSchema.methods.getFavoriteAnimes = function (cb) {
+	let favorites = []
+	this.animes.forEach((anime) => {
+		if (anime.isFavorite) {
+			favorites.push(anime)
+		}
+	})
+	return favorites
 }
 
 const User = mongoose.model("User", UserSchema)

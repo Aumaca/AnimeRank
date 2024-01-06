@@ -1,8 +1,11 @@
+import axios from "axios"
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import type { Dispatch } from "redux"
 
+import { Swiper, SwiperSlide } from "swiper/react"
+import { Navigation } from "swiper/modules"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTrash } from "@fortawesome/free-solid-svg-icons"
 
@@ -13,18 +16,23 @@ import Loader from "../../components/loader/loader.tsx"
 import ProfilePicture from "../../components/profilePicture/profilePicture.tsx"
 import { setLogout } from "../../state/index.ts"
 
-import { status } from "../../interfaces/user.ts"
-import { ProfileState } from "../../interfaces/user.ts"
-import { ProfileResponse } from "../../interfaces/responses.ts"
+import { AnimeType } from "../../interfaces/common.ts"
+import { ProfileState, status } from "../../interfaces/user.ts"
 import { MessageProps } from "../../interfaces/components/message.ts"
+import { ProfileResponse, AnimeResponse } from "../../interfaces/responses.ts"
 
 import "./profile.css"
+import "swiper/swiper-bundle.css"
+import "swiper/css"
+import "swiper/css/navigation"
+import "swiper/css/effect-cards"
 
 const Profile = () => {
 	const dispatcher: Dispatch = useDispatch()
-	const { userId } = useParams()
+	const { username } = useParams()
 
 	const [userProfile, setUserProfile] = useState<ProfileState>()
+	const [favoriteAnimes, setFavoriteAnimes] = useState<AnimeType[]>([])
 
 	const [isLoading, setIsLoading] = useState(false)
 
@@ -41,23 +49,81 @@ const Profile = () => {
 
 	useEffect(() => {
 		api
-			.get(`/social/${userId}`)
+			.get(`/user/${username}`)
 			.then((res: ProfileResponse) => {
 				setUserProfile(res.data)
-				setIsLoading(false)
 			})
 			.catch((err) => {
 				console.log("Error user request: ", err.message)
 			})
-	}, [userId])
+	}, [username])
+
+	useEffect(() => {
+		// Favorite Animes
+		const fetchAnimeData = async () => {
+			try {
+				const graphqlQuery = `
+					query ($id: Int) {
+						Media(id: $id, type: ANIME) {
+							id
+							title {
+								english
+							}
+							startDate {
+								day
+								month
+								year
+							}
+							endDate {
+								day
+								month
+								year
+							}
+							status
+							episodes
+							duration
+							genres
+							popularity
+							averageScore
+							coverImage {
+								large
+							}
+						}
+					}
+				`
+
+				if (userProfile) {
+					const animeRequests = userProfile.favoriteAnimes.map((anime) => {
+						const variables = { id: anime.id }
+						return axios.post<AnimeResponse>("https://graphql.anilist.co", {
+							query: graphqlQuery,
+							variables: variables,
+						})
+					})
+
+					const responses = await Promise.all(animeRequests)
+					const newState: AnimeType[] = responses.map(
+						(response) => response.data.data.Media
+					)
+					setFavoriteAnimes(newState)
+				}
+			} catch (error) {
+				console.error("Animes request error:", error)
+			} finally {
+				setIsLoading(false)
+			}
+		}
+
+		fetchAnimeData()
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [userProfile])
 
 	const deleteUser = (): void => {
 		api
 			.delete("/user/deleteUser")
 			.then(() => {
-				dispatcher(
-					setLogout()
-				)
+				dispatcher(setLogout())
 			})
 			.catch(() => {
 				setMessageState({
@@ -76,28 +142,30 @@ const Profile = () => {
 					<Navbar />
 
 					<div className="profile">
-						<div className="username_container">
+						<div className="profile_container">
 							<h1>Profile</h1>
 						</div>
-						<div className="user">
-							<div className="picture">
-								<ProfilePicture
-									image={userProfile.picture}
-									size={100}
-									classname="rounded"
-								/>
-							</div>
-							<div className="username">
-								<h1>{userProfile.username}</h1>
-								<Link to="/">
-									<button>Anime List</button>
-								</Link>
+						<div className="user_container">
+							<div className="user">
+								<div className="picture">
+									<ProfilePicture
+										image={userProfile.picture}
+										size={100}
+										classname="rounded"
+									/>
+								</div>
+								<div className="username">
+									<h1>{userProfile.username}</h1>
+									<Link to="/">
+										<button>Anime List</button>
+									</Link>
+								</div>
 							</div>
 						</div>
 
 						<div className="anime_stats_container">
 							<div className="anime_stats">
-								<h1>Anime Stats</h1>
+								<h1 className="title">Anime Stats</h1>
 
 								<div className="anime_stats_bar">
 									{Object.keys(userProfile.statusData).map((status) => (
@@ -121,11 +189,9 @@ const Profile = () => {
 											{Object.keys(userProfile.statusData).map(
 												(statusKey, i) => (
 													<li key={statusKey}>
-														<Link to={`/${userId}/list/${i + 1}`}>
-															<div
-																className={`dot-color ${statusKey}`}
-															/>
-															{status[i]}	
+														<Link to={`/${username}/list/${i + 1}`}>
+															<div className={`dot-color ${statusKey}`} />
+															{status[i]}
 														</Link>
 														<span>{userProfile.statusData[statusKey]}</span>
 													</li>
@@ -148,6 +214,40 @@ const Profile = () => {
 								</div>
 							</div>
 						</div>
+
+						{favoriteAnimes.length > 0 ? (
+							<div className="favorites">
+								<div className="container">
+									<h1 className="title">Favorites</h1>
+									<Swiper
+										modules={[Navigation]}
+										slidesPerView={2}
+										navigation
+										pagination={{ clickable: true }}
+										className="swiper-slider"
+									>
+										{favoriteAnimes.map((anime) => (
+											<SwiperSlide
+												key={`swiper-${anime.id}`}
+												className="slide"
+											>
+												<img
+													src={anime.coverImage.large}
+													alt=""
+												/>
+												<div className="content">
+													<Link to={`/anime/${anime.id}`}>
+														<h3>{anime.title.english}</h3>
+													</Link>
+												</div>
+											</SwiperSlide>
+										))}
+									</Swiper>
+								</div>
+							</div>
+						) : (
+							<></>
+						)}
 
 						<div className="delete">
 							<button onClick={() => deleteUser()}>

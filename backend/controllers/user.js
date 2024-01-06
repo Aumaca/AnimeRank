@@ -1,5 +1,40 @@
 import User from "../models/User.js"
 
+const status = ["Watching", "Completed", "On-Hold", "Dropped", "Plan to Watch"]
+
+export const getUser = async (req, res) => {
+	try {
+		const username = req.params.username
+		const statusParam = req.params.status
+		User.findOne({ username: username })
+			.select("username picture country createdAt animes")
+			.then((userData) => {
+				if (statusParam) {
+					userData.animes = userData.animes.filter(
+						(anime) => anime.status === status[parseInt(statusParam) - 1]
+					)
+				}
+
+				const statusData = userData.filterAnimesStatus()
+				const countEpisodes = userData.countEpisodes()
+				const favoriteAnimes = userData.getFavoriteAnimes()
+
+				const userDataObj = userData.toObject()
+				userDataObj.statusData = statusData
+				userDataObj.countEpisodes = countEpisodes
+				userDataObj.favoriteAnimes = favoriteAnimes
+
+				res.status(200).json(userDataObj)
+			})
+			.catch((err) => {
+				console.log(err)
+				res.status(400).json({ error: err })
+			})
+	} catch (err) {
+		res.status(400).json({ error: err })
+	}
+}
+
 export const addAnimeUserList = async (req, res) => {
 	const status = [
 		"Watching",
@@ -70,9 +105,16 @@ export const addAnimeUserList = async (req, res) => {
 			})
 		}
 
+		// isFavorite
+		if (formAnimeData.isFavorite === "No") {
+			formAnimeData.isFavorite = false
+		} else {
+			formAnimeData.isFavorite = true
+		}
+
 		User.findOneAndUpdate(
 			{
-				_id: req.userId,
+				username: req.username,
 			},
 			{
 				$push: {
@@ -93,7 +135,7 @@ export const addAnimeUserList = async (req, res) => {
 }
 
 export const deleteUser = async (req, res) => {
-	User.findByIdAndDelete({ _id: req.userId })
+	User.findOneAndDelete({ username: req.username })
 		.then(() => {
 			res.status(200).json({ message: "User deleted successfully" })
 		})

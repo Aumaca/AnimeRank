@@ -11,7 +11,7 @@ import Anime from "./scenes/animePage/anime.tsx"
 import "./index.css"
 
 function App() {
-	const isAuth = Boolean(useSelector((state: AuthState) => state.token))
+	const token = useSelector((state: AuthState) => state.token)
 
 	return (
 		<div className="app">
@@ -19,23 +19,23 @@ function App() {
 				<Routes>
 					<Route
 						path="/"
-						element={isAuth ? <Homepage /> : <Navigate to="/login" />}
+						element={token ? <Homepage /> : <Navigate to="/login" />}
 					/>
 					<Route
 						path="/login"
-						element={isAuth ? <Navigate to="/" /> : <Login />}
+						element={token ? <Navigate to="/" /> : <Login />}
 					/>
 					<Route
 						path="/register"
-						element={isAuth ? <Navigate to="/" /> : <Register />}
+						element={token ? <Navigate to="/" /> : <Register />}
 					/>
 					<Route
-						path="/profile/:userId"
-						element={isAuth ? <ProfilePage /> : <Navigate to="/login" />}
+						path="/profile/:username"
+						element={token ? <ProfilePage /> : <Navigate to="/login" />}
 					/>
 					<Route
 						path="/anime/:animeId"
-						element={isAuth ? <Anime /> : <Navigate to="/login" />}
+						element={token ? <Anime /> : <Navigate to="/login" />}
 					/>
 				</Routes>
 			</BrowserRouter>

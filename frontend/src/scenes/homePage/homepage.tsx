@@ -28,8 +28,8 @@ import "swiper/css/scrollbar"
 import "swiper/css/effect-coverflow"
 
 const Homepage = () => {
+	const username = useSelector((state: AuthState) => state.username)
 	const [user, setUser] = useState<UserState>()
-	const token = useSelector((state: AuthState) => state.token)
 
 	const [popularAnimes, setPopularAnimes] = useState<AnimeType[] | null>(null)
 	const [mostScoredAnimes, setMostScoredAnimes] = useState<AnimeType[] | null>(
@@ -109,7 +109,7 @@ const Homepage = () => {
 	useEffect(() => {
 		// User
 		api
-			.get<UserState>(`/social/${token}`)
+			.get<UserState>(`/user/${username}`)
 			.then((response) => {
 				setUser(response.data)
 			})
@@ -136,7 +136,7 @@ const Homepage = () => {
 			.finally(() => {
 				setIsLoading(false)
 			})
-	}, [graphqlQuery, token])
+	}, [graphqlQuery, username])
 
 	const handleClickAdd = (anime: AnimeType): void => {
 		setAnimeSelected(anime)
@@ -218,7 +218,6 @@ const Homepage = () => {
 								spaceBetween={20}
 								slidesPerView={"auto"}
 								navigation
-								pagination={{ clickable: true }}
 							>
 								{popularAnimes.map((anime) => (
 									<SwiperSlide

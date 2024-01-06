@@ -9,6 +9,7 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons"
 import Navbar from "../../../components/navbar/navbar.tsx"
 import Loader from "../../../components/loader/loader.tsx"
 import Message from "../../../components/message/message.tsx"
+import { LoginResponse } from "../../../interfaces/responses.ts"
 import { setLogin } from "../../../state/index.ts"
 import api from "../../../api/api.ts"
 
@@ -89,11 +90,12 @@ const Login = () => {
 
 		setIsLoaderOpen(true)
 		api
-			.post("/auth/login", { ...formData })
+			.post<LoginResponse>("/auth/login", { ...formData })
 			.then((response) => {
 				dispatch(
 					setLogin({
 						token: response.data.token,
+						username: response.data.username,
 					})
 				)
 				return navigate("/")

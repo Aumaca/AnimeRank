@@ -5,7 +5,7 @@ import { useSelector } from "react-redux"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faHeart } from "@fortawesome/free-solid-svg-icons"
 
-
+import FormAnime from "../../components/formAnime/formAnime.tsx"
 import Navbar from "../../components/navbar/navbar.tsx"
 import Loader from "../../components/loader/loader"
 
@@ -16,10 +16,18 @@ import { AnimeResponse } from "../../interfaces/responses.ts"
 import "./anime.css"
 
 const Anime = () => {
-	const user = useSelector((state: AuthState) => state.user)
+	const username = useSelector((state: AuthState) => state.username)
 	const [anime, setAnime] = useState<AnimeType | null>()
+
+	const [isFormAnimeOpen, setIsFormAnimeOpen] = useState(false)
+
 	const [isLoading, setIsLoading] = useState(true)
+
 	const { animeId } = useParams()
+
+	const closeForm = (): void => {
+		setIsFormAnimeOpen(false)
+	}
 
 	const graphqlQuery = `
 		query ($id: Int) {
@@ -78,7 +86,7 @@ const Anime = () => {
 			<Navbar />
 
 			<div className="anime">
-				{user && anime ? (
+				{username && anime ? (
 					<>
 						<div className="anime__container_image_buttons_info">
 							<div className="anime__container__image_buttons">
@@ -97,7 +105,12 @@ const Anime = () => {
 											icon={faHeart}
 										/>
 									</button>
-									<button className="add">Add to list</button>
+									<button
+										className="add"
+										onClick={() => setIsFormAnimeOpen(true)}
+									>
+										Add to list
+									</button>
 								</div>
 							</div>
 							<div className="info">
@@ -149,10 +162,16 @@ const Anime = () => {
 									</div>
 								</div>
 							</div>
+							<FormAnime
+								anime={anime}
+								isOpen={isFormAnimeOpen}
+								closeForm={closeForm}
+							/>
 						</div>
 					</>
 				) : (
 					<>
+						<Navbar />
 						<Loader isActive={isLoading} />
 					</>
 				)}

@@ -1,7 +1,7 @@
 import "./sidemenu.css"
 import { Link } from "react-router-dom"
 
-const Sidemenu = ({ isActive, id }: { isActive: boolean, id: string }) => {
+const Sidemenu = ({ isActive, username }: { isActive: boolean, username: string }) => {
 	return (
 		<>
 			<div className={`sidemenu ${isActive ? "active" : ""}`}>
@@ -24,7 +24,7 @@ const Sidemenu = ({ isActive, id }: { isActive: boolean, id: string }) => {
 					Most Popular Animes
 				</Link>
 				<Link
-					to={`/profile/${id}`}
+					to={`/profile/${username}`}
 					className="item"
 				>
 					My Profile

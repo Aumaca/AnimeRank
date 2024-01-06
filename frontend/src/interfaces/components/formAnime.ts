@@ -12,6 +12,7 @@ export interface FormAnimeData {
 	episodes: number
 	score: number
 	notes: string
+	isFavorite: string
 }
 
 export interface FormAnimeDataError {
