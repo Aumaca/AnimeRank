@@ -41,6 +41,6 @@ mongoose
 			process.env.NODE_ENV !== "test" ? console.log(`Server port: ${PORT}`) : ""
 		})
 	})
-	.catch((err) => console.log(err))
+	.catch((err) => console.log("Error while connecting to mongoDB server."))
 
 export default app
