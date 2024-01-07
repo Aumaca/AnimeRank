@@ -1,8 +1,11 @@
 import { AnimeType } from "../common"
+import { UserState } from "../user"
 
 export interface FormAnimeProps {
 	isOpen: boolean
 	anime: AnimeType | null
+	user: UserState
+	toSetUser: (user: UserState) => void
 	closeForm: () => void
 }
 

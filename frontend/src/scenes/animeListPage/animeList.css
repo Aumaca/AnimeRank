@@ -1,0 +1,56 @@
+.animelist .animelist_container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 1rem;
+	background-color: var(--body-secondary);
+	text-align: center;
+}
+
+.animelist .animelist_container .icons {
+	position: absolute;
+	right: 2rem;
+	display: flex;
+	gap: 1rem;
+}
+
+.animelist .animelist_container .icons svg.active {
+	color: #0096FF;
+}
+
+.animelist .user_container {
+	display: flex;
+	background-color: var(--body-terciary);
+	width: 100%;
+}
+
+.animelist .user {
+	display: flex;
+	align-items: start;
+	justify-content: start;
+	padding: 2rem;
+	max-width: 450px;
+	width: 450px;
+}
+
+.animelist .user .picture {
+	color: black;
+	display: flex;
+	gap: 1rem;
+}
+
+.animelist .user .username {
+	height: 100%;
+	width: 100%;
+	padding: 1rem 0 0 2rem;
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+}
+
+.animelist .user .username button {
+	padding: 1rem;
+	border-radius: 10px;
+	border: none;
+	cursor: pointer;
+}

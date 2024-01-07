@@ -39,6 +39,7 @@
 	padding: 1rem;
 	border-radius: 10px;
 	border: none;
+	cursor: pointer;
 }
 
 .profile .anime_stats_container {

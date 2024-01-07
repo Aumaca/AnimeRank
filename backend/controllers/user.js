@@ -35,6 +35,17 @@ export const getUser = async (req, res) => {
 	}
 }
 
+export const deleteUser = async (req, res) => {
+	User.findOneAndDelete({ username: req.username })
+		.then(() => {
+			res.status(200).json({ message: "User deleted successfully" })
+		})
+		.catch((err) => {
+			res.status(400).json({ err: err.message })
+		})
+}
+
+
 export const addAnimeUserList = async (req, res) => {
 	const status = [
 		"Watching",
@@ -63,7 +74,7 @@ export const addAnimeUserList = async (req, res) => {
 
 		// episodes
 		if (formAnimeData.episodes > anime.episodes || formAnimeData.episodes < 0) {
-			res.status(400).json({
+			return res.status(400).json({
 				field: "episodes",
 				message: "Episodes invalid",
 			})
@@ -74,7 +85,7 @@ export const addAnimeUserList = async (req, res) => {
 				formAnimeData.status !== status[1]) ||
 			(formAnimeData.episodes !== 0 && formAnimeData.status === status[4])
 		) {
-			res.status(400).json({
+			return res.status(400).json({
 				field: "episodes",
 				message: "Episodes watched and status don't match",
 			})
@@ -83,7 +94,7 @@ export const addAnimeUserList = async (req, res) => {
 		// status
 		if (!status.includes(formAnimeData.status)) {
 			// status
-			res.status(400).json({
+			return res.status(400).json({
 				field: "status",
 				message: "Invalid status",
 			})
@@ -91,7 +102,7 @@ export const addAnimeUserList = async (req, res) => {
 
 		// score
 		if (!(formAnimeData.score >= 0 && formAnimeData.score <= 10)) {
-			res.status(400).json({
+			return res.status(400).json({
 				field: "status",
 				message: "Invalid score",
 			})
@@ -99,7 +110,7 @@ export const addAnimeUserList = async (req, res) => {
 
 		// notes
 		if (formAnimeData.notes.length > 100) {
-			res.status(400).json({
+			return res.status(400).json({
 				field: "notes",
 				message: "Notes has more than 100 chars",
 			})
@@ -112,34 +123,37 @@ export const addAnimeUserList = async (req, res) => {
 			formAnimeData.isFavorite = true
 		}
 
+		const user = await User.findOne({ username: req.username })
+		const indexIfExists = user.animes.findIndex(
+			(anime) => anime.id === formAnimeData.id.toString()
+		)
+		const newAnimes = user.animes
+		if (indexIfExists !== -1) {
+			newAnimes[indexIfExists] = formAnimeData
+		} else {
+			newAnimes.push(formAnimeData)
+		}
+
 		User.findOneAndUpdate(
 			{
 				username: req.username,
 			},
 			{
-				$push: {
-					animes: formAnimeData,
+				$set: {
+					animes: newAnimes,
 				},
 			},
-			{ new: true, runValidators: true }
+			{ new: true }
 		)
 			.then((updatedUser) => {
 				res.status(200).json(updatedUser.animes)
 			})
 			.catch((err) => {
-				res.status(404).json({ error: err.message })
+				console.log(err)
+				res.status(400).json({ error: err.message })
 			})
 	} catch (err) {
-		res.status(404).json({ error: err.message })
+		console.log(err)
+		res.status(400).json({ error: err.message })
 	}
-}
-
-export const deleteUser = async (req, res) => {
-	User.findOneAndDelete({ username: req.username })
-		.then(() => {
-			res.status(200).json({ message: "User deleted successfully" })
-		})
-		.catch((err) => {
-			res.status(400).json({ err: err.message })
-		})
 }

@@ -6,6 +6,7 @@ import Register from "./scenes/auth/registerPage/register.tsx"
 import Login from "./scenes/auth/loginPage/login.tsx"
 import Homepage from "./scenes/homePage/homepage.tsx"
 import ProfilePage from "./scenes/profilePage/profile.tsx"
+import AnimeList from "./scenes/animeListPage/animeList.tsx"
 import Anime from "./scenes/animePage/anime.tsx"
 
 import "./index.css"
@@ -32,6 +33,10 @@ function App() {
 					<Route
 						path="/profile/:username"
 						element={token ? <ProfilePage /> : <Navigate to="/login" />}
+					/>
+					<Route
+						path="/list/:username"
+						element={token ? <AnimeList /> : <Navigate to="/login" />}
 					/>
 					<Route
 						path="/anime/:animeId"

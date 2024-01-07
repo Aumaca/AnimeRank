@@ -24,10 +24,6 @@ nav .container {
 	max-height: 95px;
 }
 
-nav .container div {
-	cursor: pointer;
-}
-
 .logo img {
 	width: 150px;
 	height: 95px;

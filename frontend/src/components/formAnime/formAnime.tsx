@@ -17,7 +17,13 @@ import { MessageProps } from "../../interfaces/components/message.ts"
 
 import "./formAnime.css"
 
-const FormAnime: FC<FormAnimeProps> = ({ isOpen, anime, closeForm }) => {
+const FormAnime: FC<FormAnimeProps> = ({
+	isOpen,
+	anime,
+	user,
+	toSetUser,
+	closeForm,
+}) => {
 	const initialFormData: FormAnimeData = {
 		id: anime ? anime.id : "",
 		status: "",
@@ -92,13 +98,17 @@ const FormAnime: FC<FormAnimeProps> = ({ isOpen, anime, closeForm }) => {
 		setIsLoading(true)
 		api
 			.post(`/user/addAnime`, { formAnimeData: formAnimeData, anime: anime })
-			.then(() => {
+			.then((res) => {
+				setFormAnimeDataError(initialFormAnimeDataError)
 				setMessageState({
 					isOpen: true,
 					backgroundColor: "green",
 					title: "Anime added to your list!",
 					children: "Anime added to your list successfully",
 				})
+				const newUser = user
+				newUser.animes = res.data
+				toSetUser(newUser)
 			})
 			.catch((error) => {
 				if (error.response?.status === 400) {

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { UserState } from "../../interfaces/user.ts"
+import { ProfileState } from "../../interfaces/user.ts"
 import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUser, faBars } from "@fortawesome/free-solid-svg-icons"
@@ -10,7 +10,7 @@ import Logo from "../../../src/imgs/Logo.png"
 
 import "./navbar.css"
 
-const Navbar = ({ user }: { user?: UserState }) => {
+const Navbar = ({ user }: { user?: ProfileState }) => {
 	const [sidemenuActive, setSidemenuActive] = useState(false)
 	const [userDropdownActive, setUserDropdownActive] = useState(false)
 

@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import type { Dispatch } from "redux"
 
 import { Swiper, SwiperSlide } from "swiper/react"
@@ -17,7 +17,7 @@ import ProfilePicture from "../../components/profilePicture/profilePicture.tsx"
 import { setLogout } from "../../state/index.ts"
 
 import { AnimeType } from "../../interfaces/common.ts"
-import { ProfileState, status } from "../../interfaces/user.ts"
+import { AuthState, ProfileState, status } from "../../interfaces/user.ts"
 import { MessageProps } from "../../interfaces/components/message.ts"
 import { ProfileResponse, AnimeResponse } from "../../interfaces/responses.ts"
 
@@ -29,8 +29,10 @@ import "swiper/css/effect-cards"
 
 const Profile = () => {
 	const dispatcher: Dispatch = useDispatch()
+	const usernameLogged = useSelector((state: AuthState) => state.username)
 	const { username } = useParams()
 
+	const [user, setUser] = useState<ProfileState>()
 	const [userProfile, setUserProfile] = useState<ProfileState>()
 	const [favoriteAnimes, setFavoriteAnimes] = useState<AnimeType[]>([])
 
@@ -54,9 +56,18 @@ const Profile = () => {
 				setUserProfile(res.data)
 			})
 			.catch((err) => {
+				console.log("Error user profile request: ", err.message)
+			})
+
+		api
+			.get(`/user/${usernameLogged}`)
+			.then((res: ProfileResponse) => {
+				setUser(res.data)
+			})
+			.catch((err) => {
 				console.log("Error user request: ", err.message)
 			})
-	}, [username])
+	}, [username, usernameLogged])
 
 	useEffect(() => {
 		// Favorite Animes
@@ -137,9 +148,9 @@ const Profile = () => {
 
 	return (
 		<>
-			{userProfile ? (
+			{userProfile && user ? (
 				<>
-					<Navbar />
+					<Navbar user={user} />
 
 					<div className="profile">
 						<div className="profile_container">
@@ -156,7 +167,7 @@ const Profile = () => {
 								</div>
 								<div className="username">
 									<h1>{userProfile.username}</h1>
-									<Link to="/">
+									<Link to={`/list/${userProfile.username}`}>
 										<button>Anime List</button>
 									</Link>
 								</div>
@@ -249,11 +260,16 @@ const Profile = () => {
 							<></>
 						)}
 
-						<div className="delete">
-							<button onClick={() => deleteUser()}>
-								Delete profile <FontAwesomeIcon icon={faTrash} />
-							</button>
-						</div>
+						{user.username === userProfile.username ? (
+							<div className="delete">
+								<button onClick={() => deleteUser()}>
+									Delete profile <FontAwesomeIcon icon={faTrash} />
+								</button>
+							</div>
+						) : (
+							<></>
+						)}
+
 						<Message
 							closeMessage={closeMessage}
 							isOpen={messageState.isOpen}

@@ -1,6 +1,6 @@
-import { UserState } from "../user"
+import { ProfileState } from "../user"
 
 export interface userDropdownProps {
 	isActive: boolean
-	user: UserState
+	user: ProfileState
 }

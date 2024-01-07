@@ -116,9 +116,6 @@ const Homepage = () => {
 			.catch((error) => {
 				console.error("User request error:", error)
 			})
-			.finally(() => {
-				setIsLoading(false)
-			})
 
 		// Animes
 		axios
@@ -141,6 +138,10 @@ const Homepage = () => {
 	const handleClickAdd = (anime: AnimeType): void => {
 		setAnimeSelected(anime)
 		setIsFormAnimeOpen(true)
+	}
+
+	const toSetUser = (user: UserState): void => {
+		setUser(user)
 	}
 
 	const closeForm = (): void => {
@@ -305,6 +306,8 @@ const Homepage = () => {
 						<FormAnime
 							anime={animeSelected}
 							isOpen={isFormAnimeOpen}
+							user={user}
+							toSetUser={toSetUser}
 							closeForm={closeForm}
 						/>
 					</div>

@@ -25,3 +25,9 @@ html {
 	overflow-x: hidden;
 	min-width: 290px;
 }
+
+a,
+svg,
+button {
+	cursor: pointer;
+}

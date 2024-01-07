@@ -33,7 +33,7 @@ app.use("/assets", express.static(path.join(__dirname, "public/assets")))
 app.use("/auth", authRoutes)
 app.use("/user", userRoutes)
 
-const PORT = process.env.PORT || 6001
+const PORT = process.env.PORT || 5173
 mongoose
 	.connect(process.env.MONGO_URL)
 	.then(() => {
