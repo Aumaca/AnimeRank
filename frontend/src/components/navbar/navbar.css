@@ -1,7 +1,12 @@
 header {
-	position: sticky;
+	position: fixed;
+	width: 100%;
 	top: 0;
 	z-index: 1000;
+}
+
+header ~ div {
+	margin-top: 95px;
 }
 
 nav {
