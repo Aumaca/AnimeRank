@@ -47,7 +47,7 @@ const UserSchema = new mongoose.Schema({
 	},
 	animes: [
 		{
-			id: String,
+			id: Number,
 			status: String,
 			episodes: Number,
 			score: Number,

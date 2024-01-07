@@ -35,6 +35,10 @@
 	gap: 2rem;
 }
 
+.profile .user .username a {
+	width: fit-content;
+}
+
 .profile .user .username button {
 	padding: 1rem;
 	border-radius: 10px;

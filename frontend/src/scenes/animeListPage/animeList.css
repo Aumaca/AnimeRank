@@ -1,4 +1,4 @@
-.animelist .animelist_container {
+.animelist .animelist_header {
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -7,15 +7,15 @@
 	text-align: center;
 }
 
-.animelist .animelist_container .icons {
+.animelist .animelist_header .icons {
 	position: absolute;
 	right: 2rem;
 	display: flex;
 	gap: 1rem;
 }
 
-.animelist .animelist_container .icons svg.active {
-	color: #0096FF;
+.animelist .animelist_header .icons svg.active {
+	color: #0096ff;
 }
 
 .animelist .user_container {
@@ -48,9 +48,84 @@
 	gap: 2rem;
 }
 
+.animelist .user .username a {
+	width: fit-content;
+}
+
 .animelist .user .username button {
 	padding: 1rem;
 	border-radius: 10px;
 	border: none;
 	cursor: pointer;
+}
+
+.animelist_filter {
+	margin: 1rem;
+}
+.animelist_filter select {
+	width: 100%;
+	padding: 1rem;
+	border-radius: 5px;
+	border: none;
+	transition: outline 0.1s ease-in-out;
+	outline: 0px solid rgb(34, 179, 247);
+}
+
+.animelist_container {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: 1fr 1fr;
+	width: 100%;
+	gap: 1rem;
+}
+
+.animelist_container .anime_item {
+	height: 250px;
+	position: relative;
+}
+
+.animelist_container .anime_item img {
+	width: 100%;
+	height: 250px;
+	object-fit: cover;
+}
+
+.animelist_container .anime_item .content {
+	position: absolute;
+	z-index: 100;
+	bottom: 0;
+	padding: 1rem;
+	background-color: rgba(0, 0, 0, 0.7);
+	width: 100%;
+}
+
+.animelist_container .anime_item .content h2 {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	line-clamp: 1;
+	-webkit-box-orient: vertical;
+}
+
+.animelist_container .anime_item .content .information {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.animelist_container .anime_item .content .information .score {
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
+}
+
+@media screen and (min-width: 576px) {
+	.animelist_container {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		grid-template-rows: repeat(3, 1fr);
+		width: 100%;
+		gap: 1rem;
+	}
 }

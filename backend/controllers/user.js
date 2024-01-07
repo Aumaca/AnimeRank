@@ -72,6 +72,8 @@ export const addAnimeUserList = async (req, res) => {
 		const formAnimeData = req.body.formAnimeData
 		const anime = req.body.anime
 
+		formAnimeData.id = parseInt(formAnimeData.id)
+
 		// episodes
 		if (formAnimeData.episodes > anime.episodes || formAnimeData.episodes < 0) {
 			return res.status(400).json({
@@ -125,7 +127,7 @@ export const addAnimeUserList = async (req, res) => {
 
 		const user = await User.findOne({ username: req.username })
 		const indexIfExists = user.animes.findIndex(
-			(anime) => anime.id === formAnimeData.id.toString()
+			(anime) => anime.id === formAnimeData.id
 		)
 		const newAnimes = user.animes
 		if (indexIfExists !== -1) {
