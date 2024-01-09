@@ -71,23 +71,23 @@
 }
 
 .profile .anime_stats .watching {
-	background-color: #0047ab;
+	background-color: var(--watching);
 }
 
 .profile .anime_stats .completed {
-	background-color: #228B22;
+	background-color: var(--completed);
 }
 
 .profile .anime_stats .onHold {
-	background-color: #9989F0;
+	background-color: var(--onHold);
 }
 
 .profile .anime_stats .dropped {
-	background-color: #C41E3A;
+	background-color: var(--dropped);
 }
 
 .profile .anime_stats .planToWatch {
-	background-color: #89CFF0;
+	background-color: var(--planToWatch);
 }
 
 .profile .title {

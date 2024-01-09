@@ -16,7 +16,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 
 import { AnimeType } from "../../interfaces/common.ts"
-import { AuthState, ProfileState } from "../../interfaces/user.ts"
+import {
+	AuthState,
+	ProfileState,
+	scoreLabels,
+	scoreOnlyLabels,
+} from "../../interfaces/user.ts"
 import { AnimeResponse, ProfileResponse } from "../../interfaces/responses.ts"
 
 import "./animeList.css"
@@ -208,43 +213,123 @@ const AnimeList = () => {
 							</select>
 						</div>
 
-						<div className="animelist_container">
+						<div
+							className={`animelist_container ${
+								listViewStyle ? "grid" : "list"
+							}`}
+						>
 							{animes.map((anime) => (
-								<div
-									className="anime_item"
-									key={anime.id}
-								>
-									<img
-										src={anime.coverImage.large}
-										alt=""
-									/>
-									<div className="content">
-										<h2>{anime.title.english}</h2>
-										<div className="information">
-											<p>
-												Watched:&nbsp;
-												{
-													userProfile.animes.filter(
-														(userAnime) => userAnime.id === anime.id
-													)[0].episodes
-												}
-											</p>
-											<div className="score">
-												<h3>
-													{
-														userProfile.animes.filter(
-															(userAnime) => userAnime.id === anime.id
-														)[0].score
-													}
-												</h3>
-												<FontAwesomeIcon
-													icon={faStar}
-													size="xl"
+								<>
+									{listViewStyle ? (
+										<Link
+											to={`/anime/${anime.id}`}
+											key={anime.id}
+										>
+											<div className="anime_item">
+												<img
+													src={anime.coverImage.large}
+													alt=""
 												/>
+												<div className="content">
+													<h2>{anime.title.english}</h2>
+													<div className="information">
+														<p>
+															Watched:&nbsp;
+															{
+																userProfile.animes.filter(
+																	(userAnime) => userAnime.id === anime.id
+																)[0].episodes
+															}
+														</p>
+														<div className="score">
+															<h3>
+																{
+																	userProfile.animes.filter(
+																		(userAnime) => userAnime.id === anime.id
+																	)[0].score
+																}
+															</h3>
+															<FontAwesomeIcon
+																icon={faStar}
+																size="xl"
+															/>
+														</div>
+													</div>
+												</div>
 											</div>
-										</div>
-									</div>
-								</div>
+										</Link>
+									) : (
+										<Link
+											to={`/anime/${anime.id}`}
+											key={anime.id + "A"}
+										>
+											<div
+												className="anime_item"
+											>
+												<img
+													src={anime.coverImage.large}
+													alt=""
+													className={`${userProfile.animes
+														.filter((userAnime) => userAnime.id === anime.id)[0]
+														.status.toLowerCase()}`}
+												/>
+												<div className="content">
+													<h2>{anime.title.english}</h2>
+
+													<div className="status">
+														<h3
+															className={`${userProfile.animes
+																.filter(
+																	(userAnime) => userAnime.id === anime.id
+																)[0]
+																.status.toLowerCase()}`}
+														>
+															{
+																userProfile.animes.filter(
+																	(userAnime) => userAnime.id === anime.id
+																)[0].status
+															}
+														</h3>
+													</div>
+
+													<div className="information">
+														<p>
+															Watched:&nbsp;
+															{
+																userProfile.animes.filter(
+																	(userAnime) => userAnime.id === anime.id
+																)[0].episodes
+															}
+														</p>
+
+														<div className="score">
+															<h3>
+																{
+																	userProfile.animes.filter(
+																		(userAnime) => userAnime.id === anime.id
+																	)[0].score
+																}
+															</h3>
+															<FontAwesomeIcon
+																icon={faStar}
+																size="xl"
+															/>
+															<h3>
+																{
+																	scoreOnlyLabels[
+																		userProfile.animes.filter(
+																			(userAnime) => userAnime.id === anime.id
+																		)[0].score - 1
+																	]
+																}
+															</h3>
+														</div>
+													</div>
+												</div>
+											</div>
+										</Link>
+									)}
+								</>
 							))}
 						</div>
 					</div>

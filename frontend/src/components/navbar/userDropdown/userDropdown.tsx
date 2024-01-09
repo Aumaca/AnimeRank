@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux"
 
 import { setLogout } from "../../../state"
 import ProfilePicture from "../../../components/profilePicture/profilePicture.tsx"
-import { userDropdownProps } from "../../../interfaces/components/userDropdown.ts"
+import { userDropdownProps } from "../../../schemas/components/userDropdown.ts"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUser } from "@fortawesome/free-solid-svg-icons/faUser"

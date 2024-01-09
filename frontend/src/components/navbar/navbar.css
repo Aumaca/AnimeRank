@@ -41,11 +41,16 @@ nav .container {
 }
 
 @media screen and (min-width: 992px) {
+	header ~ div {
+		margin-top: 136px;
+	}
+
 	.options_icon {
 		display: none;
 	}
 
 	nav .container {
+		padding: 0 20vw;
 		justify-content: space-between;
 	}
 }

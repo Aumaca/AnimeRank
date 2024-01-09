@@ -54,6 +54,19 @@ export const scoreLabels: Record<number, string> = {
 	10: "10 - Fantastic",
 }
 
+export const scoreOnlyLabels: string[] = [
+	"Horrible",
+	"Bad",
+	"Poor",
+	"Below Average",
+	"Average",
+	"Above Average",
+	"Good",
+	"Very Good",
+	"Excellent",
+	"Fantastic",
+]
+
 export const status: string[] = [
 	"Watching",
 	"Completed",

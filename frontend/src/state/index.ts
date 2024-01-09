@@ -3,7 +3,7 @@ import { AuthState } from "../interfaces/user"
 
 const initialState: AuthState = {
 	token: null,
-	username: null
+	username: null,
 }
 
 export const authSlice = createSlice({

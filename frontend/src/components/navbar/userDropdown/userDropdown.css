@@ -44,4 +44,8 @@
 	.userDropdown {
 		top: 136px;
 	}
+
+	.userDropdown.active {
+		right: 20vw;
+	}
 }

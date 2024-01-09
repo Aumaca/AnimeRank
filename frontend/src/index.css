@@ -16,6 +16,12 @@
 	--body-primary: rgb(40, 40, 43);
 	--body-secondary: rgb(63, 63, 68);
 	--body-terciary: rgb(136, 136, 146);
+	
+	--watching: #0047ab;
+	--completed: #228B22;
+	--onHold: #9989F0;
+	--dropped: #C41E3A;
+	--planToWatch: #89CFF0;
 }
 
 html {
