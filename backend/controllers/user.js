@@ -1,25 +1,21 @@
 import User from "../models/User.js"
+import axios from "axios"
 
 const status = ["Watching", "Completed", "On-Hold", "Dropped", "Plan to Watch"]
 
 export const getUser = async (req, res) => {
 	try {
 		const username = req.params.username
-		const statusParam = req.params.status
+
 		User.findOne({ username: username })
 			.select("username picture country createdAt animes")
 			.then((userData) => {
-				if (statusParam) {
-					userData.animes = userData.animes.filter(
-						(anime) => anime.status === status[parseInt(statusParam) - 1]
-					)
-				}
-
 				const statusData = userData.filterAnimesStatus()
 				const countEpisodes = userData.countEpisodes()
 				const favoriteAnimes = userData.getFavoriteAnimes()
 
 				const userDataObj = userData.toObject()
+
 				userDataObj.statusData = statusData
 				userDataObj.countEpisodes = countEpisodes
 				userDataObj.favoriteAnimes = favoriteAnimes
@@ -35,6 +31,101 @@ export const getUser = async (req, res) => {
 	}
 }
 
+export const getUserAndList = async (req, res) => {
+	try {
+		const username = req.params.username
+		const statusParam = req.query.status
+
+		User.findOne({ username: username })
+			.select("username picture country createdAt animes")
+			.then(async (userData) => {
+				const statusData = userData.filterAnimesStatus()
+				const countEpisodes = userData.countEpisodes()
+				const favoriteAnimes = userData.getFavoriteAnimes()
+
+				const userDataObj = userData.toObject()
+
+				if (parseInt(statusParam)) {
+					userDataObj.animes = userDataObj.animes.filter(
+						(anime) => anime.status === status[parseInt(statusParam) - 1]
+					)
+				}
+
+				userDataObj.statusData = statusData
+				userDataObj.countEpisodes = countEpisodes
+				userDataObj.favoriteAnimes = favoriteAnimes
+
+				// Get animes info
+				let queries = ""
+				userDataObj.animes.forEach((anime, i) => {
+					queries += `
+						a${anime.id}: Media(id: $id${i}, type: ANIME) {
+							id
+							title {
+								english
+							}
+							startDate {
+								day
+								month
+								year
+							}
+							endDate {
+								day
+								month
+								year
+							}
+							status
+							episodes
+							duration
+							genres
+							popularity
+							averageScore
+							coverImage {
+								large
+							}
+						}
+					`
+				})
+
+				const variableDefinitions = userDataObj.animes
+					.map((_, i) => `$id${i}: Int`)
+					.join(", ")
+
+				const variables = {}
+				userDataObj.animes.forEach((anime, i) => {
+					variables["id" + i] = parseInt(anime.id)
+				})
+
+				const graphqlQuery = `
+					query (${variableDefinitions}) {
+						${queries}
+					}
+				`
+
+				const animes = []
+
+				await axios
+					.post("https://graphql.anilist.co", {
+						query: graphqlQuery,
+						variables: variables,
+					})
+					.then((res) => {
+						Object.values(res.data.data).forEach((anime) => {
+							animes.push(anime)
+						})
+					})
+
+				return res.status(200).json({ animes: animes, user: userDataObj })
+			})
+			.catch((err) => {
+				console.log(err)
+				res.status(400).json({ error: err.data })
+			})
+	} catch (err) {
+		res.status(400).json({ error: err })
+	}
+}
+
 export const deleteUser = async (req, res) => {
 	User.findOneAndDelete({ username: req.username })
 		.then(() => {
@@ -44,7 +135,6 @@ export const deleteUser = async (req, res) => {
 			res.status(400).json({ err: err.message })
 		})
 }
-
 
 export const addAnimeUserList = async (req, res) => {
 	const status = [
