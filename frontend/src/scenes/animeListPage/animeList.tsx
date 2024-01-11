@@ -1,6 +1,7 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 import axios from "axios"
 import { ChangeEvent, useEffect, useState } from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link, useParams, useNavigate } from "react-router-dom"
 import { useSelector } from "react-redux"
 
 import api from "../../api/api.ts"
@@ -19,14 +20,18 @@ import { AnimeType } from "../../interfaces/common.ts"
 import {
 	AuthState,
 	ProfileState,
-	scoreLabels,
 	scoreOnlyLabels,
 } from "../../interfaces/user.ts"
-import { AnimeResponse, ProfileResponse } from "../../interfaces/responses.ts"
+import { UserAndListResponse } from "../../interfaces/responses.ts"
 
 import "./animeList.css"
 
 const AnimeList = () => {
+	const navigator = useNavigate()
+
+	const params = new URLSearchParams(location.search)
+	const statusParam = params.get("status")
+
 	const usernameLogged = useSelector((state: AuthState) => state.username)
 	const { username } = useParams()
 
@@ -34,94 +39,48 @@ const AnimeList = () => {
 	const [userProfile, setUserProfile] = useState<ProfileState>()
 
 	const [animes, setAnimes] = useState<AnimeType[]>()
-	const [listViewStyle, setListViewStyle] = useState<boolean>(true)
-	const [filter, setFilter] = useState<string>("")
+	const [listViewStyle, setListViewStyle] = useState<boolean>(false)
+	const [filter, setFilter] = useState<string>(statusParam ? statusParam : "")
 
 	const [isLoading, setIsLoading] = useState(true)
 
 	useEffect(() => {
 		api
-			.get(`/user/${username}`)
-			.then((res: ProfileResponse) => {
-				setUserProfile(res.data)
-			})
-			.catch((err) => {
-				console.log("Error user profile request: ", err.message)
-			})
-
-		api
-			.get(`/user/${usernameLogged}`)
-			.then((res: ProfileResponse) => {
+			.get(`/user/getUser/${usernameLogged}`)
+			.then((res) => {
 				setUser(res.data)
 			})
 			.catch((err) => {
 				console.log("Error user request: ", err.message)
 			})
-	}, [username, usernameLogged])
 
-	useEffect(() => {
-		const fetchAnimeData = async () => {
-			try {
-				const graphqlQuery = `
-					query ($id: Int) {
-						Media(id: $id, type: ANIME) {
-							id
-							title {
-								english
-							}
-							startDate {
-								day
-								month
-								year
-							}
-							endDate {
-								day
-								month
-								year
-							}
-							status
-							episodes
-							duration
-							genres
-							popularity
-							averageScore
-							coverImage {
-								large
-							}
-						}
-					}
-				`
-
-				if (userProfile) {
-					const animeRequests = userProfile.animes.map((anime) => {
-						const variables = { id: anime.id }
-						return axios.post<AnimeResponse>("https://graphql.anilist.co", {
-							query: graphqlQuery,
-							variables: variables,
-						})
-					})
-
-					const responses = await Promise.all(animeRequests)
-					const newState: AnimeType[] = responses.map(
-						(response) => response.data.data.Media
-					)
-
-					setAnimes(newState)
-				}
-			} catch (error) {
-				console.error("Animes request error:", error)
-			} finally {
+		api
+			.get<UserAndListResponse>(
+				`/user/getUserAndList/${username}${
+					statusParam ? `?status=${statusParam}` : ""
+				}`
+			)
+			.then((res) => {
+				console.log(res)
+				setUserProfile(res.data.user)
+				setAnimes(res.data.animes)
+			})
+			.catch((err) => {
+				console.log("Error user profile request: ", err.message)
+			})
+			.finally(() => {
 				setIsLoading(false)
-			}
-		}
-
-		fetchAnimeData()
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [userProfile])
+			})
+	}, [username, usernameLogged, statusParam])
 
 	const handleFilterChange = (event: ChangeEvent<HTMLSelectElement>) => {
 		setFilter(event.target.value)
+		const status = event.target.value
+		return navigator(
+			`/list/${userProfile?.username}?${new URLSearchParams({
+				status,
+			}).toString()}`
+		)
 	}
 
 	return (
@@ -138,13 +97,13 @@ const AnimeList = () => {
 								<FontAwesomeIcon
 									icon={faBorderAll}
 									size="2x"
-									className={`grid ${listViewStyle ? "active" : ""}`}
+									className={`grid ${listViewStyle ? "" : "active"}`}
 									onClick={() => setListViewStyle(!listViewStyle)}
 								/>
 								<FontAwesomeIcon
 									icon={faListUl}
 									size="2x"
-									className={`list ${listViewStyle ? "" : "active"}`}
+									className={`list ${listViewStyle ? "active" : ""}`}
 									onClick={() => setListViewStyle(!listViewStyle)}
 								/>
 							</div>
@@ -176,37 +135,37 @@ const AnimeList = () => {
 							>
 								<option
 									key={0}
-									value={"All Anime"}
+									value={0}
 								>
 									{"All Anime"}
 								</option>
 								<option
 									key={1}
-									value={"Watching"}
+									value={1}
 								>
 									{"Watching"}
 								</option>
 								<option
 									key={2}
-									value={"Completed"}
+									value={2}
 								>
 									{"Completed"}
 								</option>
 								<option
 									key={3}
-									value={"On-Hold"}
+									value={3}
 								>
 									{"On-Hold"}
 								</option>
 								<option
 									key={4}
-									value={"Dropped"}
+									value={4}
 								>
 									{"Dropped"}
 								</option>
 								<option
 									key={5}
-									value={"Plan to Watch"}
+									value={5}
 								>
 									{"Plan to Watch"}
 								</option>
@@ -215,7 +174,7 @@ const AnimeList = () => {
 
 						<div
 							className={`animelist_container ${
-								listViewStyle ? "grid" : "list"
+								listViewStyle ? "list" : "grid"
 							}`}
 						>
 							{animes.map((anime) => (
@@ -223,49 +182,9 @@ const AnimeList = () => {
 									{listViewStyle ? (
 										<Link
 											to={`/anime/${anime.id}`}
-											key={anime.id}
-										>
-											<div className="anime_item">
-												<img
-													src={anime.coverImage.large}
-													alt=""
-												/>
-												<div className="content">
-													<h2>{anime.title.english}</h2>
-													<div className="information">
-														<p>
-															Watched:&nbsp;
-															{
-																userProfile.animes.filter(
-																	(userAnime) => userAnime.id === anime.id
-																)[0].episodes
-															}
-														</p>
-														<div className="score">
-															<h3>
-																{
-																	userProfile.animes.filter(
-																		(userAnime) => userAnime.id === anime.id
-																	)[0].score
-																}
-															</h3>
-															<FontAwesomeIcon
-																icon={faStar}
-																size="xl"
-															/>
-														</div>
-													</div>
-												</div>
-											</div>
-										</Link>
-									) : (
-										<Link
-											to={`/anime/${anime.id}`}
 											key={anime.id + "A"}
 										>
-											<div
-												className="anime_item"
-											>
+											<div className="anime_item">
 												<img
 													src={anime.coverImage.large}
 													alt=""
@@ -289,6 +208,20 @@ const AnimeList = () => {
 																	(userAnime) => userAnime.id === anime.id
 																)[0].status
 															}
+														</h3>
+													</div>
+
+													<div className="notes">
+														<h3>
+															{userProfile.animes.filter(
+																(userAnime) => userAnime.id === anime.id
+															)[0].notes
+																? `"${
+																		userProfile.animes.filter(
+																			(userAnime) => userAnime.id === anime.id
+																		)[0].notes
+																  }"`
+																: ""}
 														</h3>
 													</div>
 
@@ -323,6 +256,47 @@ const AnimeList = () => {
 																	]
 																}
 															</h3>
+														</div>
+													</div>
+												</div>
+											</div>
+										</Link>
+									) : (
+										<Link
+											to={`/anime/${anime.id}`}
+											key={anime.id}
+										>
+											<div className="anime_item">
+												<img
+													src={anime.coverImage.large}
+													alt=""
+													className={`${userProfile.animes
+														.filter((userAnime) => userAnime.id === anime.id)[0]
+														.status.toLowerCase()}`}
+												/>
+												<div className="content">
+													<h2>{anime.title.english}</h2>
+													<div className="information">
+														<p>
+															Watched:&nbsp;
+															{
+																userProfile.animes.filter(
+																	(userAnime) => userAnime.id === anime.id
+																)[0].episodes
+															}
+														</p>
+														<div className="score">
+															<h3>
+																{
+																	userProfile.animes.filter(
+																		(userAnime) => userAnime.id === anime.id
+																	)[0].score
+																}
+															</h3>
+															<FontAwesomeIcon
+																icon={faStar}
+																size="xl"
+															/>
 														</div>
 													</div>
 												</div>

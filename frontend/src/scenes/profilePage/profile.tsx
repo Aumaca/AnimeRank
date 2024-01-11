@@ -51,7 +51,7 @@ const Profile = () => {
 
 	useEffect(() => {
 		api
-			.get(`/user/${username}`)
+			.get(`/user/getUser/${username}`)
 			.then((res: ProfileResponse) => {
 				setUserProfile(res.data)
 			})
@@ -60,7 +60,7 @@ const Profile = () => {
 			})
 
 		api
-			.get(`/user/${usernameLogged}`)
+			.get(`/user/getUser/${usernameLogged}`)
 			.then((res: ProfileResponse) => {
 				setUser(res.data)
 			})

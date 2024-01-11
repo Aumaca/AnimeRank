@@ -60,6 +60,7 @@
 .homepage .container .slide img {
 	object-fit: cover;
 	border-radius: 0px 8px 0px 0px;
+	height: 210px;
 	position: relative;
 }
 

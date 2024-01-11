@@ -15,6 +15,7 @@ export interface HomePageResponse {
 	data: {
 		popularAnimes: PageData
 		mostScoredAnimes: PageData
+		releasingAnimes: PageData
 	}
 }
 
@@ -22,4 +23,9 @@ export interface AnimeResponse {
 	data: {
 		Media: AnimeType
 	}
+}
+
+export interface UserAndListResponse {
+	user: ProfileState
+	animes: AnimeType[]
 }

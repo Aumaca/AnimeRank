@@ -35,6 +35,9 @@ const Homepage = () => {
 	const [mostScoredAnimes, setMostScoredAnimes] = useState<AnimeType[] | null>(
 		null
 	)
+	const [releasingAnimes, setReleasingAnimes] = useState<AnimeType[] | null>(
+		null
+	)
 	const [animeSelected, setAnimeSelected] = useState<AnimeType | null>(null)
 
 	const [isLoading, setIsLoading] = useState(true)
@@ -103,13 +106,44 @@ const Homepage = () => {
 					}
 				}
 			}
+
+			releasingAnimes: Page(page: $page, perPage: $perPage) {
+				pageInfo {
+					currentPage
+				}
+				media(id: $id, search: $search, sort: SCORE_DESC, status: RELEASING, type: ANIME) {
+					id
+					title {
+						english
+					}
+					startDate {
+						day
+						month
+						year
+					}
+					endDate {
+						day
+						month
+						year
+					}
+					status
+					episodes
+					duration
+					genres
+					popularity
+					averageScore
+					coverImage {
+						large
+					}
+				}
+			}
 		}
 	`
 
 	useEffect(() => {
 		// User
 		api
-			.get<UserState>(`/user/${username}`)
+			.get<UserState>(`/user/getUser/${username}`)
 			.then((response) => {
 				setUser(response.data)
 			})
@@ -124,8 +158,10 @@ const Homepage = () => {
 			})
 			.then((response) => {
 				const data = response.data.data
+				console.log(data)
 				setPopularAnimes(data.popularAnimes.media)
 				setMostScoredAnimes(data.mostScoredAnimes.media)
+				setReleasingAnimes(data.releasingAnimes.media)
 			})
 			.catch((error) => {
 				console.error("Animes request error:", error)
@@ -133,7 +169,7 @@ const Homepage = () => {
 			.finally(() => {
 				setIsLoading(false)
 			})
-	}, [graphqlQuery, username])
+	}, [username, graphqlQuery])
 
 	const handleClickAdd = (anime: AnimeType): void => {
 		setAnimeSelected(anime)
@@ -150,7 +186,7 @@ const Homepage = () => {
 
 	return (
 		<>
-			{popularAnimes && user ? (
+			{popularAnimes && mostScoredAnimes && releasingAnimes && user ? (
 				<>
 					<Navbar user={user} />
 
@@ -253,9 +289,8 @@ const Homepage = () => {
 								spaceBetween={20}
 								slidesPerView={"auto"}
 								navigation
-								pagination={{ clickable: true }}
 							>
-								{mostScoredAnimes!.map((anime) => (
+								{mostScoredAnimes.map((anime) => (
 									<SwiperSlide
 										key={anime.id}
 										className="slide"
@@ -264,13 +299,17 @@ const Homepage = () => {
 											src={anime.coverImage.large}
 											alt=""
 										/>
+
 										<FontAwesomeIcon
 											icon={faPlus}
 											size="2x"
+											onClick={() => handleClickAdd(anime)}
 										/>
 
 										<div className="content">
-											<h3>{anime.title.english}</h3>
+											<Link to={`/anime/${anime.id}`}>
+												<h3>{anime.title.english}</h3>
+											</Link>
 										</div>
 									</SwiperSlide>
 								))}
@@ -278,15 +317,14 @@ const Homepage = () => {
 						</div>
 
 						<div className="container">
-							<h1>Most Scored</h1>
+							<h1>Releasing Animes</h1>
 							<Swiper
 								modules={[Navigation]}
 								spaceBetween={20}
 								slidesPerView={"auto"}
 								navigation
-								pagination={{ clickable: true }}
 							>
-								{mostScoredAnimes!.map((anime) => (
+								{releasingAnimes.map((anime) => (
 									<SwiperSlide
 										key={anime.id}
 										className="slide"
@@ -295,8 +333,17 @@ const Homepage = () => {
 											src={anime.coverImage.large}
 											alt=""
 										/>
+
+										<FontAwesomeIcon
+											icon={faPlus}
+											size="2x"
+											onClick={() => handleClickAdd(anime)}
+										/>
+
 										<div className="content">
-											<h3>{anime.title.english}</h3>
+											<Link to={`/anime/${anime.id}`}>
+												<h3>{anime.title.english}</h3>
+											</Link>
 										</div>
 									</SwiperSlide>
 								))}
