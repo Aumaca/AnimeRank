@@ -2,7 +2,7 @@ import { Link } from "react-router-dom"
 import type { Dispatch } from "redux"
 import { useDispatch } from "react-redux"
 
-import { setLogout } from "../../../state"
+import { setLogout } from "../../../state/auth.ts"
 import ProfilePicture from "../../../components/profilePicture/profilePicture.tsx"
 import { userDropdownProps } from "../../../schemas/components/userDropdown.ts"
 

@@ -14,7 +14,7 @@ import Navbar from "../../components/navbar/navbar.tsx"
 import Message from "../../components/message/message.tsx"
 import Loader from "../../components/loader/loader.tsx"
 import ProfilePicture from "../../components/profilePicture/profilePicture.tsx"
-import { setLogout } from "../../state/index.ts"
+import { setLogout } from "../../state/auth.ts"
 
 import { AnimeType } from "../../interfaces/common.ts"
 import { AuthState, ProfileState, status } from "../../interfaces/user.ts"

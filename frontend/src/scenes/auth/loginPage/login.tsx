@@ -10,7 +10,7 @@ import Navbar from "../../../components/navbar/navbar.tsx"
 import Loader from "../../../components/loader/loader.tsx"
 import Message from "../../../components/message/message.tsx"
 import { LoginResponse } from "../../../interfaces/responses.ts"
-import { setLogin } from "../../../state/index.ts"
+import { setLogin } from "../../../state/auth.ts"
 import api from "../../../api/api.ts"
 
 import { MessageProps } from "../../../interfaces/components/message.ts"
@@ -146,7 +146,7 @@ const Login = () => {
 							<label className="error">{formError.email}</label>
 						</div>
 
-						<div className="field">	
+						<div className="field">
 							<label>Password</label>
 							<input
 								type="password"

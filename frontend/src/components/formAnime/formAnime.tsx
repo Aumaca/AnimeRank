@@ -59,11 +59,25 @@ const FormAnime: FC<FormAnimeProps> = ({
 	})
 
 	useEffect(() => {
-		if (anime)
+		const animeExistInUser = user.animes.filter(
+			(userAnime) => userAnime.id === anime?.id
+		)[0]
+
+		if (anime && animeExistInUser) {
+			setFormAnimeData({
+				id: anime.id,
+				status: animeExistInUser.status,
+				episodes: animeExistInUser.episodes,
+				score: animeExistInUser.score,
+				notes: animeExistInUser.notes,
+				isFavorite: animeExistInUser.isFavorite ? "Yes" : "No",
+			})
+		} else if (anime) {
 			setFormAnimeData({
 				...formAnimeData,
-				id: anime!.id,
+				id: anime.id,
 			})
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [anime])
 
@@ -108,6 +122,7 @@ const FormAnime: FC<FormAnimeProps> = ({
 				})
 				const newUser = user
 				newUser.animes = res.data
+				console.log(newUser)
 				toSetUser(newUser)
 			})
 			.catch((error) => {
