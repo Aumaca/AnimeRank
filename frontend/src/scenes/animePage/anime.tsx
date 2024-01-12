@@ -9,14 +9,17 @@ import FormAnime from "../../components/formAnime/formAnime.tsx"
 import Navbar from "../../components/navbar/navbar.tsx"
 import Loader from "../../components/loader/loader"
 
-import { AuthState } from "../../interfaces/user.ts"
-import { AnimeType } from "../../interfaces/common.ts" 
+import { AuthState, UserState } from "../../interfaces/user.ts"
+import { AnimeType } from "../../interfaces/common.ts"
 import { AnimeResponse } from "../../interfaces/responses.ts"
 
 import "./anime.css"
+import api from "../../api/api.ts"
 
 const Anime = () => {
 	const username = useSelector((state: AuthState) => state.username)
+	const [user, setUser] = useState<UserState>()
+
 	const [anime, setAnime] = useState<AnimeType | null>()
 
 	const [isFormAnimeOpen, setIsFormAnimeOpen] = useState(false)
@@ -60,6 +63,16 @@ const Anime = () => {
 	`
 
 	useEffect(() => {
+		// User
+		api
+			.get<UserState>(`/user/getUser/${username}`)
+			.then((response) => {
+				setUser(response.data)
+			})
+			.catch((error) => {
+				console.error("User request error:", error)
+			})
+
 		const variables = {
 			id: animeId,
 		}
@@ -76,17 +89,16 @@ const Anime = () => {
 				console.error("GraphQL request error:", error)
 			})
 			.finally(() => {
-				2
 				setIsLoading(false)
 			})
-	}, [graphqlQuery, animeId])
+	}, [graphqlQuery, animeId, username])
 
 	return (
 		<>
 			<Navbar />
 
-			<div className="anime">
-				{username && anime ? (
+			{username && anime && user ? (
+				<div className="anime">
 					<>
 						<div className="anime__container_image_buttons_info">
 							<div className="anime__container__image_buttons">
@@ -166,16 +178,18 @@ const Anime = () => {
 								anime={anime}
 								isOpen={isFormAnimeOpen}
 								closeForm={closeForm}
+								user={user}
+								toSetUser={setUser}
 							/>
 						</div>
 					</>
-				) : (
-					<>
-						<Navbar />
-						<Loader isActive={isLoading} />
-					</>
-				)}
-			</div>
+				</div>
+			) : (
+				<>
+					<Navbar />
+					<Loader isActive={isLoading} />
+				</>
+			)}
 		</>
 	)
 }

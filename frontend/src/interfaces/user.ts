@@ -30,6 +30,7 @@ export interface UserAnime {
 	episodes: number
 	score: number
 	notes: string
+	isFavorite: boolean
 }
 
 export interface StatusData {
