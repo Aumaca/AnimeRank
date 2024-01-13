@@ -249,3 +249,42 @@ export const addAnimeUserList = async (req, res) => {
 		res.status(400).json({ error: err.message })
 	}
 }
+
+export const setIsFavorite = async (req, res) => {
+	try {
+		const animeId = req.body.animeId
+		const newIsFavorite = req.body.newIsFavorite
+		const user = await User.findOne({ username: req.username })
+
+		const userObj = user.toObject()
+		const newAnimes = userObj.animes.map((anime) => {
+			if (animeId === anime.id) {
+				anime.isFavorite = newIsFavorite
+				return anime
+			}
+			return anime
+		})
+
+		User.findOneAndUpdate(
+			{
+				username: req.username,
+			},
+			{
+				$set: {
+					animes: newAnimes,
+				},
+			},
+			{ new: true }
+		)
+			.then(() => {
+				res
+					.status(200)
+					.json({ message: "User updated successfully", user: userObj })
+			})
+			.catch((err) => {
+				res.status(400).json({ err: err.message })
+			})
+	} catch (err) {
+		res.status(400).json({ err: err.message })
+	}
+}

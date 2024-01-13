@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom"
 import axios from "axios"
 import { useSelector } from "react-redux"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faHeart } from "@fortawesome/free-solid-svg-icons"
+import { faHeart, faList } from "@fortawesome/free-solid-svg-icons"
 
 import FormAnime from "../../components/formAnime/formAnime.tsx"
 import Navbar from "../../components/navbar/navbar.tsx"
@@ -21,16 +21,13 @@ const Anime = () => {
 	const [user, setUser] = useState<UserState>()
 
 	const [anime, setAnime] = useState<AnimeType | null>()
+	const [isFavorite, setIsFavorite] = useState<boolean>(false)
 
 	const [isFormAnimeOpen, setIsFormAnimeOpen] = useState(false)
 
 	const [isLoading, setIsLoading] = useState(true)
 
 	const { animeId } = useParams()
-
-	const closeForm = (): void => {
-		setIsFormAnimeOpen(false)
-	}
 
 	const graphqlQuery = `
 		query ($id: Int) {
@@ -61,6 +58,30 @@ const Anime = () => {
 			}
 		}
 	`
+
+	const closeForm = (): void => {
+		setIsFormAnimeOpen(false)
+	}
+
+	const setUserIsFavorite = (): void => {
+		setIsLoading(true)
+
+		api
+			.post("/user/setIsFavorite", {
+				newIsFavorite: !isFavorite,
+				animeId: anime!.id,
+			})
+			.then((res) => {
+				console.log("foi")
+				setUser(res.data.user)
+			})
+			.catch((err) => {
+				console.log(err)
+			})
+			.finally(() => {
+				setIsLoading(false)
+			})
+	}
 
 	useEffect(() => {
 		// User
@@ -93,13 +114,21 @@ const Anime = () => {
 			})
 	}, [graphqlQuery, animeId, username])
 
+	useEffect(() => {
+		if (user && anime) {
+			setIsFavorite(
+				user.animes.filter((userAnime) => userAnime.id === anime!.id)[0]
+					.isFavorite
+			)
+		}
+	}, [user, anime])
+
 	return (
 		<>
-			<Navbar />
-
 			{username && anime && user ? (
-				<div className="anime">
-					<>
+				<>
+					<Navbar user={user} />
+					<div className="anime">
 						<div className="anime__container_image_buttons_info">
 							<div className="anime__container__image_buttons">
 								<div className="anime__cover">
@@ -110,18 +139,25 @@ const Anime = () => {
 									/>
 								</div>
 								<div className="anime__buttons">
-									<button className="favorite">
-										Favorite{" "}
-										<FontAwesomeIcon
-											style={{ marginLeft: 5 }}
-											icon={faHeart}
-										/>
+									<button
+										className={`favorite ${isFavorite ? "active" : ""}`}
+										onClick={() => setUserIsFavorite()}
+									>
+										<div />
+										<div>Favorite </div>
+										<div>
+											<FontAwesomeIcon icon={faHeart} />
+										</div>
 									</button>
 									<button
 										className="add"
 										onClick={() => setIsFormAnimeOpen(true)}
 									>
-										Add to list
+										<div />
+										<div>Add to list</div>
+										<div>
+											<FontAwesomeIcon icon={faList} />
+										</div>
 									</button>
 								</div>
 							</div>
@@ -182,8 +218,8 @@ const Anime = () => {
 								toSetUser={setUser}
 							/>
 						</div>
-					</>
-				</div>
+					</div>
+				</>
 			) : (
 				<>
 					<Navbar />
