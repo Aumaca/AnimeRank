@@ -32,6 +32,8 @@ import "swiper/css/navigation"
 import "swiper/css/pagination"
 import "swiper/css/scrollbar"
 import "swiper/css/effect-coverflow"
+import { MessageProps } from "../../interfaces/components/message"
+import Message from "../../components/message/message"
 
 const Homepage = () => {
 	const username = useSelector((state: AuthState) => state.username)
@@ -48,6 +50,13 @@ const Homepage = () => {
 
 	const [isLoading, setIsLoading] = useState(true)
 	const [isFormAnimeOpen, setIsFormAnimeOpen] = useState(false)
+
+	const [messageState, setMessageState] = useState<MessageProps>({
+		isOpen: false,
+		title: "",
+		backgroundColor: "",
+		children: "",
+	})
 
 	const graphqlQuery = `
 		query ($id: Int, $page: Int, $perPage: Int, $search: String) {
@@ -181,6 +190,7 @@ const Homepage = () => {
 	}
 
 	const closeForm = (): void => {
+		setAnimeSelected(null)
 		setIsFormAnimeOpen(false)
 	}
 
@@ -193,6 +203,10 @@ const Homepage = () => {
 		} else {
 			return ""
 		}
+	}
+
+	const closeMessage = (): void => {
+		setMessageState({ ...messageState, isOpen: false })
 	}
 
 	return (
@@ -373,7 +387,18 @@ const Homepage = () => {
 							user={user}
 							toSetUser={setUser}
 							closeForm={closeForm}
+							setIsLoading={setIsLoading}
+							setMessageState={setMessageState}
 						/>
+
+						<Message
+							closeMessage={closeMessage}
+							isOpen={messageState.isOpen}
+							title={messageState.title}
+							backgroundColor={messageState.backgroundColor}
+						>
+							{messageState.children}
+						</Message>
 					</div>
 				</>
 			) : (

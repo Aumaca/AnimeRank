@@ -1,5 +1,6 @@
 import { AnimeType } from "../common"
 import { UserState } from "../user"
+import { MessageProps } from "./message"
 
 export interface FormAnimeProps {
 	isOpen: boolean
@@ -7,6 +8,8 @@ export interface FormAnimeProps {
 	user: UserState
 	toSetUser: (user: UserState) => void
 	closeForm: () => void
+	setIsLoading: (bool: boolean) => void
+	setMessageState: (props: MessageProps) => void
 }
 
 export interface FormAnimeData {

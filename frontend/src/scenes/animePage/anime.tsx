@@ -15,6 +15,8 @@ import { AnimeResponse } from "../../interfaces/responses.ts"
 
 import "./anime.css"
 import api from "../../api/api.ts"
+import Message from "../../components/message/message.tsx"
+import { MessageProps } from "../../interfaces/components/message"
 
 const Anime = () => {
 	const username = useSelector((state: AuthState) => state.username)
@@ -26,6 +28,13 @@ const Anime = () => {
 	const [isFormAnimeOpen, setIsFormAnimeOpen] = useState(false)
 
 	const [isLoading, setIsLoading] = useState(true)
+
+	const [messageState, setMessageState] = useState<MessageProps>({
+		isOpen: false,
+		title: "",
+		backgroundColor: "",
+		children: "",
+	})
 
 	const { animeId } = useParams()
 
@@ -63,17 +72,35 @@ const Anime = () => {
 		setIsFormAnimeOpen(false)
 	}
 
+	const closeMessage = (): void => {
+		setMessageState({ ...messageState, isOpen: false })
+	}
+
 	const setUserIsFavorite = (): void => {
 		setIsLoading(true)
 
 		api
-			.post("/user/setIsFavorite", {
+			.put("/user/setIsFavorite", {
 				newIsFavorite: !isFavorite,
 				animeId: anime!.id,
 			})
 			.then((res) => {
-				console.log("foi")
 				setUser(res.data.user)
+				if (res.status === 200) {
+					setMessageState({
+						isOpen: true,
+						backgroundColor: "green",
+						title: "Anime set to favorites!",
+						children: "Anime set to favorites successfully",
+					})
+				} else {
+					setMessageState({
+						isOpen: true,
+						backgroundColor: "red",
+						title: "An error occured",
+						children: "Anime not exists in your actual anime list",
+					})
+				}
 			})
 			.catch((err) => {
 				console.log(err)
@@ -216,7 +243,17 @@ const Anime = () => {
 								closeForm={closeForm}
 								user={user}
 								toSetUser={setUser}
+								setIsLoading={setIsLoading}
+								setMessageState={setMessageState}
 							/>
+							<Message
+								closeMessage={closeMessage}
+								isOpen={messageState.isOpen}
+								title={messageState.title}
+								backgroundColor={messageState.backgroundColor}
+							>
+								{messageState.children}
+							</Message>
 						</div>
 					</div>
 				</>

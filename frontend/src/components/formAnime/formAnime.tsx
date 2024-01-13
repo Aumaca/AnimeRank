@@ -8,12 +8,9 @@ import {
 	FormAnimeData,
 	FormAnimeDataError,
 } from "../../interfaces/components/formAnime"
-import Message from "../message/message"
-import Loader from "../loader/loader"
 import api from "../../api/api.ts"
 
 import { scoreLabels, status } from "../../interfaces/user"
-import { MessageProps } from "../../interfaces/components/message.ts"
 
 import "./formAnime.css"
 
@@ -23,6 +20,8 @@ const FormAnime: FC<FormAnimeProps> = ({
 	user,
 	toSetUser,
 	closeForm,
+	setIsLoading,
+	setMessageState,
 }) => {
 	const initialFormData: FormAnimeData = {
 		id: anime ? anime.id : "",
@@ -50,13 +49,6 @@ const FormAnime: FC<FormAnimeProps> = ({
 		useState<FormAnimeData>(initialFormData)
 	const [formAnimeDataError, setFormAnimeDataError] =
 		useState<FormAnimeDataError>(initialFormAnimeDataError)
-	const [isLoading, setIsLoading] = useState(false)
-	const [messageState, setMessageState] = useState<MessageProps>({
-		isOpen: false,
-		title: "",
-		backgroundColor: "",
-		children: "",
-	})
 
 	useEffect(() => {
 		const animeExistInUser = user.animes.filter(
@@ -111,19 +103,35 @@ const FormAnime: FC<FormAnimeProps> = ({
 
 		setIsLoading(true)
 		api
-			.post(`/user/addAnime`, { formAnimeData: formAnimeData, anime: anime })
+			.put(`/user/addUpdateAnime`, {
+				formAnimeData: formAnimeData,
+				anime: anime,
+			})
 			.then((res) => {
 				setFormAnimeDataError(initialFormAnimeDataError)
-				setMessageState({
-					isOpen: true,
-					backgroundColor: "green",
-					title: "Anime added to your list!",
-					children: "Anime added to your list successfully",
-				})
+
+				if (res.status === 201) {
+					setMessageState({
+						isOpen: true,
+						backgroundColor: "green",
+						title: "Anime added to your list!",
+						children: "Anime added to your list successfully",
+					})
+				} else {
+					setMessageState({
+						isOpen: true,
+						backgroundColor: "green",
+						title: "Anime updated in your list!",
+						children: "Anime updated in your list successfully",
+					})
+				}
+				
 				const newUser = user
 				newUser.animes = res.data
-				console.log(newUser)
 				toSetUser(newUser)
+
+				setFormAnimeData(initialFormData)
+				closeForm()
 			})
 			.catch((error) => {
 				if (error.response?.status === 400) {
@@ -144,12 +152,7 @@ const FormAnime: FC<FormAnimeProps> = ({
 			})
 			.finally(() => {
 				setIsLoading(false)
-				closeForm()
 			})
-	}
-
-	const closeMessage = (): void => {
-		setMessageState({ ...messageState, isOpen: false })
 	}
 
 	return (
@@ -295,15 +298,6 @@ const FormAnime: FC<FormAnimeProps> = ({
 							</form>
 						</div>
 					</div>
-					<Message
-						closeMessage={closeMessage}
-						isOpen={messageState.isOpen}
-						title={messageState.title}
-						backgroundColor={messageState.backgroundColor}
-					>
-						{messageState.children}
-					</Message>
-					<Loader isActive={isLoading} />
 				</>
 			) : (
 				<></>
