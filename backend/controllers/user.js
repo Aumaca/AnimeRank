@@ -1,3 +1,4 @@
+import { response } from "express"
 import User from "../models/User.js"
 import axios from "axios"
 
@@ -136,7 +137,7 @@ export const deleteUser = async (req, res) => {
 		})
 }
 
-export const addAnimeUserList = async (req, res) => {
+export const addUpdateAnimeUserList = async (req, res) => {
 	const status = [
 		"Watching",
 		"Completed",
@@ -216,34 +217,33 @@ export const addAnimeUserList = async (req, res) => {
 		}
 
 		const user = await User.findOne({ username: req.username })
-		const indexIfExists = user.animes.findIndex(
+		const indexToUpdate = user.animes.findIndex(
 			(anime) => anime.id === formAnimeData.id
 		)
-		const newAnimes = user.animes
-		if (indexIfExists !== -1) {
-			newAnimes[indexIfExists] = formAnimeData
-		} else {
-			newAnimes.push(formAnimeData)
-		}
 
-		User.findOneAndUpdate(
-			{
-				username: req.username,
-			},
-			{
-				$set: {
-					animes: newAnimes,
-				},
-			},
-			{ new: true }
-		)
-			.then((updatedUser) => {
-				res.status(200).json(updatedUser.animes)
-			})
-			.catch((err) => {
-				console.log(err)
-				res.status(400).json({ error: err.message })
-			})
+		const filter = { username: req.username }
+
+		if (indexToUpdate !== -1) {
+			const operation = { $set: { [`animes.${indexToUpdate}`]: formAnimeData } }
+			User.findOneAndUpdate(filter, operation, { new: true })
+				.then((updatedUser) => {
+					res.status(200).json(updatedUser.animes)
+				})
+				.catch((err) => {
+					console.log(err)
+					res.status(400).json({ error: err.message })
+				})
+		} else {
+			const operation = { $push: { animes: formAnimeData } }
+			User.findOneAndUpdate(filter, operation, { new: true })
+				.then((updatedUser) => {
+					res.status(201).json(updatedUser.animes)
+				})
+				.catch((err) => {
+					console.log(err)
+					res.status(400).json({ error: err.message })
+				})
+		}
 	} catch (err) {
 		console.log(err)
 		res.status(400).json({ error: err.message })
@@ -255,36 +255,31 @@ export const setIsFavorite = async (req, res) => {
 		const animeId = req.body.animeId
 		const newIsFavorite = req.body.newIsFavorite
 		const user = await User.findOne({ username: req.username })
+		const indexToUpdate = user.animes.findIndex((anime) => anime.id === animeId)
+		const userAnimeChanged = {
+			...user.animes[indexToUpdate],
+			isFavorite: newIsFavorite,
+		}
 
-		const userObj = user.toObject()
-		const newAnimes = userObj.animes.map((anime) => {
-			if (animeId === anime.id) {
-				anime.isFavorite = newIsFavorite
-				return anime
+		const filter = { username: req.username }
+
+		if (indexToUpdate !== -1) {
+			const operation = {
+				$set: { [`animes.${indexToUpdate}`]: userAnimeChanged },
 			}
-			return anime
-		})
-
-		User.findOneAndUpdate(
-			{
-				username: req.username,
-			},
-			{
-				$set: {
-					animes: newAnimes,
-				},
-			},
-			{ new: true }
-		)
-			.then(() => {
-				res
-					.status(200)
-					.json({ message: "User updated successfully", user: userObj })
-			})
-			.catch((err) => {
-				res.status(400).json({ err: err.message })
-			})
+			User.findOneAndUpdate(filter, operation, { new: true })
+				.then((updatedUser) => {
+					res.status(200).json(updatedUser.animes)
+				})
+				.catch((err) => {
+					console.log(err)
+					res.status(400).json({ error: err.message })
+				})
+		} else {
+			return response.status(400)
+		}
 	} catch (err) {
-		res.status(400).json({ err: err.message })
+		console.log(err)
+		res.status(400).json({ error: err.message })
 	}
 }

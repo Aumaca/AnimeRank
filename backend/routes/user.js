@@ -2,7 +2,7 @@ import express from "express"
 import {
 	getUser,
 	getUserAndList,
-	addAnimeUserList,
+	addUpdateAnimeUserList,
 	setIsFavorite,
 	deleteUser,
 } from "../controllers/user.js"
@@ -13,7 +13,8 @@ const router = express.Router()
 router.get("/getUser/:username", verifyToken, getUser)
 router.get("/getUserAndList/:username", verifyToken, getUserAndList)
 router.delete("/deleteUser", verifyToken, deleteUser)
-router.post("/addAnime", verifyToken, addAnimeUserList)
+
+router.put("/addUpdateAnime", verifyToken, addUpdateAnimeUserList)
 router.post("/setIsFavorite", verifyToken, setIsFavorite)
 
 export default router
