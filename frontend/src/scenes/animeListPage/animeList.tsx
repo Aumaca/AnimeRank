@@ -1,5 +1,4 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
-import axios from "axios"
 import { ChangeEvent, useEffect, useState } from "react"
 import { Link, useParams, useNavigate } from "react-router-dom"
 import { useSelector } from "react-redux"
@@ -61,7 +60,6 @@ const AnimeList = () => {
 				}`
 			)
 			.then((res) => {
-				console.log(res)
 				setUserProfile(res.data.user)
 				setAnimes(res.data.animes)
 			})
@@ -73,14 +71,35 @@ const AnimeList = () => {
 			})
 	}, [username, usernameLogged, statusParam])
 
+	useEffect(() => {
+		console.log("loading")
+		setIsLoading(true)
+	}, [filter])
+
 	const handleFilterChange = (event: ChangeEvent<HTMLSelectElement>) => {
 		setFilter(event.target.value)
 		const status = event.target.value
-		return navigator(
-			`/list/${userProfile?.username}?${new URLSearchParams({
-				status,
-			}).toString()}`
-		)
+		if (status === "0") {
+			return navigator(`/list/${userProfile?.username}`)
+		} else {
+			return navigator(
+				`/list/${userProfile?.username}?${new URLSearchParams({
+					status,
+				}).toString()}`
+			)
+		}
+	}
+
+	const setClassAnimeItem = (anime: AnimeType): string => {
+		if (user!.animes.filter((userAnime) => userAnime.id === anime.id)[0]) {
+			return user!.animes
+				.filter((userAnime) => userAnime.id === anime.id)[0]
+				.status.toLowerCase()
+				.replace(" ", "")
+				.replace(" ", "")
+		} else {
+			return ""
+		}
 	}
 
 	return (
@@ -178,19 +197,14 @@ const AnimeList = () => {
 							}`}
 						>
 							{animes.map((anime) => (
-								<>
+								<div key={anime.id}>
 									{listViewStyle ? (
-										<Link
-											to={`/anime/${anime.id}`}
-											key={anime.id + "A"}
-										>
+										<Link to={`/anime/${anime.id}`}>
 											<div className="anime_item">
 												<img
 													src={anime.coverImage.large}
 													alt=""
-													className={`${userProfile.animes
-														.filter((userAnime) => userAnime.id === anime.id)[0]
-														.status.toLowerCase()}`}
+													className={`${setClassAnimeItem(anime)}`}
 												/>
 												<div className="content">
 													<h2>{anime.title.english}</h2>
@@ -262,17 +276,12 @@ const AnimeList = () => {
 											</div>
 										</Link>
 									) : (
-										<Link
-											to={`/anime/${anime.id}`}
-											key={anime.id}
-										>
+										<Link to={`/anime/${anime.id}`}>
 											<div className="anime_item">
 												<img
 													src={anime.coverImage.large}
 													alt=""
-													className={`${userProfile.animes
-														.filter((userAnime) => userAnime.id === anime.id)[0]
-														.status.toLowerCase()}`}
+													className={`${setClassAnimeItem(anime)}`}
 												/>
 												<div className="content">
 													<h2>{anime.title.english}</h2>
@@ -303,10 +312,12 @@ const AnimeList = () => {
 											</div>
 										</Link>
 									)}
-								</>
+								</div>
 							))}
 						</div>
 					</div>
+
+					<Loader isActive={isLoading} />
 				</>
 			) : (
 				<>

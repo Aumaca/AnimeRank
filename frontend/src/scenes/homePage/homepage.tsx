@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { Link } from "react-router-dom"
@@ -6,7 +7,12 @@ import axios from "axios"
 import { Swiper, SwiperSlide } from "swiper/react"
 import { EffectCoverflow, Navigation, Pagination } from "swiper/modules"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faPlus } from "@fortawesome/free-solid-svg-icons"
+import {
+	faPlus,
+	faFire,
+	faStar,
+	faRss,
+} from "@fortawesome/free-solid-svg-icons"
 
 import api from "../../api/api"
 import Navbar from "../../components/navbar/navbar"
@@ -158,7 +164,6 @@ const Homepage = () => {
 			})
 			.then((response) => {
 				const data = response.data.data
-				console.log(data)
 				setPopularAnimes(data.popularAnimes.media)
 				setMostScoredAnimes(data.mostScoredAnimes.media)
 				setReleasingAnimes(data.releasingAnimes.media)
@@ -166,9 +171,8 @@ const Homepage = () => {
 			.catch((error) => {
 				console.error("Animes request error:", error)
 			})
-			.finally(() => {
-				setIsLoading(false)
-			})
+
+		setIsLoading(false)
 	}, [username, graphqlQuery])
 
 	const handleClickAdd = (anime: AnimeType): void => {
@@ -176,12 +180,19 @@ const Homepage = () => {
 		setIsFormAnimeOpen(true)
 	}
 
-	const toSetUser = (user: UserState): void => {
-		setUser(user)
-	}
-
 	const closeForm = (): void => {
 		setIsFormAnimeOpen(false)
+	}
+
+	const setClassSwiperSlide = (anime: AnimeType): string => {
+		if (user!.animes.filter((userAnime) => userAnime.id === anime.id)[0]) {
+			return user!.animes
+				.filter((userAnime) => userAnime.id === anime.id)[0]
+				.status.toLowerCase()
+				.replace("-", "")
+		} else {
+			return ""
+		}
 	}
 
 	return (
@@ -249,7 +260,9 @@ const Homepage = () => {
 						</div>
 
 						<div className="container">
-							<h1>Most Popular</h1>
+							<h1 className="popular">
+								Most Popular <FontAwesomeIcon icon={faFire} />
+							</h1>
 							<Swiper
 								modules={[Navigation]}
 								spaceBetween={20}
@@ -259,7 +272,7 @@ const Homepage = () => {
 								{popularAnimes.map((anime) => (
 									<SwiperSlide
 										key={anime.id}
-										className="slide"
+										className={`slide ${setClassSwiperSlide(anime)}`}
 									>
 										<img
 											src={anime.coverImage.large}
@@ -283,7 +296,9 @@ const Homepage = () => {
 						</div>
 
 						<div className="container">
-							<h1>Most Scored</h1>
+							<h1 className="scored">
+								Most Scored <FontAwesomeIcon icon={faStar} />
+							</h1>
 							<Swiper
 								modules={[Navigation]}
 								spaceBetween={20}
@@ -293,7 +308,7 @@ const Homepage = () => {
 								{mostScoredAnimes.map((anime) => (
 									<SwiperSlide
 										key={anime.id}
-										className="slide"
+										className={`slide ${setClassSwiperSlide(anime)}`}
 									>
 										<img
 											src={anime.coverImage.large}
@@ -317,7 +332,9 @@ const Homepage = () => {
 						</div>
 
 						<div className="container">
-							<h1>Releasing Animes</h1>
+							<h1 className="releasing">
+								Releasing Animes <FontAwesomeIcon icon={faRss} />
+							</h1>
 							<Swiper
 								modules={[Navigation]}
 								spaceBetween={20}
@@ -327,7 +344,7 @@ const Homepage = () => {
 								{releasingAnimes.map((anime) => (
 									<SwiperSlide
 										key={anime.id}
-										className="slide"
+										className={`slide ${setClassSwiperSlide(anime)}`}
 									>
 										<img
 											src={anime.coverImage.large}
@@ -354,7 +371,7 @@ const Homepage = () => {
 							anime={animeSelected}
 							isOpen={isFormAnimeOpen}
 							user={user}
-							toSetUser={toSetUser}
+							toSetUser={setUser}
 							closeForm={closeForm}
 						/>
 					</div>

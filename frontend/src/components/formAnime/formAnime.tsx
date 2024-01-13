@@ -144,6 +144,7 @@ const FormAnime: FC<FormAnimeProps> = ({
 			})
 			.finally(() => {
 				setIsLoading(false)
+				closeForm()
 			})
 	}
 

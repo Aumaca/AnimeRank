@@ -1,13 +1,13 @@
 .spinner-container {
 	position: absolute;
-	top: -135px;
+	top: -95px;
 	left: 0;
 	height: 100vh;
 	width: 100vw;
 	background: rgba(0, 0, 0, 0.5);
 	align-items: center;
 	justify-content: center;
-	z-index: 1000;
+	z-index: 999;
 	display: none;
 }
 
@@ -81,5 +81,12 @@
 	}
 	50% {
 		opacity: 0.5;
+	}
+}
+
+@media screen and (min-width: 992px) {
+	.spinner-container {
+		position: absolute;
+		top: -135px;
 	}
 }

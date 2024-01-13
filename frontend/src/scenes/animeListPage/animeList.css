@@ -111,7 +111,7 @@
 	border-bottom: 4px solid var(--completed);
 }
 
-.animelist_container.grid .anime_item img.onHold {
+.animelist_container.grid .anime_item img.on-hold {
 	border-bottom: 4px solid var(--onHold);
 }
 
@@ -119,7 +119,7 @@
 	border-bottom: 4px solid var(--dropped);
 }
 
-.animelist_container.grid .anime_item img.planToWatch {
+.animelist_container.grid .anime_item img.plantowatch {
 	border-bottom: 4px solid var(--planToWatch);
 }
 
@@ -183,7 +183,7 @@
 	border-left: 4px solid var(--completed);
 }
 
-.animelist_container.list .anime_item img.onHold {
+.animelist_container.list .anime_item img.on-hold {
 	border-left: 4px solid var(--onHold);
 }
 
@@ -191,7 +191,7 @@
 	border-left: 4px solid var(--dropped);
 }
 
-.animelist_container.list .anime_item img.planToWatch {
+.animelist_container.list .anime_item img.plantowatch {
 	border-left: 4px solid var(--planToWatch);
 }
 /* END IMAGE BORDER LEFT */

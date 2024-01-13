@@ -34,6 +34,11 @@
 	padding: 2rem 0rem 1rem 2rem;
 }
 
+.homepage .container h1 svg {
+	color: orange;
+	margin-left: 0.5rem;
+}
+
 .homepage .container .slide {
 	display: flex;
 	flex-direction: column;
