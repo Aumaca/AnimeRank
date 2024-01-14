@@ -15,6 +15,15 @@ This is a project created based on the website [MyAnimeList](https://myanimelist
   <img src=readme/screenshot3.png width=300>
 </p>
 
+<p align="center">
+  <img src=readme/screenshot4.png width=297>
+  <img src=readme/screenshot5.png width=300>
+</p>
+
+<p align="center">
+  <img src=readme/screenshot6.png width=297>
+</p>
+
 ## Tools used
 - MERN
   - Mongo.DB
@@ -26,7 +35,7 @@ This is a project created based on the website [MyAnimeList](https://myanimelist
 - Mocha, Chai and Supertest
 
 
-## Functions (to be done too)
+## Functions
 - Register / Login User
 - Add / Read / Update / Remove animes to user list
 - Show user statistics
