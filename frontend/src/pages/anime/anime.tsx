@@ -7,7 +7,7 @@ import { faHeart, faList } from "@fortawesome/free-solid-svg-icons"
 
 import FormAnime from "../../components/formAnime/formAnime.tsx"
 import Navbar from "../../components/navbar/navbar.tsx"
-import Loader from "../../components/loader/loader"
+import Loader from "../../components/loader/loader.tsx"
 
 import { AuthState, UserState } from "../../interfaces/user.ts"
 import { AnimeType } from "../../interfaces/common.ts"
@@ -16,7 +16,7 @@ import { AnimeResponse } from "../../interfaces/responses.ts"
 import "./anime.css"
 import api from "../../api/api.ts"
 import Message from "../../components/message/message.tsx"
-import { MessageProps } from "../../interfaces/components/message"
+import { MessageProps } from "../../interfaces/components/message.ts"
 
 const Anime = () => {
 	const username = useSelector((state: AuthState) => state.username)
@@ -80,30 +80,26 @@ const Anime = () => {
 		setIsLoading(true)
 
 		api
-			.put("/user/setIsFavorite", {
+			.post("/user/setIsFavorite", {
 				newIsFavorite: !isFavorite,
 				animeId: anime!.id,
 			})
 			.then((res) => {
-				setUser(res.data.user)
-				if (res.status === 200) {
-					setMessageState({
-						isOpen: true,
-						backgroundColor: "green",
-						title: "Anime set to favorites!",
-						children: "Anime set to favorites successfully",
-					})
-				} else {
-					setMessageState({
-						isOpen: true,
-						backgroundColor: "red",
-						title: "An error occured",
-						children: "Anime not exists in your actual anime list",
-					})
-				}
+				setMessageState({
+					isOpen: true,
+					backgroundColor: "green",
+					title: "Anime set to favorites!",
+					children: "Anime set to favorites successfully",
+				})
+				setUser(res.data)
 			})
-			.catch((err) => {
-				console.log(err)
+			.catch(() => {
+				setMessageState({
+					isOpen: true,
+					backgroundColor: "red",
+					title: "An error occured",
+					children: "Anime not exists in your actual anime list",
+				})
 			})
 			.finally(() => {
 				setIsLoading(false)
@@ -142,9 +138,13 @@ const Anime = () => {
 	}, [graphqlQuery, animeId, username])
 
 	useEffect(() => {
-		if (user && anime) {
+		if (
+			user &&
+			anime &&
+			user.animes.filter((userAnime) => userAnime.id === anime.id)[0]
+		) {
 			setIsFavorite(
-				user.animes.filter((userAnime) => userAnime.id === anime!.id)[0]
+				user.animes.filter((userAnime) => userAnime.id === anime.id)[0]
 					.isFavorite
 			)
 		}

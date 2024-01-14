@@ -72,7 +72,6 @@ const AnimeList = () => {
 	}, [username, usernameLogged, statusParam])
 
 	useEffect(() => {
-		console.log("loading")
 		setIsLoading(true)
 	}, [filter])
 
@@ -91,8 +90,8 @@ const AnimeList = () => {
 	}
 
 	const setClassAnimeItem = (anime: AnimeType): string => {
-		if (user!.animes.filter((userAnime) => userAnime.id === anime.id)[0]) {
-			return user!.animes
+		if (userProfile!.animes.filter((userAnime) => userAnime.id === anime.id)[0]) {
+			return userProfile!.animes
 				.filter((userAnime) => userAnime.id === anime.id)[0]
 				.status.toLowerCase()
 				.replace(" ", "")

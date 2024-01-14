@@ -2,12 +2,16 @@ import { useSelector } from "react-redux"
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { AuthState } from "./interfaces/user.ts"
 
-import Register from "./scenes/auth/registerPage/register.tsx"
-import Login from "./scenes/auth/loginPage/login.tsx"
-import Homepage from "./scenes/homePage/homepage.tsx"
-import ProfilePage from "./scenes/profilePage/profile.tsx"
-import AnimeList from "./scenes/animeListPage/animeList.tsx"
-import Anime from "./scenes/animePage/anime.tsx"
+import Register from "./pages/auth/register/register.tsx"
+import Login from "./pages/auth/login/login.tsx"
+
+import Homepage from "./pages/home/home.tsx"
+import ProfilePage from "./pages/profile/profile.tsx"
+
+import AnimeList from "./pages/animeList/animeList.tsx"
+import Anime from "./pages/anime/anime.tsx"
+
+import Page404 from "./pages/Page404/Page404.tsx"
 
 import "./index.css"
 
@@ -41,6 +45,11 @@ function App() {
 					<Route
 						path="/anime/:animeId"
 						element={token ? <Anime /> : <Navigate to="/login" />}
+					/>
+
+					<Route
+						path="*"
+						element={<Page404 />}
 					/>
 				</Routes>
 			</BrowserRouter>
