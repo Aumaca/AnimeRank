@@ -24,7 +24,6 @@ export const getUser = async (req, res) => {
 				res.status(200).json(userDataObj)
 			})
 			.catch((err) => {
-				console.log(err)
 				res.status(400).json({ error: err })
 			})
 	} catch (err) {
@@ -52,78 +51,81 @@ export const getUserAndList = async (req, res) => {
 					)
 				}
 
-				userDataObj.statusData = statusData
-				userDataObj.countEpisodes = countEpisodes
-				userDataObj.favoriteAnimes = favoriteAnimes
+				if (userDataObj.animes.length > 0) {
+					userDataObj.statusData = statusData
+					userDataObj.countEpisodes = countEpisodes
+					userDataObj.favoriteAnimes = favoriteAnimes
 
-				// Get animes info
-				let queries = ""
-				userDataObj.animes.forEach((anime, i) => {
-					queries += `
-						a${anime.id}: Media(id: $id${i}, type: ANIME) {
-							id
-							title {
-								english
+					// Get animes info
+					let queries = ""
+					userDataObj.animes.forEach((anime, i) => {
+						queries += `
+							a${anime.id}: Media(id: $id${i}, type: ANIME) {
+								id
+								title {
+									english
+								}
+								startDate {
+									day
+									month
+									year
+								}
+								endDate {
+									day
+									month
+									year
+								}
+								status
+								episodes
+								duration
+								genres
+								popularity
+								averageScore
+								coverImage {
+									large
+								}
 							}
-							startDate {
-								day
-								month
-								year
-							}
-							endDate {
-								day
-								month
-								year
-							}
-							status
-							episodes
-							duration
-							genres
-							popularity
-							averageScore
-							coverImage {
-								large
-							}
+						`
+					})
+
+					const variableDefinitions = userDataObj.animes
+						.map((_, i) => `$id${i}: Int`)
+						.join(", ")
+
+					const variables = {}
+					userDataObj.animes.forEach((anime, i) => {
+						variables["id" + i] = parseInt(anime.id)
+					})
+
+					const graphqlQuery = `
+						query (${variableDefinitions}) {
+							${queries}
 						}
 					`
-				})
 
-				const variableDefinitions = userDataObj.animes
-					.map((_, i) => `$id${i}: Int`)
-					.join(", ")
+					const animes = []
 
-				const variables = {}
-				userDataObj.animes.forEach((anime, i) => {
-					variables["id" + i] = parseInt(anime.id)
-				})
-
-				const graphqlQuery = `
-					query (${variableDefinitions}) {
-						${queries}
-					}
-				`
-
-				const animes = []
-
-				await axios
-					.post("https://graphql.anilist.co", {
-						query: graphqlQuery,
-						variables: variables,
-					})
-					.then((res) => {
-						Object.values(res.data.data).forEach((anime) => {
-							animes.push(anime)
+					await axios
+						.post("https://graphql.anilist.co", {
+							query: graphqlQuery,
+							variables: variables,
 						})
-					})
+						.then((res) => {
+							Object.values(res.data.data).forEach((anime) => {
+								animes.push(anime)
+							})
+						})
 
-				return res.status(200).json({ animes: animes, user: userDataObj })
+					return res.status(200).json({ animes: animes, user: userDataObj })
+				} else {
+					return res.status(200).json({ animes: [], user: userDataObj })
+				}
 			})
 			.catch((err) => {
-				console.log(err)
-				res.status(400).json({ error: err.data })
+				res.status(400).json(err)
 			})
 	} catch (err) {
-		res.status(400).json({ error: err })
+		res.status(400).json(err)
 	}
 }
 
@@ -230,7 +232,6 @@ export const addUpdateAnimeUserList = async (req, res) => {
 					res.status(200).json(updatedUser.animes)
 				})
 				.catch((err) => {
-					console.log(err)
 					res.status(400).json({ error: err.message })
 				})
 		} else {
@@ -240,12 +241,10 @@ export const addUpdateAnimeUserList = async (req, res) => {
 					res.status(201).json(updatedUser.animes)
 				})
 				.catch((err) => {
-					console.log(err)
 					res.status(400).json({ error: err.message })
 				})
 		}
 	} catch (err) {
-		console.log(err)
 		res.status(400).json({ error: err.message })
 	}
 }
@@ -255,9 +254,15 @@ export const setIsFavorite = async (req, res) => {
 		const animeId = req.body.animeId
 		const newIsFavorite = req.body.newIsFavorite
 		const user = await User.findOne({ username: req.username })
-		const indexToUpdate = user.animes.findIndex((anime) => anime.id === animeId)
+		
+		const userObj = user.toObject()
+
+		const indexToUpdate = userObj.animes.findIndex(
+			(anime) => anime.id === animeId
+		)
+
 		const userAnimeChanged = {
-			...user.animes[indexToUpdate],
+			...userObj.animes[indexToUpdate],
 			isFavorite: newIsFavorite,
 		}
 
@@ -269,17 +274,15 @@ export const setIsFavorite = async (req, res) => {
 			}
 			User.findOneAndUpdate(filter, operation, { new: true })
 				.then((updatedUser) => {
-					res.status(200).json(updatedUser.animes)
+					res.status(200).json(updatedUser)
 				})
 				.catch((err) => {
-					console.log(err)
 					res.status(400).json({ error: err.message })
 				})
 		} else {
-			return response.status(400)
+			res.status(400).json({ error: err.message })
 		}
 	} catch (err) {
-		console.log(err)
 		res.status(400).json({ error: err.message })
 	}
 }
