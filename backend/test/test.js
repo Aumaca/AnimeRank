@@ -56,13 +56,27 @@ const formAnimeData = {
 
 let token = ""
 
-let username = ""
-
 describe("User Register", () => {
 	it("Register user should return 201", async () => {
 		const res = await request(app).post("/auth/register").send(userRegister)
 		token = res.body.token
 		expect(res.statusCode).equal(201)
+	})
+
+	it("Register user with username less than 3 characters should return 400", async () => {
+		const res = await request(app)
+			.post("/auth/register")
+			.send({ ...userRegister, username: "aa" })
+		token = res.body.token
+		expect(res.statusCode).equal(400)
+	})
+
+	it("Register user with password less than 8 characters should return 400", async () => {
+		const res = await request(app)
+			.post("/auth/register")
+			.send({ ...userRegister, password: "123123" })
+		token = res.body.token
+		expect(res.statusCode).equal(400)
 	})
 })
 
@@ -86,7 +100,9 @@ describe("User List", () => {
 			.put("/user/addUpdateAnime")
 			.set("Authorization", `Bearer ${token}`)
 			.send({ formAnimeData: formAnimeData, anime: anime })
+
 		userAnimes = res.body
+
 		expect(res.statusCode).equal(201)
 	})
 
@@ -103,7 +119,27 @@ describe("User List", () => {
 	})
 })
 
+describe("User Data", () => {
+	it("User.countEpisodes should be 25", async () => {
+		const res = await request(app)
+			.get(`/user/getUser/${userRegister.username}`)
+			.set("Authorization", `Bearer ${token}`)
+			.send({ formAnimeData: formAnimeData, anime: anime })
+
+		expect(res.statusCode).equal(200)
+		expect(res.body.countEpisodes).equal(25)
+	})
+})
+
 describe("Update User isFavorite", () => {
+	it("User favoriteAnimes array should have length equal 1", async () => {
+		const res = await request(app)
+			.get(`/user/getUser/${userRegister.username}`)
+			.set("Authorization", `Bearer ${token}`)
+
+		expect(res.body.favoriteAnimes.length).equal(1)
+	})
+
 	it("Update isFavorite from true to false should return 200", async () => {
 		const res = await request(app)
 			.post("/user/setIsFavorite")
@@ -116,6 +152,18 @@ describe("Update User isFavorite", () => {
 			})
 
 		expect(res.statusCode).equal(200)
+	})
+
+	it("Update isFavorite of an anime that not exists in user list should return 400", async () => {
+		const res = await request(app)
+			.post("/user/setIsFavorite")
+			.set("Authorization", `Bearer ${token}`)
+			.send({
+				newIsFavorite: false,
+				animeId: 123123,
+			})
+
+		expect(res.statusCode).equal(400)
 	})
 })
 
