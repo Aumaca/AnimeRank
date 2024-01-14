@@ -2,7 +2,8 @@
 	position: fixed;
 	bottom: 5vh;
 	left: -100vw;
-	width: 100%;
+	width: 90vw;
+	max-width: 500px;
 	z-index: 1001;
 	transition: left 1s ease-in-out, visibility 1s ease-in-out;
 }
@@ -11,19 +12,23 @@
 	border: 2px solid white;
 	color: white;
 	border-radius: 8px;
-	height: 50px;
 	width: fit-content;
-	max-width: 500px;
+	width: 90vw;
+	max-width: 400px;
 	padding: 0 2rem;
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
 	gap: 1.5rem;
+	font-size: 1.1rem;
 }
 
 .message-content {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+	gap: 1rem;
+	padding: 1rem 0;
 }
 
 .message.open {

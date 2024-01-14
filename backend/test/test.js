@@ -167,6 +167,26 @@ describe("Update User isFavorite", () => {
 	})
 })
 
+describe("Delete anime from user list", () => {
+	it("Delete anime that exists in user list should return 200", async () => {
+		const res = await request(app)
+			.post("/user/deleteAnime")
+			.set("Authorization", `Bearer ${token}`)
+			.send({ anime: anime })
+
+		expect(res.statusCode).equal(200)
+	})
+
+	it("Delete anime that don't exists in user list should return 404", async () => {
+		const res = await request(app)
+			.post("/user/deleteAnime")
+			.set("Authorization", `Bearer ${token}`)
+			.send({ anime: anime })
+
+		expect(res.statusCode).equal(404)
+	})
+})
+
 describe("Delete User", () => {
 	it("Delete user should return 200", async () => {
 		const res = await request(app)

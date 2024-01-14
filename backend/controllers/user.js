@@ -249,12 +249,47 @@ export const addUpdateAnimeUserList = async (req, res) => {
 	}
 }
 
+export const deleteAnimeUserList = async (req, res) => {
+	try {
+		const anime = req.body.anime
+		const username = req.username
+
+		const user = await User.findOne({ username: username })
+		const animeExistsInUserList = user.animes?.findIndex(
+			(userAnime) => userAnime.id === anime.id
+		)
+
+		if (animeExistsInUserList !== -1) {
+			const userObj = user.toObject()
+			const newAnimes = []
+			userObj.animes.forEach((userAnime) => {
+				if (userAnime.id !== anime.id) newAnimes.push(userAnime)
+			})
+
+			const filter = { username: username }
+			const operation = { $set: { animes: newAnimes } }
+
+			User.findOneAndUpdate(filter, operation, { new: true })
+				.then((updatedUser) => {
+					res.status(200).json(updatedUser)
+				})
+				.catch((err) => {
+					res.status(400).json({ error: err.message })
+				})
+		} else {
+			res.status(404).json({ error: "Anime not found in the user's list" })
+		}
+	} catch (err) {
+		res.status(400).json(err)
+	}
+}
+
 export const setIsFavorite = async (req, res) => {
 	try {
 		const animeId = req.body.animeId
 		const newIsFavorite = req.body.newIsFavorite
 		const user = await User.findOne({ username: req.username })
-		
+
 		const userObj = user.toObject()
 
 		const indexToUpdate = userObj.animes.findIndex(

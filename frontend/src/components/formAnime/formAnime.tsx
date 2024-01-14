@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faClose } from "@fortawesome/free-solid-svg-icons"
+import { faClose, faTrash } from "@fortawesome/free-solid-svg-icons"
 
 import {
 	FormAnimeProps,
@@ -125,7 +125,7 @@ const FormAnime: FC<FormAnimeProps> = ({
 						children: "Anime updated in your list successfully",
 					})
 				}
-				
+
 				const newUser = user
 				newUser.animes = res.data
 				toSetUser(newUser)
@@ -152,6 +152,42 @@ const FormAnime: FC<FormAnimeProps> = ({
 			})
 			.finally(() => {
 				setIsLoading(false)
+			})
+	}
+
+	const removeAnime = () => {
+		console.log("REMOVEANIME FOI!")
+		api
+			.post("/user/deleteAnime", { anime: anime })
+			.then((res) => {
+				setMessageState({
+					isOpen: true,
+					backgroundColor: "green",
+					title: "Anime removed from your list!",
+					children: "Anime removed from your list successfully",
+				})
+				toSetUser(res.data)
+				setFormAnimeData(initialFormData)
+				closeForm()
+			})
+			.catch((error) => {
+				if (error.response.status === 404) {
+					setMessageState({
+						isOpen: true,
+						backgroundColor: "red",
+						title: "Anime isn't present in your list!",
+						children:
+							"Anime wasn't removed from your list because the anime don't exists in the list",
+					})
+				} else {
+					setMessageState({
+						isOpen: true,
+						backgroundColor: "red",
+						title: "An error occurred",
+						children:
+							"And error occurred while trying to remove the anime from your list",
+					})
+				}
 			})
 	}
 
@@ -289,12 +325,23 @@ const FormAnime: FC<FormAnimeProps> = ({
 									</select>
 								</div>
 
-								<button
-									type="submit"
-									className="submit"
-								>
-									<h3>Submit</h3>
-								</button>
+								<div className="buttons">
+									<button
+										type="submit"
+										className="submit"
+									>
+										<h3>Submit</h3>
+									</button>
+									<button
+										type="button"
+										className="remove"
+										onClick={() => removeAnime()}
+									>
+										<h3>
+											<FontAwesomeIcon icon={faTrash} />
+										</h3>
+									</button>
+								</div>
 							</form>
 						</div>
 					</div>

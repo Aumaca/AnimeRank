@@ -17,6 +17,7 @@ import {
 import api from "../../api/api"
 import Navbar from "../../components/navbar/navbar"
 import Loader from "../../components/loader/loader"
+import Message from "../../components/message/message"
 import FormAnime from "../../components/formAnime/formAnime"
 import jujutsu from "../../imgs/jujutsu.jpg"
 import drstone from "../../imgs/drstone.png"
@@ -25,15 +26,14 @@ import psycho from "../../imgs/psycho.jpg"
 import { AuthState, UserState } from "../../interfaces/user"
 import { AnimeType } from "../../interfaces/common"
 import { HomePageResponse } from "../../interfaces/responses"
+import { MessageProps } from "../../interfaces/components/message"
 
-import "./homepage.css"
+import "./home.css"
 import "swiper/css"
 import "swiper/css/navigation"
 import "swiper/css/pagination"
 import "swiper/css/scrollbar"
 import "swiper/css/effect-coverflow"
-import { MessageProps } from "../../interfaces/components/message"
-import Message from "../../components/message/message"
 
 const Homepage = () => {
 	const username = useSelector((state: AuthState) => state.username)
