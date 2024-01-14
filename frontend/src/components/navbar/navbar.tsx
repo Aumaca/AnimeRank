@@ -10,7 +10,10 @@ import Logo from "../../../src/imgs/Logo.png"
 
 import "./navbar.css"
 
-type UserBasicState<T> = Omit<T, "favoriteAnimes" | "countEpisodes" | "statusData">
+type UserBasicState<T> = Omit<
+	T,
+	"favoriteAnimes" | "countEpisodes" | "statusData"
+>
 
 const Navbar = ({ user }: { user?: UserBasicState<ProfileState> }) => {
 	const [sidemenuActive, setSidemenuActive] = useState(false)
