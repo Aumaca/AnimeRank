@@ -1,4 +1,4 @@
-# AnimeRank
+# [AnimeRank](https://aumaca-animerank.vercel.app/)
 
 This is a project created based on the website [MyAnimeList](https://myanimelist.net/), that allows users to create a list of animes and score them, also allowing comments.
 
@@ -25,6 +25,7 @@ This is a project created based on the website [MyAnimeList](https://myanimelist
 </p>
 
 ## Tools used
+
 - MERN
   - Mongo.DB
   - Express.JS
@@ -34,12 +35,12 @@ This is a project created based on the website [MyAnimeList](https://myanimelist
 - Redux
 - Mocha, Chai and Supertest
 
-
 ## Functions
+
 - Register / Login User
 - Add / Read / Update / Remove animes to user list
 - Show user statistics
 - Friends system
 - Sending email for alert of release etc
 
-__Not done yet!!__
+**Not done yet!!**
