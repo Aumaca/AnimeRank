@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import { useDropzone } from "react-dropzone"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowRight, faCheckCircle } from "@fortawesome/free-solid-svg-icons"
@@ -91,15 +90,10 @@ const Register = () => {
 			return
 		}
 
-		const newFormData = new FormData()
-		for (const [key, value] of Object.entries(formData)) {
-			newFormData.append(key, value)
-		}
-
 		setIsLoading(true)
 
 		api
-			.post("/auth/register", newFormData)
+			.post("/auth/register", { ...formData })
 			.then(() => {
 				setIsModalOpen(true)
 			})
@@ -124,15 +118,6 @@ const Register = () => {
 				setIsLoading(false)
 			})
 	}
-
-	const { getRootProps, getInputProps } = useDropzone({
-		onDrop: (acceptedFiles) => {
-			setFormData((prevData) => ({
-				...prevData,
-				picture: acceptedFiles[0],
-			}))
-		},
-	})
 
 	const closeMessage = (): void => {
 		setMessageState({ ...messageState, isOpen: false })

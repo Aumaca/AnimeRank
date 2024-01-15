@@ -5,7 +5,6 @@ const initialFormErrorState: RegisterFormDataError = {
 	email: "",
 	password: "",
 	country: "",
-	picture: "",
 }
 
 // Returns a bool to indicate if form is valid or not
