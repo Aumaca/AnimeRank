@@ -14,7 +14,7 @@ export const register = async (req, res) => {
 			username,
 			email,
 			password: pwdHash,
-			picture: req.file ? req.file.filename : "default_user.png",
+			picture: "default_user.png",
 			country,
 			createdAt: new Date().toLocaleDateString("en-US"),
 		})
