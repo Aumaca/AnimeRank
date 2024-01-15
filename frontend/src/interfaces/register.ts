@@ -3,7 +3,6 @@ export interface RegisterFormData {
 	email: string
 	password: string
 	country: string
-	picture: File | null
 }
 
 export interface RegisterFormDataError {
@@ -11,7 +10,6 @@ export interface RegisterFormDataError {
 	email: string
 	password: string
 	country: string
-	picture: string
 }
 
 export interface Country {

@@ -27,7 +27,6 @@ const Register = () => {
 		email: "",
 		password: "",
 		country: "",
-		picture: null,
 	})
 
 	const [formError, setFormError] = useState<RegisterFormDataError>({
@@ -35,7 +34,6 @@ const Register = () => {
 		email: "",
 		password: "",
 		country: "",
-		picture: "",
 	})
 
 	const [messageState, setMessageState] = useState<MessageProps>({
@@ -209,29 +207,6 @@ const Register = () => {
 								))}
 							</select>
 							<label className="error">{formError.country}</label>
-						</div>
-
-						<div className="field">
-							<label>Profile Picture</label>
-							<div
-								{...getRootProps({
-									className: `dropzone ${formError.password ? "error" : ""}`,
-								})}
-							>
-								<input {...getInputProps()} />
-								<p>Drag "n" drop some files here, or click to select files</p>
-								{formData.picture && (
-									<div>
-										<p>Selected Picture:</p>
-										<img
-											src={URL.createObjectURL(formData.picture)}
-											alt="Selected"
-											style={{ maxWidth: "100%", maxHeight: "200px" }}
-										/>
-									</div>
-								)}
-							</div>
-							<label className="error">{formError.picture}</label>
 						</div>
 
 						<button type="submit">Register</button>
