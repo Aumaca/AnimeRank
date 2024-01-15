@@ -24,6 +24,13 @@ import api from "../../api/api.ts"
 import Message from "../../components/message/message.tsx"
 import { MessageProps } from "../../interfaces/components/message.ts"
 import AnimeTrailer from "../../components/animeTrailer/animeTrailer.tsx"
+import { Swiper, SwiperSlide } from "swiper/react"
+import { Navigation } from "swiper/modules"
+import "swiper/css"
+import "swiper/css/navigation"
+import "swiper/css/pagination"
+import "swiper/css/scrollbar"
+import "swiper/css/effect-coverflow"
 
 const Anime = () => {
 	const username = useSelector((state: AuthState) => state.username)
@@ -205,76 +212,96 @@ const Anime = () => {
 								</ul>
 							</div>
 						</div>
-						<AnimeTrailer
-							animeTitle={anime.title.english}
-							animeReleaseYear={anime.startDate.year}
-							animeTrailerId={anime.trailer.id}
-						/>
-						<div className="anime__buttons">
-							<button
-								className={`favorite ${isFavorite ? "active" : ""}`}
-								onClick={() => setUserIsFavorite()}
-							>
-								<div />
-								<div>Favorite </div>
-								<div>
-									<FontAwesomeIcon icon={faHeart} />
+
+						<div className="trailer_and_info_container">
+							<div className="trailer_buttons">
+								<AnimeTrailer
+									animeTitle={anime.title.english}
+									animeReleaseYear={anime.startDate.year}
+									animeTrailerId={anime.trailer.id}
+								/>
+
+								<div className="anime__buttons">
+									<button
+										className={`favorite ${isFavorite ? "active" : ""}`}
+										onClick={() => setUserIsFavorite()}
+									>
+										<div />
+										<div>Favorite </div>
+										<div>
+											<FontAwesomeIcon icon={faHeart} />
+										</div>
+									</button>
+									<button
+										className="add"
+										onClick={() => setIsFormAnimeOpen(true)}
+									>
+										<div />
+										<div>Add to list</div>
+										<div>
+											<FontAwesomeIcon icon={faList} />
+										</div>
+									</button>
 								</div>
-							</button>
-							<button
-								className="add"
-								onClick={() => setIsFormAnimeOpen(true)}
-							>
-								<div />
-								<div>Add to list</div>
-								<div>
-									<FontAwesomeIcon icon={faList} />
+							</div>
+
+							<div className="info_above_trailer">
+								<div className="tags">
+									{anime.genres.map((genre) => (
+										<div
+											key={genre}
+											className="genre"
+										>
+											{genre}
+										</div>
+									))}
 								</div>
-							</button>
-						</div>
 
-						<div className="tags">
-							{anime.genres.map((genre) => (
-								<div
-									key={genre}
-									className="genre"
-								>
-									{genre}
+								<div className="description">
+									<h2>Description:</h2>
+									<p>{anime.description}</p>
 								</div>
-							))}
-						</div>
 
-						<div className="description">
-							<h2>Description:</h2>
-							<p>{anime.description}</p>
-						</div>
+								<div className="score">
+									<FontAwesomeIcon icon={faStar} />
+									{anime.averageScore} / 100
+								</div>
 
-						<div className="score">
-							<FontAwesomeIcon icon={faStar} />
-							{anime.averageScore} / 100
-						</div>
-
-						<div className="users">
-							<FontAwesomeIcon icon={faUser} />
-							{anime.popularity.toLocaleString()}
-							<p className="caption">users with this anime in their list</p>
+								<div className="users">
+									<FontAwesomeIcon icon={faUser} />
+									{anime.popularity.toLocaleString()}
+									<p className="caption">users with this anime in their list</p>
+								</div>
+							</div>
 						</div>
 
 						<div className="characters_container">
 							<h2>Characters</h2>
 							<div className="characters">
-								{anime.characters.nodes.map((character) => (
-									<div
-										key={character.name.full}
-										className="character"
-									>
-										<img
-											src={character.image.medium}
-											alt=""
-										/>
-										<p>{character.name.full}</p>
-									</div>
-								))}
+								<Swiper
+									modules={[Navigation]}
+									slidesPerView={"auto"}
+									spaceBetween={20}
+									navigation
+								>
+									{anime.characters.nodes.map((character) => (
+										<SwiperSlide
+											key={anime.id}
+											className={`slide`}
+										>
+											<div
+												key={character.name.full}
+												className="character"
+											>
+												<img
+													src={character.image.medium}
+													alt=""
+												/>
+												<p>{character.name.full}</p>
+											</div>
+										</SwiperSlide>
+									))}
+								</Swiper>
 							</div>
 						</div>
 

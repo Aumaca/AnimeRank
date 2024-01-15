@@ -1,3 +1,7 @@
+.anime {
+	position: relative;
+}
+
 .anime .share_button svg {
 	position: absolute;
 	padding: 1rem 1.5rem;
@@ -113,7 +117,21 @@ ul li:first-child {
 
 .anime .characters_container {
 	font-size: 1.3rem;
-	overflow-x: scroll;
+}
+
+.anime .characters .slide {
+	width: 100px;
+	height: 210px;
+	text-align: center;
+	background-color: var(--body-secondary);
+}
+
+.anime .characters .slide img {
+	height: 150px;
+}
+
+.anime .characters .slide p {
+	padding: 1rem;
 }
 
 .anime .characters_container::-webkit-scrollbar {
@@ -125,10 +143,7 @@ ul li:first-child {
 }
 
 .anime .characters {
-	display: flex;
-	gap: 1rem;
 	margin: 1rem;
-	text-align: center;
 }
 
 .anime .info {
@@ -176,7 +191,7 @@ ul li:first-child {
 
 @media screen and (min-width: 768px) {
 	.anime {
-		padding: 0 20vw;
+		padding: 0 5vw;
 	}
 
 	.anime__container_image_buttons_info {
@@ -197,5 +212,22 @@ ul li:first-child {
 
 	.info .info__container {
 		width: fit-content;
+	}
+}
+
+@media screen and (min-width: 992px) {
+	.trailer_and_info_container {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		margin-bottom: 2.5rem;
+	}
+
+	.trailer_buttons .anime__buttons {
+		flex-direction: column;
+	}
+
+	.anime .description {
+		font-size: 1.5rem;
+		line-height: 2.3rem;
 	}
 }
