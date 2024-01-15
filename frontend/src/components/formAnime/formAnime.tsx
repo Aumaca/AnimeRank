@@ -66,7 +66,7 @@ const FormAnime: FC<FormAnimeProps> = ({
 			})
 		} else if (anime) {
 			setFormAnimeData({
-				...formAnimeData,
+				...initialFormData,
 				id: anime.id,
 			})
 		}
@@ -156,7 +156,6 @@ const FormAnime: FC<FormAnimeProps> = ({
 	}
 
 	const removeAnime = () => {
-		console.log("REMOVEANIME FOI!")
 		api
 			.post("/user/deleteAnime", { anime: anime })
 			.then((res) => {
@@ -201,8 +200,6 @@ const FormAnime: FC<FormAnimeProps> = ({
 								className="close_button"
 								onClick={() => {
 									closeForm()
-									setFormAnimeData(initialFormData)
-									setFormAnimeDataError(initialFormAnimeDataError)
 								}}
 							>
 								<button>

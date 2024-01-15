@@ -10,10 +10,37 @@ export interface AnimeType {
 	genres: string[]
 	popularity: number
 	averageScore: number
+	description: string
+	trailer: Trailer
+	characters: Characters
+}
+
+interface CharacterImage {
+	medium: string
+}
+
+interface CharacterName {
+	full: string
+}
+
+interface CharactersNode {
+	name: CharacterName
+	image: CharacterImage
+}
+
+interface Characters {
+	nodes: CharactersNode[]
+}
+
+interface Trailer {
+	id: string
+	site: string
 }
 
 interface Title {
 	english: string
+	romaji: string
+	native: string
 }
 
 interface CoverImage {

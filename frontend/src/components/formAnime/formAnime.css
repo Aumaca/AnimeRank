@@ -10,6 +10,7 @@
 	justify-content: center;
 	z-index: 1000;
 	transition: 0.3s ease-in-out;
+	overflow-y: auto;
 }
 
 .form_anime {
@@ -25,6 +26,7 @@
 	justify-content: center;
 	gap: 3rem;
 	position: relative;
+	overflow-y: auto;
 }
 
 .form_anime button {

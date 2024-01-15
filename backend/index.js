@@ -26,7 +26,11 @@ app.use(helmet())
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }))
 app.use(bodyParser.json({ limit: "30mb", extended: true }))
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }))
-app.use(cors({ origin: "https://aumaca-animerank.vercel.app" }))
+app.use(
+	cors({
+		origin: ["https://aumaca-animerank.vercel.app", "http://127.0.0.1:5173"],
+	})
+)
 app.use("/assets", express.static(path.join(__dirname, "public/assets")))
 
 /* ROUTES */
