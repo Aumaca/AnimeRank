@@ -34,6 +34,7 @@ import "swiper/css/navigation"
 import "swiper/css/pagination"
 import "swiper/css/scrollbar"
 import "swiper/css/effect-coverflow"
+import Footer from "../../components/footer/footer"
 
 const Homepage = () => {
 	const username = useSelector((state: AuthState) => state.username)
@@ -400,6 +401,8 @@ const Homepage = () => {
 							{messageState.children}
 						</Message>
 					</div>
+
+					<Footer />
 				</>
 			) : (
 				<>

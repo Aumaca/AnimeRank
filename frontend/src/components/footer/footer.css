@@ -1,0 +1,12 @@
+footer {
+    padding: 1rem;
+    text-align: center;
+    background-color: black;
+    font-style: italic;
+    font-size: 1.3rem;
+}
+
+footer a {
+    color: rgb(91, 91, 253);
+    margin-right: 0.5rem;
+}

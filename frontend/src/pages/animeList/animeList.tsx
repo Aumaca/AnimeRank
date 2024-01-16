@@ -24,6 +24,7 @@ import {
 import { UserAndListResponse } from "../../interfaces/responses.ts"
 
 import "./animeList.css"
+import Footer from "../../components/footer/footer.tsx"
 
 const AnimeList = () => {
 	const navigator = useNavigate()
@@ -315,6 +316,8 @@ const AnimeList = () => {
 							))}
 						</div>
 					</div>
+
+					<Footer />
 
 					<Loader isActive={isLoading} />
 				</>

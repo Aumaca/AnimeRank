@@ -26,6 +26,7 @@ import "swiper/swiper-bundle.css"
 import "swiper/css"
 import "swiper/css/navigation"
 import "swiper/css/effect-cards"
+import Footer from "../../components/footer/footer.tsx"
 
 const Profile = () => {
 	const dispatcher: Dispatch = useDispatch()
@@ -279,6 +280,8 @@ const Profile = () => {
 							{messageState.children}
 						</Message>
 					</div>
+
+					<Footer />
 				</>
 			) : (
 				<>

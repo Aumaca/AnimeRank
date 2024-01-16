@@ -13,6 +13,17 @@ export interface AnimeType {
 	description: string
 	trailer: Trailer
 	characters: Characters
+	staff: Staff
+}
+
+interface StaffNode {
+	name: CharacterName
+	image: CharacterImage
+	primaryOccupations: string[]
+}
+
+interface Staff {
+	nodes: StaffNode[]
 }
 
 interface CharacterImage {

@@ -16,7 +16,7 @@ import Navbar from "../../components/navbar/navbar.tsx"
 import Loader from "../../components/loader/loader.tsx"
 
 import { AuthState, UserState } from "../../interfaces/user.ts"
-import { AnimeType } from "../../interfaces/common.ts"
+import { AnimeType, Date } from "../../interfaces/common.ts"
 import { AnimeResponse } from "../../interfaces/responses.ts"
 
 import "./anime.css"
@@ -31,6 +31,7 @@ import "swiper/css/navigation"
 import "swiper/css/pagination"
 import "swiper/css/scrollbar"
 import "swiper/css/effect-coverflow"
+import Footer from "../../components/footer/footer.tsx"
 
 const Anime = () => {
 	const username = useSelector((state: AuthState) => state.username)
@@ -49,6 +50,8 @@ const Anime = () => {
 		backgroundColor: "",
 		children: "",
 	})
+
+	const [descriptionState, setDescriptionState] = useState<boolean>(false)
 
 	const { animeId } = useParams()
 
@@ -93,6 +96,17 @@ const Anime = () => {
 						image {
 							medium
 						}
+					}
+				}
+				staff (perPage: 1) {
+					nodes {
+						name {
+							full
+						}
+						image {
+							medium
+						}
+						primaryOccupations
 					}
 				}
 			}
@@ -181,6 +195,19 @@ const Anime = () => {
 		}
 	}, [user, anime])
 
+	const setGenreString = (genre: string) => {
+		const regex = new RegExp(" ", "g")
+		return genre.replace(regex, "-").toLowerCase()
+	}
+
+	const setZeroToDate = (date: Date): string => {
+		const month = date.month < 10 ? `0${date.month}` : date.month
+		const day = date.day < 10 ? `0${date.day}` : date.day
+		const year = date.year
+
+		return `${month}/${day}/${year}`
+	}
+
 	return (
 		<>
 			{username && anime && user ? (
@@ -250,16 +277,22 @@ const Anime = () => {
 									{anime.genres.map((genre) => (
 										<div
 											key={genre}
-											className="genre"
+											className={`genre ${setGenreString(genre)}`}
 										>
 											{genre}
 										</div>
 									))}
 								</div>
 
-								<div className="description">
+								<div
+									className={`description ${descriptionState ? "active" : ""}`}
+								>
 									<h2>Description:</h2>
-									<p>{anime.description}</p>
+									<p
+										className={`${descriptionState ? "active" : ""}`}
+										dangerouslySetInnerHTML={{ __html: anime.description }}
+										onClick={() => setDescriptionState(!descriptionState)}
+									></p>
 								</div>
 
 								<div className="score">
@@ -286,7 +319,7 @@ const Anime = () => {
 								>
 									{anime.characters.nodes.map((character) => (
 										<SwiperSlide
-											key={anime.id}
+											key={character.name.full}
 											className={`slide`}
 										>
 											<div
@@ -305,55 +338,39 @@ const Anime = () => {
 							</div>
 						</div>
 
-						<div className="info">
-							<div className="info__container">
-								<div className="info__title">
-									<h1>Informations</h1>
-								</div>
-								<div className="information">
-									<h2>Title</h2>
-									<p>{anime.title.english}</p>
-								</div>
-								<div className="information">
-									<h2>Start Date</h2>
-									<p>
-										{anime.startDate.month}/{anime.startDate.day}/
-										{anime.startDate.year}
-									</p>
-								</div>
-								<div className="information">
-									<h2>End Date</h2>
-									<p>
-										{anime.endDate.month}/{anime.endDate.day}/
-										{anime.endDate.year}
-									</p>
-								</div>
-								<div className="information">
-									<h2>Status</h2>
+						<div className="infos_container">
+							<h2>Informations</h2>
+
+							<div className="infos">
+								<div className="info">
+									<h3>Status</h3>
 									<p>{anime.status}</p>
 								</div>
-								<div className="information">
-									<h2>Episodes</h2>
+
+								<div className="info">
+									<h3>Episodes</h3>
 									<p>{anime.episodes}</p>
 								</div>
-								<div className="information">
-									<h2>Duration of episodes</h2>
-									<p>{anime.duration} minutes</p>
+
+								<div className="info">
+									<h3>Release Date</h3>
+									<p>{setZeroToDate(anime.startDate)}</p>
 								</div>
-								<div className="information">
-									<h2>Genres</h2>
-									<p>{anime.genres.join(", ")}</p>
+
+								<div className="info">
+									<h3>Finish Date</h3>
+									<p>{setZeroToDate(anime.endDate)}</p>
 								</div>
-								<div className="information">
-									<h2>Popularity</h2>
-									<p>{anime.popularity}</p>
-								</div>
-								<div className="information">
-									<h2>Average Score</h2>
-									<p>{anime.averageScore}</p>
+
+								<div className="info">
+									<h3>{anime.staff.nodes[0].primaryOccupations[0]}</h3>
+									<p>{anime.staff.nodes[0].name.full}</p>
 								</div>
 							</div>
 						</div>
+
+						<Footer />
+
 						<FormAnime
 							anime={anime}
 							isOpen={isFormAnimeOpen}
