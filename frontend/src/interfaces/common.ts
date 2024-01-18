@@ -14,6 +14,7 @@ export interface AnimeType {
 	trailer: Trailer
 	characters: Characters
 	staff: Staff
+	format: string
 }
 
 interface StaffNode {
@@ -27,7 +28,7 @@ interface Staff {
 }
 
 interface CharacterImage {
-	medium: string
+	large: string
 }
 
 interface CharacterName {
@@ -56,6 +57,7 @@ interface Title {
 
 interface CoverImage {
 	large: string
+	medium: string
 }
 
 export interface Date {

@@ -5,6 +5,8 @@ import { AuthState } from "./interfaces/user.ts"
 import Register from "./pages/auth/register/register.tsx"
 import Login from "./pages/auth/login/login.tsx"
 
+import Search from "./pages/search/search.tsx"
+
 import Home from "./pages/home/home.tsx"
 import Profile from "./pages/profile/profile.tsx"
 
@@ -34,6 +36,12 @@ function App() {
 						path="/register"
 						element={token ? <Navigate to="/" /> : <Register />}
 					/>
+
+					<Route
+						path="/search"
+						element={token ? <Search /> : <Navigate to="/" />}
+					/>
+
 					<Route
 						path="/profile/:username"
 						element={token ? <Profile /> : <Navigate to="/login" />}

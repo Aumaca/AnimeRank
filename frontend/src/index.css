@@ -33,6 +33,11 @@ html {
 }
 
 a,
+a:link {
+	text-decoration: none!important;
+}
+
+a,
 svg,
 button {
 	cursor: pointer;

@@ -6,6 +6,12 @@ const Sidemenu = ({ isActive, username }: { isActive: boolean, username: string 
 		<>
 			<div className={`sidemenu ${isActive ? "active" : ""}`}>
 				<Link
+					to="/search"
+					className="item"
+				>
+					Search
+				</Link>
+				<Link
 					to="/"
 					className="item"
 				>

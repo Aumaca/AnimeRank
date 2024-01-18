@@ -1,6 +1,5 @@
 import { ProfileState } from "./user"
-import { PageData } from "./common"
-import { AnimeType } from "./common"
+import { PageData, AnimeType } from "./common"
 
 export interface LoginResponse {
 	token: string
@@ -28,4 +27,12 @@ export interface AnimeResponse {
 export interface UserAndListResponse {
 	user: ProfileState
 	animes: AnimeType[]
+}
+
+export interface SearchAnimeResponse {
+	data: {
+		Page: {
+			media: AnimeType[]
+		}
+	}
 }

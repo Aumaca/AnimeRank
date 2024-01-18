@@ -88,7 +88,7 @@ const Anime = () => {
 					id
 					site
 				}
-				characters(sort: RELEVANCE) {
+				characters(sort: FAVOURITES_DESC) {
 					nodes {
 						name {
 							full
@@ -245,7 +245,7 @@ const Anime = () => {
 								<AnimeTrailer
 									animeTitle={anime.title.english}
 									animeReleaseYear={anime.startDate.year}
-									animeTrailerId={anime.trailer.id}
+									animeTrailerId={anime.trailer ? anime.trailer.id : null}
 								/>
 
 								<div className="anime__buttons">
@@ -274,14 +274,16 @@ const Anime = () => {
 
 							<div className="info_above_trailer">
 								<div className="tags">
-									{anime.genres.map((genre) => (
-										<div
-											key={genre}
-											className={`genre ${setGenreString(genre)}`}
-										>
-											{genre}
-										</div>
-									))}
+									<div className="tags_container">
+										{anime.genres.map((genre) => (
+											<div
+												key={genre}
+												className={`genre ${setGenreString(genre)}`}
+											>
+												<h4>{genre}</h4>
+											</div>
+										))}
+									</div>
 								</div>
 
 								<div

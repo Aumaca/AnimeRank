@@ -2,6 +2,7 @@
 	width: 100vw;
 	background-color: var(--body-background-color);
 	color: white;
+	min-height: calc(100vh - 95px * 2 + 38px);
 }
 
 .auth button {

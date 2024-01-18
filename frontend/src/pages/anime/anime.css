@@ -35,6 +35,7 @@ ul li:first-child {
 .anime .anime__header .infos ul {
 	display: flex;
 	gap: 2rem;
+	font-size: 1.3rem;
 }
 
 .anime .anime__cover {
@@ -74,17 +75,26 @@ ul li:first-child {
 }
 
 .anime .tags {
-	display: flex;
-	gap: 1rem;
-	margin: 1rem;
-	overflow-x: scroll;
+	overflow-x: auto; /* Changed to auto for better handling of overflow */
+    width: 100%;
+}
+
+.anime .tags .tags_container {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem;
 }
 
 .anime .tags div {
-	border-radius: 50px;
-	padding: 0.5rem 1rem;
-	font-size: 1.3rem;
-	font-weight: 700;
+    border-radius: 50px;
+    padding: 0.5rem 1rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+    white-space: nowrap; /* Prevents text from wrapping to the next line */
+}
+
+.anime .tags div h4 {
+    word-break: keep-all;
 }
 
 .anime .tags div.action {
