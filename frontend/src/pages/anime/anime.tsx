@@ -31,7 +31,7 @@ import "swiper/css/navigation"
 import "swiper/css/pagination"
 import "swiper/css/scrollbar"
 import "swiper/css/effect-coverflow"
-import Footer from "../../components/footer/footer.tsx"
+import Page404 from "../Page404/Page404.tsx"
 
 const Anime = () => {
 	const username = useSelector((state: AuthState) => state.username)
@@ -52,6 +52,7 @@ const Anime = () => {
 	})
 
 	const [descriptionState, setDescriptionState] = useState<boolean>(false)
+	const [notFound, setNotFound] = useState<boolean>(false)
 
 	const { animeId } = useParams()
 
@@ -176,6 +177,7 @@ const Anime = () => {
 			})
 			.catch((error) => {
 				console.error("GraphQL request error:", error)
+				setNotFound(true)
 			})
 			.finally(() => {
 				setIsLoading(false)
@@ -208,198 +210,191 @@ const Anime = () => {
 		return `${month}/${day}/${year}`
 	}
 
-	return (
-		<>
-			{username && anime && user ? (
-				<>
-					<Navbar user={user} />
-					<div className="anime">
-						<div className="share_button">
-							<FontAwesomeIcon
-								icon={faShareNodes}
-								size="2x"
-							/>
-						</div>
-						<div className="anime__header">
-							<h1 className="title">{anime.title.english}</h1>
-							<div className="other_titles">
-								<ul>
-									<li>
-										<h1>{anime.title.romaji}</h1>
-									</li>
-									<li>
-										<h1>{anime.title.native}</h1>
-									</li>
-								</ul>
-							</div>
-							<div className="infos">
-								<ul>
-									<li>{anime.startDate.year}</li>
-									<li>{anime.duration} min</li>
-								</ul>
-							</div>
-						</div>
-
-						<div className="trailer_and_info_container">
-							<div className="trailer_buttons">
-								<AnimeTrailer
-									animeTitle={anime.title.english}
-									animeReleaseYear={anime.startDate.year}
-									animeTrailerId={anime.trailer ? anime.trailer.id : null}
-								/>
-
-								<div className="anime__buttons">
-									<button
-										className={`favorite ${isFavorite ? "active" : ""}`}
-										onClick={() => setUserIsFavorite()}
-									>
-										<div />
-										<div>Favorite </div>
-										<div>
-											<FontAwesomeIcon icon={faHeart} />
-										</div>
-									</button>
-									<button
-										className="add"
-										onClick={() => setIsFormAnimeOpen(true)}
-									>
-										<div />
-										<div>Add to list</div>
-										<div>
-											<FontAwesomeIcon icon={faList} />
-										</div>
-									</button>
-								</div>
-							</div>
-
-							<div className="info_above_trailer">
-								<div className="tags">
-									<div className="tags_container">
-										{anime.genres.map((genre) => (
-											<div
-												key={genre}
-												className={`genre ${setGenreString(genre)}`}
-											>
-												<h4>{genre}</h4>
-											</div>
-										))}
-									</div>
-								</div>
-
-								<div
-									className={`description ${descriptionState ? "active" : ""}`}
-								>
-									<h2>Description:</h2>
-									<p
-										className={`${descriptionState ? "active" : ""}`}
-										dangerouslySetInnerHTML={{ __html: anime.description }}
-										onClick={() => setDescriptionState(!descriptionState)}
-									></p>
-								</div>
-
-								<div className="score">
-									<FontAwesomeIcon icon={faStar} />
-									{anime.averageScore} / 100
-								</div>
-
-								<div className="users">
-									<FontAwesomeIcon icon={faUser} />
-									{anime.popularity.toLocaleString()}
-									<p className="caption">users with this anime in their list</p>
-								</div>
-							</div>
-						</div>
-
-						<div className="characters_container">
-							<h2>Characters</h2>
-							<div className="characters">
-								<Swiper
-									modules={[Navigation]}
-									slidesPerView={"auto"}
-									spaceBetween={20}
-									navigation
-								>
-									{anime.characters.nodes.map((character) => (
-										<SwiperSlide
-											key={character.name.full}
-											className={`slide`}
-										>
-											<div
-												key={character.name.full}
-												className="character"
-											>
-												<img
-													src={character.image.medium}
-													alt=""
-												/>
-												<p>{character.name.full}</p>
-											</div>
-										</SwiperSlide>
-									))}
-								</Swiper>
-							</div>
-						</div>
-
-						<div className="infos_container">
-							<h2>Informations</h2>
-
-							<div className="infos">
-								<div className="info">
-									<h3>Status</h3>
-									<p>{anime.status}</p>
-								</div>
-
-								<div className="info">
-									<h3>Episodes</h3>
-									<p>{anime.episodes}</p>
-								</div>
-
-								<div className="info">
-									<h3>Release Date</h3>
-									<p>{setZeroToDate(anime.startDate)}</p>
-								</div>
-
-								<div className="info">
-									<h3>Finish Date</h3>
-									<p>{setZeroToDate(anime.endDate)}</p>
-								</div>
-
-								<div className="info">
-									<h3>{anime.staff.nodes[0].primaryOccupations[0]}</h3>
-									<p>{anime.staff.nodes[0].name.full}</p>
-								</div>
-							</div>
-						</div>
-
-						<Footer />
-
-						<FormAnime
-							anime={anime}
-							isOpen={isFormAnimeOpen}
-							closeForm={closeForm}
-							user={user}
-							toSetUser={setUser}
-							setIsLoading={setIsLoading}
-							setMessageState={setMessageState}
+	if (username && anime && user) {
+		return (
+			<>
+				<Navbar user={user} />
+				<div className="anime">
+					<div className="share_button">
+						<FontAwesomeIcon
+							icon={faShareNodes}
+							size="2x"
 						/>
-						<Message
-							closeMessage={closeMessage}
-							isOpen={messageState.isOpen}
-							title={messageState.title}
-							backgroundColor={messageState.backgroundColor}
-						>
-							{messageState.children}
-						</Message>
 					</div>
-				</>
-			) : (
-				<>
-					<Navbar />
-					<Loader isActive={isLoading} />
-				</>
-			)}
-		</>
-	)
+					<div className="anime__header">
+						<h1 className="title">{anime.title.english}</h1>
+						<div className="other_titles">
+							<ul>
+								<li>
+									<h1>{anime.title.romaji}</h1>
+								</li>
+								<li>
+									<h1>{anime.title.native}</h1>
+								</li>
+							</ul>
+						</div>
+						<div className="infos">
+							<ul>
+								<li>{anime.startDate.year}</li>
+								<li>{anime.duration} min</li>
+							</ul>
+						</div>
+					</div>
+
+					<div className="trailer_and_info_container">
+						<div className="trailer_buttons">
+							<AnimeTrailer
+								animeTitle={anime.title.english}
+								animeReleaseYear={anime.startDate.year}
+								animeTrailerId={anime.trailer ? anime.trailer.id : null}
+							/>
+
+							<div className="anime__buttons">
+								<button
+									className={`favorite ${isFavorite ? "active" : ""}`}
+									onClick={() => setUserIsFavorite()}
+								>
+									<div />
+									<div>Favorite </div>
+									<div>
+										<FontAwesomeIcon icon={faHeart} />
+									</div>
+								</button>
+								<button
+									className="add"
+									onClick={() => setIsFormAnimeOpen(true)}
+								>
+									<div />
+									<div>Add to list</div>
+									<div>
+										<FontAwesomeIcon icon={faList} />
+									</div>
+								</button>
+							</div>
+						</div>
+
+						<div className="info_above_trailer">
+							<div className="tags">
+								<div className="tags_container">
+									{anime.genres.map((genre) => (
+										<div
+											key={genre}
+											className={`genre ${setGenreString(genre)}`}
+										>
+											<h4>{genre}</h4>
+										</div>
+									))}
+								</div>
+							</div>
+
+							<div
+								className={`description ${descriptionState ? "active" : ""}`}
+							>
+								<h2>Description:</h2>
+								<p
+									className={`${descriptionState ? "active" : ""}`}
+									dangerouslySetInnerHTML={{ __html: anime.description }}
+									onClick={() => setDescriptionState(!descriptionState)}
+								></p>
+							</div>
+
+							<div className="score">
+								<FontAwesomeIcon icon={faStar} />
+								{anime.averageScore} / 100
+							</div>
+
+							<div className="users">
+								<FontAwesomeIcon icon={faUser} />
+								{anime.popularity.toLocaleString()}
+								<p className="caption">users with this anime in their list</p>
+							</div>
+						</div>
+					</div>
+
+					<div className="characters_container">
+						<h2>Characters</h2>
+						<div className="characters">
+							<Swiper
+								modules={[Navigation]}
+								slidesPerView={"auto"}
+								spaceBetween={20}
+								navigation
+							>
+								{anime.characters.nodes.map((character) => (
+									<SwiperSlide
+										key={character.name.full}
+										className={`slide`}
+									>
+										<div
+											key={character.name.full}
+											className="character"
+										>
+											<img
+												src={character.image.medium}
+												alt=""
+											/>
+											<p>{character.name.full}</p>
+										</div>
+									</SwiperSlide>
+								))}
+							</Swiper>
+						</div>
+					</div>
+
+					<div className="infos_container">
+						<h2>Informations</h2>
+
+						<div className="infos">
+							<div className="info">
+								<h3>Status</h3>
+								<p>{anime.status}</p>
+							</div>
+
+							<div className="info">
+								<h3>Episodes</h3>
+								<p>{anime.episodes}</p>
+							</div>
+
+							<div className="info">
+								<h3>Release Date</h3>
+								<p>{setZeroToDate(anime.startDate)}</p>
+							</div>
+
+							<div className="info">
+								<h3>Finish Date</h3>
+								<p>{setZeroToDate(anime.endDate)}</p>
+							</div>
+
+							<div className="info">
+								<h3>{anime.staff.nodes[0].primaryOccupations[0]}</h3>
+								<p>{anime.staff.nodes[0].name.full}</p>
+							</div>
+						</div>
+					</div>
+
+					<FormAnime
+						anime={anime}
+						isOpen={isFormAnimeOpen}
+						closeForm={closeForm}
+						user={user}
+						toSetUser={setUser}
+						setIsLoading={setIsLoading}
+						setMessageState={setMessageState}
+					/>
+					<Message
+						closeMessage={closeMessage}
+						isOpen={messageState.isOpen}
+						title={messageState.title}
+						backgroundColor={messageState.backgroundColor}
+					>
+						{messageState.children}
+					</Message>
+				</div>
+			</>
+		)
+	} else if (notFound) {
+		return <Page404 />
+	}
 }
 
 export default Anime

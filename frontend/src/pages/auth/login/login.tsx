@@ -16,7 +16,6 @@ import api from "../../../api/api.ts"
 import { MessageProps } from "../../../interfaces/components/message.ts"
 
 import "../auth.css"
-import Footer from "../../../components/footer/footer.tsx"
 
 const initialFormErrorState = {
 	email: "",
@@ -170,7 +169,6 @@ const Login = () => {
 					</form>
 				</div>
 			</div>
-			<Footer />
 			
 			<Message
 				closeMessage={closeMessage}

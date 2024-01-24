@@ -26,7 +26,8 @@ import "swiper/swiper-bundle.css"
 import "swiper/css"
 import "swiper/css/navigation"
 import "swiper/css/effect-cards"
-import Footer from "../../components/footer/footer.tsx"
+import ApiError from "../../components/apiError/apiError.tsx"
+import Page404 from "../Page404/Page404.tsx"
 
 const Profile = () => {
 	const dispatcher: Dispatch = useDispatch()
@@ -37,7 +38,9 @@ const Profile = () => {
 	const [userProfile, setUserProfile] = useState<ProfileState>()
 	const [favoriteAnimes, setFavoriteAnimes] = useState<AnimeType[]>([])
 
-	const [isLoading, setIsLoading] = useState(false)
+	const [notFound, setNotFound] = useState<boolean>(false)
+	const [hasErrorAPI, setHasErrorAPI] = useState<boolean>(false)
+	const [isLoading, setIsLoading] = useState<boolean>(false)
 
 	const [messageState, setMessageState] = useState<MessageProps>({
 		isOpen: false,
@@ -58,6 +61,8 @@ const Profile = () => {
 			})
 			.catch((err) => {
 				console.log("Error user profile request: ", err.message)
+				if (err.response.status === 404) setNotFound(true)
+				else setHasErrorAPI(true)
 			})
 
 		api
@@ -66,7 +71,7 @@ const Profile = () => {
 				setUser(res.data)
 			})
 			.catch((err) => {
-				console.log("Error user request: ", err.message)
+				console.log("Error user request: ", err.message)				
 			})
 	}, [username, usernameLogged])
 
@@ -121,6 +126,7 @@ const Profile = () => {
 				}
 			} catch (error) {
 				console.error("Animes request error:", error)
+				setHasErrorAPI(true)
 			} finally {
 				setIsLoading(false)
 			}
@@ -147,149 +153,150 @@ const Profile = () => {
 			})
 	}
 
-	return (
-		<>
-			{userProfile && user ? (
-				<>
-					<Navbar user={user} />
+	if (userProfile && user) {
+		return (
+			<>
+				<Navbar user={user} />
 
-					<div className="profile">
-						<div className="profile_container">
-							<h1>Profile</h1>
-						</div>
-						<div className="user_container">
-							<div className="user">
-								<div className="picture">
-									<ProfilePicture
-										image={userProfile.picture}
-										size={100}
-										classname="rounded"
-									/>
-								</div>
-								<div className="username">
-									<h1>{userProfile.username}</h1>
-									<Link to={`/list/${userProfile.username}`}>
-										<button>Anime List</button>
-									</Link>
-								</div>
+				<div className="profile">
+					<div className="profile_container">
+						<h1>Profile</h1>
+					</div>
+					<div className="user_container">
+						<div className="user">
+							<div className="picture">
+								<ProfilePicture
+									image={userProfile.picture}
+									size={100}
+									classname="rounded"
+								/>
+							</div>
+							<div className="username">
+								<h1>{userProfile.username}</h1>
+								<Link to={`/list/${userProfile.username}`}>
+									<button>Anime List</button>
+								</Link>
 							</div>
 						</div>
-
-						<div className="anime_stats_container">
-							<div className="anime_stats">
-								<h1 className="title">Anime Stats</h1>
-
-								<div className="anime_stats_bar">
-									{Object.keys(userProfile.statusData).map((status) => (
-										<div
-											key={status}
-											className={`bar ${status}`}
-											style={{
-												width: `${
-													(userProfile.statusData[status] /
-														userProfile.animes.length) *
-													100
-												}%`,
-											}}
-										/>
-									))}
-								</div>
-
-								<div className="stats_container">
-									<div className="col1">
-										<ul>
-											{Object.keys(userProfile.statusData).map(
-												(statusKey, i) => (
-													<li key={statusKey}>
-														<Link to={`/${username}/list/${i + 1}`}>
-															<div className={`dot-color ${statusKey}`} />
-															{status[i]}
-														</Link>
-														<span>{userProfile.statusData[statusKey]}</span>
-													</li>
-												)
-											)}
-										</ul>
-									</div>
-									<div className="col2">
-										<ul>
-											<li>
-												<p>Total Animes</p>
-												<span>{userProfile.animes.length}</span>
-											</li>
-											<li>
-												<p>Episodes</p>
-												<span>{userProfile.countEpisodes}</span>
-											</li>
-										</ul>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						{favoriteAnimes.length > 0 ? (
-							<div className="favorites">
-								<div className="container">
-									<h1 className="title">Favorites</h1>
-									<Swiper
-										modules={[Navigation]}
-										slidesPerView={2}
-										navigation
-										pagination={{ clickable: true }}
-										className="swiper-slider"
-									>
-										{favoriteAnimes.map((anime) => (
-											<SwiperSlide
-												key={`swiper-${anime.id}`}
-												className="slide"
-											>
-												<img
-													src={anime.coverImage.large}
-													alt=""
-												/>
-												<div className="content">
-													<Link to={`/anime/${anime.id}`}>
-														<h3>{anime.title.english}</h3>
-													</Link>
-												</div>
-											</SwiperSlide>
-										))}
-									</Swiper>
-								</div>
-							</div>
-						) : (
-							<></>
-						)}
-
-						{user.username === userProfile.username ? (
-							<div className="delete">
-								<button onClick={() => deleteUser()}>
-									Delete profile <FontAwesomeIcon icon={faTrash} />
-								</button>
-							</div>
-						) : (
-							<></>
-						)}
-
-						<Message
-							closeMessage={closeMessage}
-							isOpen={messageState.isOpen}
-							title={messageState.title}
-							backgroundColor={messageState.backgroundColor}
-						>
-							{messageState.children}
-						</Message>
 					</div>
 
-					<Footer />
-				</>
-			) : (
-				<>
+					<div className="anime_stats_container">
+						<div className="anime_stats">
+							<h1 className="title">Anime Stats</h1>
+
+							<div className="anime_stats_bar">
+								{Object.keys(userProfile.statusData).map((status) => (
+									<div
+										key={status}
+										className={`bar ${status}`}
+										style={{
+											width: `${
+												(userProfile.statusData[status] /
+													userProfile.animes.length) *
+												100
+											}%`,
+										}}
+									/>
+								))}
+							</div>
+
+							<div className="stats_container">
+								<div className="col1">
+									<ul>
+										{Object.keys(userProfile.statusData).map((statusKey, i) => (
+											<li key={statusKey}>
+												<Link to={`/${username}/list/${i + 1}`}>
+													<div className={`dot-color ${statusKey}`} />
+													{status[i]}
+												</Link>
+												<span>{userProfile.statusData[statusKey]}</span>
+											</li>
+										))}
+									</ul>
+								</div>
+								<div className="col2">
+									<ul>
+										<li>
+											<p>Total Animes</p>
+											<span>{userProfile.animes.length}</span>
+										</li>
+										<li>
+											<p>Episodes</p>
+											<span>{userProfile.countEpisodes}</span>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					{favoriteAnimes.length > 0 ? (
+						<div className="favorites">
+							<div className="container">
+								<h1 className="title">Favorites</h1>
+								<Swiper
+									modules={[Navigation]}
+									slidesPerView={2}
+									navigation
+									pagination={{ clickable: true }}
+									className="swiper-slider"
+								>
+									{favoriteAnimes.map((anime) => (
+										<SwiperSlide
+											key={`swiper-${anime.id}`}
+											className="slide"
+										>
+											<img
+												src={anime.coverImage.large}
+												alt=""
+											/>
+											<div className="content">
+												<Link to={`/anime/${anime.id}`}>
+													<h3>{anime.title.english}</h3>
+												</Link>
+											</div>
+										</SwiperSlide>
+									))}
+								</Swiper>
+							</div>
+						</div>
+					) : (
+						<></>
+					)}
+
+					{user.username === userProfile.username ? (
+						<div className="delete">
+							<button onClick={() => deleteUser()}>
+								Delete profile <FontAwesomeIcon icon={faTrash} />
+							</button>
+						</div>
+					) : (
+						<></>
+					)}
+
+					<Message
+						closeMessage={closeMessage}
+						isOpen={messageState.isOpen}
+						title={messageState.title}
+						backgroundColor={messageState.backgroundColor}
+					>
+						{messageState.children}
+					</Message>
+
 					<Loader isActive={isLoading} />
-				</>
-			)}
-		</>
-	)
+				</div>
+			</>
+		)
+	} else if (hasErrorAPI) {
+		return (
+			<>
+				<Navbar />
+				<ApiError />
+			</>
+		)
+	} else if (notFound) {
+		return <Page404 />
+	}
 }
 
 export default Profile

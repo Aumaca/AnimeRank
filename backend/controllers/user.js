@@ -7,24 +7,22 @@ export const getUser = async (req, res) => {
 	try {
 		const username = req.params.username
 
-		User.findOne({ username: username })
-			.select("username picture country createdAt animes")
-			.then((userData) => {
-				const statusData = userData.filterAnimesStatus()
-				const countEpisodes = userData.countEpisodes()
-				const favoriteAnimes = userData.getFavoriteAnimes()
+		const userData = await User.findOne({ username: username }).select(
+			"username picture country createdAt animes"
+		)
+		if (!userData) return res.status(404).json({ error: "User not found" })
 
-				const userDataObj = userData.toObject()
+		const statusData = userData.filterAnimesStatus()
+		const countEpisodes = userData.countEpisodes()
+		const favoriteAnimes = userData.getFavoriteAnimes()
 
-				userDataObj.statusData = statusData
-				userDataObj.countEpisodes = countEpisodes
-				userDataObj.favoriteAnimes = favoriteAnimes
+		const userDataObj = userData.toObject()
 
-				res.status(200).json(userDataObj)
-			})
-			.catch((err) => {
-				res.status(400).json({ error: err })
-			})
+		userDataObj.statusData = statusData
+		userDataObj.countEpisodes = countEpisodes
+		userDataObj.favoriteAnimes = favoriteAnimes
+
+		res.status(200).json(userDataObj)
 	} catch (err) {
 		res.status(400).json({ error: err })
 	}
@@ -35,94 +33,92 @@ export const getUserAndList = async (req, res) => {
 		const username = req.params.username
 		const statusParam = req.query.status
 
-		User.findOne({ username: username })
-			.select("username picture country createdAt animes")
-			.then(async (userData) => {
-				const statusData = userData.filterAnimesStatus()
-				const countEpisodes = userData.countEpisodes()
-				const favoriteAnimes = userData.getFavoriteAnimes()
+		const userData = await User.findOne({ username: username }).select(
+			"username picture country createdAt animes"
+		)
+		if (!userData) return res.status(404).json({ error: "User not found" })
 
-				const userDataObj = userData.toObject()
+		const statusData = userData.filterAnimesStatus()
+		const countEpisodes = userData.countEpisodes()
+		const favoriteAnimes = userData.getFavoriteAnimes()
 
-				if (parseInt(statusParam)) {
-					userDataObj.animes = userDataObj.animes.filter(
-						(anime) => anime.status === status[parseInt(statusParam) - 1]
-					)
-				}
+		const userDataObj = userData.toObject()
 
-				if (userDataObj.animes.length > 0) {
-					userDataObj.statusData = statusData
-					userDataObj.countEpisodes = countEpisodes
-					userDataObj.favoriteAnimes = favoriteAnimes
+		if (parseInt(statusParam)) {
+			userDataObj.animes = userDataObj.animes.filter(
+				(anime) => anime.status === status[parseInt(statusParam) - 1]
+			)
+		}
 
-					// Get animes info
-					let queries = ""
-					userDataObj.animes.forEach((anime, i) => {
-						queries += `
-							a${anime.id}: Media(id: $id${i}, type: ANIME) {
-								id
-								title {
-									english
-								}
-								startDate {
-									day
-									month
-									year
-								}
-								endDate {
-									day
-									month
-									year
-								}
-								status
-								episodes
-								duration
-								genres
-								popularity
-								averageScore
-								coverImage {
-									large
-								}
-							}
-						`
-					})
+		if (userDataObj.animes.length > 0) {
+			userDataObj.statusData = statusData
+			userDataObj.countEpisodes = countEpisodes
+			userDataObj.favoriteAnimes = favoriteAnimes
 
-					const variableDefinitions = userDataObj.animes
-						.map((_, i) => `$id${i}: Int`)
-						.join(", ")
+			// Get animes info
+			let queries = ""
+			userDataObj.animes.forEach((anime, i) => {
+				queries += `
+					a${anime.id}: Media(id: $id${i}, type: ANIME) {
+						id
+						title {
+							english
+						}
+						startDate {
+							day
+							month
+							year
+						}
+						endDate {
+							day
+							month
+							year
+						}
+						status
+						episodes
+						duration
+						genres
+						popularity
+						averageScore
+						coverImage {
+							large
+						}
+					}
+				`
+			})
 
-					const variables = {}
-					userDataObj.animes.forEach((anime, i) => {
-						variables["id" + i] = parseInt(anime.id)
-					})
+			const variableDefinitions = userDataObj.animes
+				.map((_, i) => `$id${i}: Int`)
+				.join(", ")
 
-					const graphqlQuery = `
+			const variables = {}
+			userDataObj.animes.forEach((anime, i) => {
+				variables["id" + i] = parseInt(anime.id)
+			})
+
+			const graphqlQuery = `
 						query (${variableDefinitions}) {
 							${queries}
 						}
 					`
 
-					const animes = []
+			const animes = []
 
-					await axios
-						.post("https://graphql.anilist.co", {
-							query: graphqlQuery,
-							variables: variables,
-						})
-						.then((res) => {
-							Object.values(res.data.data).forEach((anime) => {
-								animes.push(anime)
-							})
-						})
+			await axios
+				.post("https://graphql.anilist.co", {
+					query: graphqlQuery,
+					variables: variables,
+				})
+				.then((res) => {
+					Object.values(res.data.data).forEach((anime) => {
+						animes.push(anime)
+					})
+				})
 
-					return res.status(200).json({ animes: animes, user: userDataObj })
-				} else {
-					return res.status(200).json({ animes: [], user: userDataObj })
-				}
-			})
-			.catch((err) => {
-				res.status(400).json(err)
-			})
+			return res.status(200).json({ animes: animes, user: userDataObj })
+		} else {
+			return res.status(200).json({ animes: [], user: userDataObj })
+		}
 	} catch (err) {
 		res.status(400).json(err)
 	}

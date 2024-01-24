@@ -27,6 +27,7 @@ import { AuthState, UserState } from "../../interfaces/user"
 import { AnimeType } from "../../interfaces/common"
 import { HomePageResponse } from "../../interfaces/responses"
 import { MessageProps } from "../../interfaces/components/message"
+import ApiError from "../../components/apiError/apiError"
 
 import "./home.css"
 import "swiper/css"
@@ -34,12 +35,12 @@ import "swiper/css/navigation"
 import "swiper/css/pagination"
 import "swiper/css/scrollbar"
 import "swiper/css/effect-coverflow"
-import Footer from "../../components/footer/footer"
 
 const Homepage = () => {
 	const username = useSelector((state: AuthState) => state.username)
 	const [user, setUser] = useState<UserState>()
 
+	const [hasErrorAPI, setHasErrorAPI] = useState<boolean>(false)
 	const [popularAnimes, setPopularAnimes] = useState<AnimeType[] | null>(null)
 	const [mostScoredAnimes, setMostScoredAnimes] = useState<AnimeType[] | null>(
 		null
@@ -180,6 +181,7 @@ const Homepage = () => {
 			})
 			.catch((error) => {
 				console.error("Animes request error:", error)
+				setHasErrorAPI(true)
 			})
 
 		setIsLoading(false)
@@ -210,208 +212,213 @@ const Homepage = () => {
 		setMessageState({ ...messageState, isOpen: false })
 	}
 
-	return (
-		<>
-			{popularAnimes && mostScoredAnimes && releasingAnimes && user ? (
-				<>
-					<Navbar user={user} />
+	if (popularAnimes && mostScoredAnimes && releasingAnimes && user) {
+		return (
+			<>
+				<Navbar user={user} />
 
-					<div className="homepage">
-						<div className="news">
-							<Swiper
-								modules={[Pagination, EffectCoverflow]}
-								pagination={{ clickable: true }}
-								loop={true}
-								slidesPerView={1}
-								centeredSlides={true}
-								effect="coverflow"
-								breakpoints={{
-									768: {
-										slidesPerView: 2,
-									},
-								}}
-							>
-								<SwiperSlide className="new">
-									<img
-										src={jujutsu}
-										alt=""
-									/>
-									<div className="content">
-										<h1>JUJUTSU KAISEN Season 2</h1>
-										<h3>Released last episode of the season!</h3>
-									</div>
-								</SwiperSlide>
-								<SwiperSlide className="new">
-									<img
-										src={drstone}
-										alt=""
-									/>
-									<div className="content">
-										<h1>News 2!</h1>
-										<p>Somethiong about</p>
-									</div>
-								</SwiperSlide>
-								<SwiperSlide className="new">
-									<img
-										src={psycho}
-										alt=""
-									/>
-									<div className="content">
-										<h1>PsycoPass!!</h1>
-										<p>New teaser whatever</p>
-									</div>
-								</SwiperSlide>
-								<SwiperSlide className="new">
-									<img
-										src={drstone}
-										alt=""
-									/>
-									<div className="content">
-										<h1>News 2!</h1>
-										<p>Somethiong about</p>
-									</div>
-								</SwiperSlide>
-							</Swiper>
-						</div>
-
-						<div className="container">
-							<h1 className="popular">
-								Most Popular <FontAwesomeIcon icon={faFire} />
-							</h1>
-							<Swiper
-								modules={[Navigation]}
-								spaceBetween={20}
-								slidesPerView={"auto"}
-								navigation
-							>
-								{popularAnimes.map((anime) => (
-									<SwiperSlide
-										key={anime.id}
-										className={`slide ${setClassSwiperSlide(anime)}`}
-									>
-										<img
-											src={anime.coverImage.large}
-											alt=""
-										/>
-
-										<FontAwesomeIcon
-											icon={faPlus}
-											size="2x"
-											onClick={() => handleClickAdd(anime)}
-										/>
-
-										<div className="content">
-											<Link to={`/anime/${anime.id}`}>
-												<h3>{anime.title.english}</h3>
-											</Link>
-										</div>
-									</SwiperSlide>
-								))}
-							</Swiper>
-						</div>
-
-						<div className="container">
-							<h1 className="scored">
-								Most Scored <FontAwesomeIcon icon={faStar} />
-							</h1>
-							<Swiper
-								modules={[Navigation]}
-								spaceBetween={20}
-								slidesPerView={"auto"}
-								navigation
-							>
-								{mostScoredAnimes.map((anime) => (
-									<SwiperSlide
-										key={anime.id}
-										className={`slide ${setClassSwiperSlide(anime)}`}
-									>
-										<img
-											src={anime.coverImage.large}
-											alt=""
-										/>
-
-										<FontAwesomeIcon
-											icon={faPlus}
-											size="2x"
-											onClick={() => handleClickAdd(anime)}
-										/>
-
-										<div className="content">
-											<Link to={`/anime/${anime.id}`}>
-												<h3>{anime.title.english}</h3>
-											</Link>
-										</div>
-									</SwiperSlide>
-								))}
-							</Swiper>
-						</div>
-
-						<div className="container">
-							<h1 className="releasing">
-								Releasing Animes <FontAwesomeIcon icon={faRss} />
-							</h1>
-							<Swiper
-								modules={[Navigation]}
-								spaceBetween={20}
-								slidesPerView={"auto"}
-								navigation
-							>
-								{releasingAnimes.map((anime) => (
-									<SwiperSlide
-										key={anime.id}
-										className={`slide ${setClassSwiperSlide(anime)}`}
-									>
-										<img
-											src={anime.coverImage.large}
-											alt=""
-										/>
-
-										<FontAwesomeIcon
-											icon={faPlus}
-											size="2x"
-											onClick={() => handleClickAdd(anime)}
-										/>
-
-										<div className="content">
-											<Link to={`/anime/${anime.id}`}>
-												<h3>{anime.title.english}</h3>
-											</Link>
-										</div>
-									</SwiperSlide>
-								))}
-							</Swiper>
-						</div>
-
-						<FormAnime
-							anime={animeSelected}
-							isOpen={isFormAnimeOpen}
-							user={user}
-							toSetUser={setUser}
-							closeForm={closeForm}
-							setIsLoading={setIsLoading}
-							setMessageState={setMessageState}
-						/>
-
-						<Message
-							closeMessage={closeMessage}
-							isOpen={messageState.isOpen}
-							title={messageState.title}
-							backgroundColor={messageState.backgroundColor}
+				<div className="homepage">
+					<div className="news">
+						<Swiper
+							modules={[Pagination, EffectCoverflow]}
+							pagination={{ clickable: true }}
+							loop={true}
+							slidesPerView={1}
+							centeredSlides={true}
+							effect="coverflow"
+							breakpoints={{
+								768: {
+									slidesPerView: 2,
+								},
+							}}
 						>
-							{messageState.children}
-						</Message>
+							<SwiperSlide className="new">
+								<img
+									src={jujutsu}
+									alt=""
+								/>
+								<div className="content">
+									<h1>JUJUTSU KAISEN Season 2</h1>
+									<h3>Released last episode of the season!</h3>
+								</div>
+							</SwiperSlide>
+							<SwiperSlide className="new">
+								<img
+									src={drstone}
+									alt=""
+								/>
+								<div className="content">
+									<h1>News 2!</h1>
+									<p>Somethiong about</p>
+								</div>
+							</SwiperSlide>
+							<SwiperSlide className="new">
+								<img
+									src={psycho}
+									alt=""
+								/>
+								<div className="content">
+									<h1>PsycoPass!!</h1>
+									<p>New teaser whatever</p>
+								</div>
+							</SwiperSlide>
+							<SwiperSlide className="new">
+								<img
+									src={drstone}
+									alt=""
+								/>
+								<div className="content">
+									<h1>News 2!</h1>
+									<p>Somethiong about</p>
+								</div>
+							</SwiperSlide>
+						</Swiper>
 					</div>
 
-					<Footer />
-				</>
-			) : (
-				<>
-					<Navbar />
-					<Loader isActive={isLoading} />
-				</>
-			)}
-		</>
-	)
+					<div className="container">
+						<h1 className="popular">
+							Most Popular <FontAwesomeIcon icon={faFire} />
+						</h1>
+						<Swiper
+							modules={[Navigation]}
+							spaceBetween={20}
+							slidesPerView={"auto"}
+							navigation
+						>
+							{popularAnimes.map((anime) => (
+								<SwiperSlide
+									key={anime.id}
+									className={`slide ${setClassSwiperSlide(anime)}`}
+								>
+									<img
+										src={anime.coverImage.large}
+										alt=""
+									/>
+
+									<FontAwesomeIcon
+										icon={faPlus}
+										size="2x"
+										onClick={() => handleClickAdd(anime)}
+									/>
+
+									<div className="content">
+										<Link to={`/anime/${anime.id}`}>
+											<h3>{anime.title.english}</h3>
+										</Link>
+									</div>
+								</SwiperSlide>
+							))}
+						</Swiper>
+					</div>
+
+					<div className="container">
+						<h1 className="scored">
+							Most Scored <FontAwesomeIcon icon={faStar} />
+						</h1>
+						<Swiper
+							modules={[Navigation]}
+							spaceBetween={20}
+							slidesPerView={"auto"}
+							navigation
+						>
+							{mostScoredAnimes.map((anime) => (
+								<SwiperSlide
+									key={anime.id}
+									className={`slide ${setClassSwiperSlide(anime)}`}
+								>
+									<img
+										src={anime.coverImage.large}
+										alt=""
+									/>
+
+									<FontAwesomeIcon
+										icon={faPlus}
+										size="2x"
+										onClick={() => handleClickAdd(anime)}
+									/>
+
+									<div className="content">
+										<Link to={`/anime/${anime.id}`}>
+											<h3>{anime.title.english}</h3>
+										</Link>
+									</div>
+								</SwiperSlide>
+							))}
+						</Swiper>
+					</div>
+
+					<div className="container">
+						<h1 className="releasing">
+							Releasing Animes <FontAwesomeIcon icon={faRss} />
+						</h1>
+						<Swiper
+							modules={[Navigation]}
+							spaceBetween={20}
+							slidesPerView={"auto"}
+							navigation
+						>
+							{releasingAnimes.map((anime) => (
+								<SwiperSlide
+									key={anime.id}
+									className={`slide ${setClassSwiperSlide(anime)}`}
+								>
+									<img
+										src={anime.coverImage.large}
+										alt=""
+									/>
+
+									<FontAwesomeIcon
+										icon={faPlus}
+										size="2x"
+										onClick={() => handleClickAdd(anime)}
+									/>
+
+									<div className="content">
+										<Link to={`/anime/${anime.id}`}>
+											<h3>{anime.title.english}</h3>
+										</Link>
+									</div>
+								</SwiperSlide>
+							))}
+						</Swiper>
+					</div>
+
+					<FormAnime
+						anime={animeSelected}
+						isOpen={isFormAnimeOpen}
+						user={user}
+						toSetUser={setUser}
+						closeForm={closeForm}
+						setIsLoading={setIsLoading}
+						setMessageState={setMessageState}
+					/>
+
+					<Message
+						closeMessage={closeMessage}
+						isOpen={messageState.isOpen}
+						title={messageState.title}
+						backgroundColor={messageState.backgroundColor}
+					>
+						{messageState.children}
+					</Message>
+				</div>
+			</>
+		)
+	} else if (hasErrorAPI) {
+		return (
+			<>
+				<Navbar />
+				<ApiError />
+			</>
+		)
+	} else {
+		return (
+			<>
+				<Navbar />
+				<Loader isActive={isLoading} />
+			</>
+		)
+	}
 }
 
 export default Homepage

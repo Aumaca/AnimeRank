@@ -28,7 +28,7 @@ interface Staff {
 }
 
 interface CharacterImage {
-	large: string
+	medium: string
 }
 
 interface CharacterName {

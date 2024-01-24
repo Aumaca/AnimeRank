@@ -1,5 +1,4 @@
 import { ChangeEvent, useEffect, useState } from "react"
-import Footer from "../../components/footer/footer"
 import Loader from "../../components/loader/loader"
 import Navbar from "../../components/navbar/navbar"
 import { useSelector } from "react-redux"
@@ -20,6 +19,7 @@ import { AuthState, ProfileState } from "../../interfaces/user"
 
 import { Link } from "react-router-dom"
 import "./search.css"
+import ApiError from "../../components/apiError/apiError"
 
 const Search = () => {
 	const username = useSelector((state: AuthState) => state.username)
@@ -30,6 +30,7 @@ const Search = () => {
 
 	const [searchString, setSearchString] = useState<string>("")
 	const [animes, setAnimes] = useState<AnimeType[]>([])
+	const [hasErrorAPI, setHasErrorAPI] = useState<boolean>(false)
 
 	useEffect(() => {
 		api
@@ -39,6 +40,7 @@ const Search = () => {
 			})
 			.catch((err) => {
 				console.log("Error user request: ", err.message)
+				setHasErrorAPI(true)
 			})
 			.finally(() => {
 				setIsLoading(false)
@@ -86,15 +88,16 @@ const Search = () => {
 			return ""
 		}
 	}
+				
 
-	return (
-		<>
-			{user ? (
-				<>
-					<Navbar user={user} />
+	if (user) {
+		return (
+			<>
+				<Navbar user={user} />
 
-					<div className="search">
-						<div className="header">
+				<div className="search">
+					<div className="header">
+						<div className="header_container">
 							<h1>
 								Search <FontAwesomeIcon icon={faSearch} />
 							</h1>
@@ -110,103 +113,106 @@ const Search = () => {
 								<button type="submit">Submit</button>
 							</form>
 						</div>
+					</div>
 
-						<div className="icons_container">
-							<div className="icons">
-								<FontAwesomeIcon
-									icon={faBorderAll}
-									size="2x"
-									className={`grid ${listViewStyle ? "" : "active"}`}
-									onClick={() => setListViewStyle(!listViewStyle)}
-								/>
-								<FontAwesomeIcon
-									icon={faListUl}
-									size="2x"
-									className={`list ${listViewStyle ? "active" : ""}`}
-									onClick={() => setListViewStyle(!listViewStyle)}
-								/>
-							</div>
-						</div>
-
-						<div
-							className={`result_container ${listViewStyle ? "list" : "grid"}`}
-						>
-							{animes.map((anime) => (
-								<div
-									className="result"
-									key={anime.id}
-								>
-									{listViewStyle ? (
-										<Link to={`/anime/${anime.id}`}>
-											<div className="anime_item">
-												<img
-													src={anime.coverImage.large}
-													alt=""
-													className={`${setClassAnimeItem(anime)}`}
-												/>
-												<div className="content">
-													<h2>{anime.title.english}</h2>
-
-													<div className="status"></div>
-
-													<div className="information">
-														<p>Episodes: {anime.episodes}</p>
-
-														<div className="score">
-															<h3>Score: {anime.averageScore}</h3>
-															<FontAwesomeIcon
-																icon={faStar}
-																size="xl"
-															/>
-														</div>
-													</div>
-												</div>
-											</div>
-										</Link>
-									) : (
-										<Link to={`/anime/${anime.id}`}>
-											<div className="anime_item">
-												<img
-													src={anime.coverImage.large}
-													alt=""
-													className={`${setClassAnimeItem(anime)}`}
-												/>
-												<div
-													className={`content ${
-														setClassAnimeItem(anime) ? "with-margin" : ""
-													}`}
-												>
-													<h2>{anime.title.english}</h2>
-													<div className="information">
-														<p>Episodes: {anime.episodes}</p>
-
-														<div className="score">
-															<p>Score: {anime.averageScore}</p>
-															<FontAwesomeIcon
-																icon={faStar}
-																size="xl"
-															/>
-														</div>
-													</div>
-												</div>
-											</div>
-										</Link>
-									)}
-								</div>
-							))}
+					<div className="icons_container">
+						<div className="icons">
+							<FontAwesomeIcon
+								icon={faBorderAll}
+								size="2x"
+								className={`grid ${listViewStyle ? "" : "active"}`}
+								onClick={() => setListViewStyle(!listViewStyle)}
+							/>
+							<FontAwesomeIcon
+								icon={faListUl}
+								size="2x"
+								className={`list ${listViewStyle ? "active" : ""}`}
+								onClick={() => setListViewStyle(!listViewStyle)}
+							/>
 						</div>
 					</div>
 
-					<Footer />
-					<Loader isActive={isLoading} />
-				</>
-			) : (
-				<>
-					<Loader isActive={isLoading} />
-				</>
-			)}
-		</>
-	)
+					<div
+						className={`result_container ${listViewStyle ? "list" : "grid"}`}
+					>
+						{animes.map((anime) => (
+							<div
+								className="result"
+								key={anime.id}
+							>
+								{listViewStyle ? (
+									<Link to={`/anime/${anime.id}`}>
+										<div className="anime_item">
+											<img
+												src={anime.coverImage.large}
+												alt=""
+												className={`${setClassAnimeItem(anime)}`}
+											/>
+											<div className="content">
+												<h2>{anime.title.english}</h2>
+
+												<div className="status"></div>
+
+												<div className="information">
+													<p>Episodes: {anime.episodes}</p>
+
+													<div className="score">
+														<h3>Score: {anime.averageScore}</h3>
+														<FontAwesomeIcon
+															icon={faStar}
+															size="xl"
+														/>
+													</div>
+												</div>
+											</div>
+										</div>
+									</Link>
+								) : (
+									<Link to={`/anime/${anime.id}`}>
+										<div className="anime_item">
+											<img
+												src={anime.coverImage.large}
+												alt=""
+												className={`${setClassAnimeItem(anime)}`}
+											/>
+											<div
+												className={`content ${
+													setClassAnimeItem(anime) ? "with-margin" : ""
+												}`}
+											>
+												<h2>{anime.title.english}</h2>
+												<div className="information">
+													<p>Episodes: {anime.episodes}</p>
+
+													<div className="score">
+														<p>Score: {anime.averageScore}</p>
+														<FontAwesomeIcon
+															icon={faStar}
+															size="xl"
+														/>
+													</div>
+												</div>
+											</div>
+										</div>
+									</Link>
+								)}
+							</div>
+						))}
+					</div>
+				</div>
+
+				<Loader isActive={isLoading} />
+			</>
+		)
+	}
+	else if (hasErrorAPI) {
+		return (
+			<>
+				<Navbar />
+				<ApiError />
+			</>
+		)
+	}
 }
 
 export default Search

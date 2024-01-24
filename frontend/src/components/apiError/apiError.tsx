@@ -1,0 +1,30 @@
+import "./ApiError.css"
+
+import image from "../../imgs/404.png"
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faFaceSadTear } from "@fortawesome/free-solid-svg-icons"
+
+const ApiError = () => {
+	return (
+		<div className="apierror">
+			<div className="text">
+				<h1>
+					The anime data server is down due the number of requests made by this
+					website! Sorry for the incovenience...
+				</h1>
+				<h1>
+					<FontAwesomeIcon icon={faFaceSadTear} />
+				</h1>
+			</div>
+			<div>
+				<img
+					src={image}
+					alt=""
+				/>
+			</div>
+		</div>
+	)
+}
+
+export default ApiError

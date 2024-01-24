@@ -24,7 +24,8 @@ import {
 import { UserAndListResponse } from "../../interfaces/responses.ts"
 
 import "./animeList.css"
-import Footer from "../../components/footer/footer.tsx"
+import Page404 from "../Page404/Page404.tsx"
+import ApiError from "../../components/apiError/apiError.tsx"
 
 const AnimeList = () => {
 	const navigator = useNavigate()
@@ -43,6 +44,8 @@ const AnimeList = () => {
 	const [filter, setFilter] = useState<string>(statusParam ? statusParam : "")
 
 	const [isLoading, setIsLoading] = useState(true)
+	const [notFound, setNotFound] = useState<boolean>(false)
+	const [hasErrorAPI, setHasErrorAPI] = useState<boolean>(false)
 
 	useEffect(() => {
 		api
@@ -66,6 +69,8 @@ const AnimeList = () => {
 			})
 			.catch((err) => {
 				console.log("Error user profile request: ", err.message)
+				if (err.response.status === 404) setNotFound(true)
+				else setHasErrorAPI(true)
 			})
 			.finally(() => {
 				setIsLoading(false)
@@ -91,7 +96,9 @@ const AnimeList = () => {
 	}
 
 	const setClassAnimeItem = (anime: AnimeType): string => {
-		if (userProfile!.animes.filter((userAnime) => userAnime.id === anime.id)[0]) {
+		if (
+			userProfile!.animes.filter((userAnime) => userAnime.id === anime.id)[0]
+		) {
 			return userProfile!.animes
 				.filter((userAnime) => userAnime.id === anime.id)[0]
 				.status.toLowerCase()
@@ -102,233 +109,231 @@ const AnimeList = () => {
 		}
 	}
 
-	return (
-		<>
-			{user && userProfile && animes ? (
-				<>
-					<Navbar user={user} />
+	if (user && userProfile && animes) {
+		return (
+			<>
+				<Navbar user={user} />
 
-					<div className="animelist">
-						<div className="animelist_header">
-							<div></div>
-							<h1>AnimeList of {userProfile.username}</h1>
-							<div className="icons">
-								<FontAwesomeIcon
-									icon={faBorderAll}
-									size="2x"
-									className={`grid ${listViewStyle ? "" : "active"}`}
-									onClick={() => setListViewStyle(!listViewStyle)}
-								/>
-								<FontAwesomeIcon
-									icon={faListUl}
-									size="2x"
-									className={`list ${listViewStyle ? "active" : ""}`}
-									onClick={() => setListViewStyle(!listViewStyle)}
-								/>
-							</div>
-						</div>
-
-						<div className="user_container">
-							<div className="user">
-								<div className="picture">
-									<ProfilePicture
-										image={userProfile.picture}
-										size={100}
-										classname="rounded"
-									/>
-								</div>
-								<div className="username">
-									<h1>{userProfile.username}</h1>
-									<Link to={`/profile/${userProfile.username}`}>
-										<button>User Profile</button>
-									</Link>
-								</div>
-							</div>
-						</div>
-
-						<div className="animelist_filter">
-							<select
-								name="filter"
-								onChange={handleFilterChange}
-								value={filter}
-							>
-								<option
-									key={0}
-									value={0}
-								>
-									{"All Anime"}
-								</option>
-								<option
-									key={1}
-									value={1}
-								>
-									{"Watching"}
-								</option>
-								<option
-									key={2}
-									value={2}
-								>
-									{"Completed"}
-								</option>
-								<option
-									key={3}
-									value={3}
-								>
-									{"On-Hold"}
-								</option>
-								<option
-									key={4}
-									value={4}
-								>
-									{"Dropped"}
-								</option>
-								<option
-									key={5}
-									value={5}
-								>
-									{"Plan to Watch"}
-								</option>
-							</select>
-						</div>
-
-						<div
-							className={`animelist_container ${
-								listViewStyle ? "list" : "grid"
-							}`}
-						>
-							{animes.map((anime) => (
-								<div key={anime.id}>
-									{listViewStyle ? (
-										<Link to={`/anime/${anime.id}`}>
-											<div className="anime_item">
-												<img
-													src={anime.coverImage.large}
-													alt=""
-													className={`${setClassAnimeItem(anime)}`}
-												/>
-												<div className="content">
-													<h2>{anime.title.english}</h2>
-
-													<div className="status">
-														<h3
-															className={`${userProfile.animes
-																.filter(
-																	(userAnime) => userAnime.id === anime.id
-																)[0]
-																.status.toLowerCase()}`}
-														>
-															{
-																userProfile.animes.filter(
-																	(userAnime) => userAnime.id === anime.id
-																)[0].status
-															}
-														</h3>
-													</div>
-
-													<div className="notes">
-														<h3>
-															{userProfile.animes.filter(
-																(userAnime) => userAnime.id === anime.id
-															)[0].notes
-																? `"${
-																		userProfile.animes.filter(
-																			(userAnime) => userAnime.id === anime.id
-																		)[0].notes
-																  }"`
-																: ""}
-														</h3>
-													</div>
-
-													<div className="information">
-														<p>
-															Watched:&nbsp;
-															{
-																userProfile.animes.filter(
-																	(userAnime) => userAnime.id === anime.id
-																)[0].episodes
-															}
-														</p>
-
-														<div className="score">
-															<h3>
-																{
-																	userProfile.animes.filter(
-																		(userAnime) => userAnime.id === anime.id
-																	)[0].score
-																}
-															</h3>
-															<FontAwesomeIcon
-																icon={faStar}
-																size="xl"
-															/>
-															<h3>
-																{
-																	scoreOnlyLabels[
-																		userProfile.animes.filter(
-																			(userAnime) => userAnime.id === anime.id
-																		)[0].score - 1
-																	]
-																}
-															</h3>
-														</div>
-													</div>
-												</div>
-											</div>
-										</Link>
-									) : (
-										<Link to={`/anime/${anime.id}`}>
-											<div className="anime_item">
-												<img
-													src={anime.coverImage.large}
-													alt=""
-													className={`${setClassAnimeItem(anime)}`}
-												/>
-												<div className="content">
-													<h2>{anime.title.english}</h2>
-													<div className="information">
-														<p>
-															Watched:&nbsp;
-															{
-																userProfile.animes.filter(
-																	(userAnime) => userAnime.id === anime.id
-																)[0].episodes
-															}
-														</p>
-														<div className="score">
-															<h3>
-																{
-																	userProfile.animes.filter(
-																		(userAnime) => userAnime.id === anime.id
-																	)[0].score
-																}
-															</h3>
-															<FontAwesomeIcon
-																icon={faStar}
-																size="xl"
-															/>
-														</div>
-													</div>
-												</div>
-											</div>
-										</Link>
-									)}
-								</div>
-							))}
+				<div className="animelist">
+					<div className="animelist_header">
+						<div></div>
+						<h1>AnimeList of {userProfile.username}</h1>
+						<div className="icons">
+							<FontAwesomeIcon
+								icon={faBorderAll}
+								size="2x"
+								className={`grid ${listViewStyle ? "" : "active"}`}
+								onClick={() => setListViewStyle(!listViewStyle)}
+							/>
+							<FontAwesomeIcon
+								icon={faListUl}
+								size="2x"
+								className={`list ${listViewStyle ? "active" : ""}`}
+								onClick={() => setListViewStyle(!listViewStyle)}
+							/>
 						</div>
 					</div>
 
-					<Footer />
+					<div className="user_container">
+						<div className="user">
+							<div className="picture">
+								<ProfilePicture
+									image={userProfile.picture}
+									size={100}
+									classname="rounded"
+								/>
+							</div>
+							<div className="username">
+								<h1>{userProfile.username}</h1>
+								<Link to={`/profile/${userProfile.username}`}>
+									<button>User Profile</button>
+								</Link>
+							</div>
+						</div>
+					</div>
 
-					<Loader isActive={isLoading} />
-				</>
-			) : (
-				<>
-					<Navbar />
-					<Loader isActive={isLoading} />
-				</>
-			)}
-		</>
-	)
+					<div className="animelist_filter">
+						<select
+							name="filter"
+							onChange={handleFilterChange}
+							value={filter}
+						>
+							<option
+								key={0}
+								value={0}
+							>
+								{"All Anime"}
+							</option>
+							<option
+								key={1}
+								value={1}
+							>
+								{"Watching"}
+							</option>
+							<option
+								key={2}
+								value={2}
+							>
+								{"Completed"}
+							</option>
+							<option
+								key={3}
+								value={3}
+							>
+								{"On-Hold"}
+							</option>
+							<option
+								key={4}
+								value={4}
+							>
+								{"Dropped"}
+							</option>
+							<option
+								key={5}
+								value={5}
+							>
+								{"Plan to Watch"}
+							</option>
+						</select>
+					</div>
+
+					<div
+						className={`animelist_container ${listViewStyle ? "list" : "grid"}`}
+					>
+						{animes.map((anime) => (
+							<div key={anime.id}>
+								{listViewStyle ? (
+									<Link to={`/anime/${anime.id}`}>
+										<div className="anime_item">
+											<img
+												src={anime.coverImage.large}
+												alt=""
+												className={`${setClassAnimeItem(anime)}`}
+											/>
+											<div className="content">
+												<h2>{anime.title.english}</h2>
+
+												<div className="status">
+													<h3
+														className={`${userProfile.animes
+															.filter(
+																(userAnime) => userAnime.id === anime.id
+															)[0]
+															.status.toLowerCase()}`}
+													>
+														{
+															userProfile.animes.filter(
+																(userAnime) => userAnime.id === anime.id
+															)[0].status
+														}
+													</h3>
+												</div>
+
+												<div className="notes">
+													<h3>
+														{userProfile.animes.filter(
+															(userAnime) => userAnime.id === anime.id
+														)[0].notes
+															? `"${
+																	userProfile.animes.filter(
+																		(userAnime) => userAnime.id === anime.id
+																	)[0].notes
+															  }"`
+															: ""}
+													</h3>
+												</div>
+
+												<div className="information">
+													<p>
+														Watched:&nbsp;
+														{
+															userProfile.animes.filter(
+																(userAnime) => userAnime.id === anime.id
+															)[0].episodes
+														}
+													</p>
+
+													<div className="score">
+														<h3>
+															{
+																userProfile.animes.filter(
+																	(userAnime) => userAnime.id === anime.id
+																)[0].score
+															}
+														</h3>
+														<FontAwesomeIcon
+															icon={faStar}
+															size="xl"
+														/>
+														<h3>
+															{
+																scoreOnlyLabels[
+																	userProfile.animes.filter(
+																		(userAnime) => userAnime.id === anime.id
+																	)[0].score - 1
+																]
+															}
+														</h3>
+													</div>
+												</div>
+											</div>
+										</div>
+									</Link>
+								) : (
+									<Link to={`/anime/${anime.id}`}>
+										<div className="anime_item">
+											<img
+												src={anime.coverImage.large}
+												alt=""
+												className={`${setClassAnimeItem(anime)}`}
+											/>
+											<div className="content">
+												<h2>{anime.title.english}</h2>
+												<div className="information">
+													<p>
+														Watched:&nbsp;
+														{
+															userProfile.animes.filter(
+																(userAnime) => userAnime.id === anime.id
+															)[0].episodes
+														}
+													</p>
+													<div className="score">
+														<h3>
+															{
+																userProfile.animes.filter(
+																	(userAnime) => userAnime.id === anime.id
+																)[0].score
+															}
+														</h3>
+														<FontAwesomeIcon
+															icon={faStar}
+															size="xl"
+														/>
+													</div>
+												</div>
+											</div>
+										</div>
+									</Link>
+								)}
+							</div>
+						))}
+					</div>
+				</div>
+
+				<Loader isActive={isLoading} />
+			</>
+		)
+	} else if (hasErrorAPI) {
+		return (
+			<>
+				<Navbar />
+				<ApiError />
+			</>
+		)
+	} else if (notFound) {
+		return <Page404 />
+	}
 }
 
 export default AnimeList

@@ -19,7 +19,6 @@ import {
 } from "../../../interfaces/register.ts"
 
 import "../auth.css"
-import Footer from "../../../components/footer/footer.tsx"
 
 const Register = () => {
 	const [formData, setFormData] = useState<RegisterFormData>({
@@ -206,7 +205,6 @@ const Register = () => {
 					</form>
 				</div>
 			</div>
-			<Footer />
 			
 			<Modal
 				isOpen={isModalOpen}

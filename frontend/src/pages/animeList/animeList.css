@@ -294,6 +294,13 @@
 		width: 100%;
 		gap: 1rem;
 	}
+
+	.animelist_container.list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		margin: auto;
+	}
 }
 
 @media screen and (min-width: 1200px) {
