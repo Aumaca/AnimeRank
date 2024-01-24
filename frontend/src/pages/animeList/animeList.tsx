@@ -24,7 +24,7 @@ import {
 import { UserAndListResponse } from "../../interfaces/responses.ts"
 
 import "./animeList.css"
-import Page404 from "../Page404/Page404.tsx"
+import Page404 from "../../components/Page404/Page404.tsx"
 import ApiError from "../../components/apiError/apiError.tsx"
 
 const AnimeList = () => {
@@ -53,9 +53,6 @@ const AnimeList = () => {
 			.then((res) => {
 				setUser(res.data)
 			})
-			.catch((err) => {
-				console.log("Error user request: ", err.message)
-			})
 
 		api
 			.get<UserAndListResponse>(
@@ -68,7 +65,6 @@ const AnimeList = () => {
 				setAnimes(res.data.animes)
 			})
 			.catch((err) => {
-				console.log("Error user profile request: ", err.message)
 				if (err.response.status === 404) setNotFound(true)
 				else setHasErrorAPI(true)
 			})

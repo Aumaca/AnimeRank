@@ -31,7 +31,7 @@ import "swiper/css/navigation"
 import "swiper/css/pagination"
 import "swiper/css/scrollbar"
 import "swiper/css/effect-coverflow"
-import Page404 from "../Page404/Page404.tsx"
+import Page404 from "../../components/Page404/Page404.tsx"
 
 const Anime = () => {
 	const username = useSelector((state: AuthState) => state.username)
@@ -390,6 +390,8 @@ const Anime = () => {
 						{messageState.children}
 					</Message>
 				</div>
+
+				<Loader isActive={isLoading} />
 			</>
 		)
 	} else if (notFound) {

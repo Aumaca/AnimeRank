@@ -27,7 +27,7 @@ import "swiper/css"
 import "swiper/css/navigation"
 import "swiper/css/effect-cards"
 import ApiError from "../../components/apiError/apiError.tsx"
-import Page404 from "../Page404/Page404.tsx"
+import Page404 from "../../components/Page404/Page404.tsx"
 
 const Profile = () => {
 	const dispatcher: Dispatch = useDispatch()
@@ -69,9 +69,6 @@ const Profile = () => {
 			.get(`/user/getUser/${usernameLogged}`)
 			.then((res: ProfileResponse) => {
 				setUser(res.data)
-			})
-			.catch((err) => {
-				console.log("Error user request: ", err.message)				
 			})
 	}, [username, usernameLogged])
 

@@ -39,7 +39,6 @@ const Search = () => {
 				setUser(res.data)
 			})
 			.catch((err) => {
-				console.log("Error user request: ", err.message)
 				setHasErrorAPI(true)
 			})
 			.finally(() => {
@@ -68,9 +67,6 @@ const Search = () => {
 			})
 			.then((res) => {
 				setAnimes(res.data.data.Page.media)
-			})
-			.catch((err) => {
-				console.log(err)
 			})
 			.finally(() => {
 				setIsLoading(false)

@@ -13,7 +13,7 @@ import Profile from "./pages/profile/profile.tsx"
 import AnimeList from "./pages/animeList/animeList.tsx"
 import Anime from "./pages/anime/anime.tsx"
 
-import Page404 from "./pages/Page404/Page404.tsx"
+import Page404 from "./components/Page404/Page404.tsx"
 
 import "./index.css"
 
