@@ -14,7 +14,7 @@ import "swiper/css/navigation"
 import "swiper/css/scrollbar"
 
 type HomeSliderProps = {
-	user: UserState
+	user: UserState|null
 	animesArray: AnimeType[]
 	handleClickAdd: (anime: AnimeType) => void
 }

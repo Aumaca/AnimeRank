@@ -32,11 +32,9 @@ const AnimeTrailer = ({
 
 				if (firstVideoId) {
 					setVideoId(firstVideoId)
-				} else {
-					console.error("No videos found.")
 				}
-			} catch (error) {
-				console.error("Error fetching data:", error)
+			} catch (_) {
+				console.log("")
 			}
 		}
 

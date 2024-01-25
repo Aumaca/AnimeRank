@@ -11,8 +11,8 @@ import { verifyToken } from "../middleware/auth.js"
 
 const router = express.Router()
 
-router.get("/getUser/:username", verifyToken, getUser)
-router.get("/getUserAndList/:username", verifyToken, getUserAndList)
+router.get("/getUser/:username", getUser)
+router.get("/getUserAndList/:username", getUserAndList)
 router.delete("/deleteUser", verifyToken, deleteUser)
 
 router.put("/addUpdateAnime", verifyToken, addUpdateAnimeUserList)

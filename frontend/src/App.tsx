@@ -4,15 +4,11 @@ import { AuthState } from "./interfaces/user.ts"
 
 import Register from "./pages/auth/register/register.tsx"
 import Login from "./pages/auth/login/login.tsx"
-
 import Search from "./pages/search/search.tsx"
-
 import Home from "./pages/home/home.tsx"
 import Profile from "./pages/profile/profile.tsx"
-
 import AnimeList from "./pages/animeList/animeList.tsx"
 import Anime from "./pages/anime/anime.tsx"
-
 import Page404 from "./components/Page404/Page404.tsx"
 
 import "./index.css"
@@ -26,8 +22,9 @@ function App() {
 				<Routes>
 					<Route
 						path="/"
-						element={token ? <Home /> : <Navigate to="/login" />}
+						element={<Home />}
 					/>
+
 					<Route
 						path="/login"
 						element={token ? <Navigate to="/" /> : <Login />}
@@ -39,20 +36,20 @@ function App() {
 
 					<Route
 						path="/search"
-						element={token ? <Search /> : <Navigate to="/" />}
+						element={<Search />}
 					/>
 
 					<Route
 						path="/profile/:username"
-						element={token ? <Profile /> : <Navigate to="/login" />}
+						element={<Profile />}
 					/>
 					<Route
 						path="/list/:username"
-						element={token ? <AnimeList /> : <Navigate to="/login" />}
+						element={<AnimeList />}
 					/>
 					<Route
 						path="/anime/:animeId"
-						element={token ? <Anime /> : <Navigate to="/login" />}
+						element={<Anime />}
 					/>
 
 					<Route

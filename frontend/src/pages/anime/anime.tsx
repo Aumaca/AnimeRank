@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import axios from "axios"
 import { useSelector } from "react-redux"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
 	faHeart,
+	faRightToBracket,
 	faShareNodes,
 	faStar,
 	faUser,
@@ -33,15 +34,17 @@ import "swiper/css/effect-coverflow"
 import Page404 from "../../components/Page404/Page404.tsx"
 import { getIconAnime, getStatusAnime } from "../../utils/getStatusAnime.ts"
 import ApiError from "../../components/apiError/apiError.tsx"
+import Modal from "../../components/modal/modal.tsx"
 
 const Anime = () => {
 	const username = useSelector((state: AuthState) => state.username)
-	const [user, setUser] = useState<UserState>()
+	const [user, setUser] = useState<UserState | null>(null)
 
 	const [anime, setAnime] = useState<AnimeType | null>()
 	const [isFavorite, setIsFavorite] = useState<boolean>(false)
 
 	const [isFormAnimeOpen, setIsFormAnimeOpen] = useState(false)
+	const [isOpenModal, setIsOpenModal] = useState(false)
 
 	const [isLoading, setIsLoading] = useState(true)
 
@@ -116,6 +119,10 @@ const Anime = () => {
 		}
 	`
 
+	const openForm = (): void => {
+		user ? setIsFormAnimeOpen(true) : setIsOpenModal(true)
+	}
+
 	const closeForm = (): void => {
 		setIsFormAnimeOpen(false)
 	}
@@ -161,9 +168,6 @@ const Anime = () => {
 			.then((response) => {
 				setUser(response.data)
 			})
-			.catch((error) => {
-				console.error("User request error:", error)
-			})
 
 		const variables = {
 			id: animeId,
@@ -178,8 +182,9 @@ const Anime = () => {
 				setAnime(data.Media)
 			})
 			.catch((error) => {
-				console.error("GraphQL request error:", error)
-				error.message === "Network Error" ? setHasErrorAPI(true) : setNotFound(true)
+				error.message === "Network Error"
+					? setHasErrorAPI(true)
+					: setNotFound(true)
 			})
 			.finally(() => {
 				setIsLoading(false)
@@ -212,10 +217,10 @@ const Anime = () => {
 		return `${month}/${day}/${year}`
 	}
 
-	if (username && anime && user) {
+	if (anime) {
 		return (
 			<>
-				<Navbar user={user} />
+				{user ? <Navbar user={user} /> : <Navbar />}
 				<div className="anime">
 					<div className="share_button">
 						<FontAwesomeIcon
@@ -264,7 +269,7 @@ const Anime = () => {
 								</button>
 								<button
 									className={`add ${getStatusAnime(user, anime, true)}`}
-									onClick={() => setIsFormAnimeOpen(true)}
+									onClick={() => openForm()}
 								>
 									<div />
 									<div>{getStatusAnime(user, anime, false)}</div>
@@ -376,15 +381,36 @@ const Anime = () => {
 						</div>
 					</div>
 
-					<FormAnime
-						anime={anime}
-						isOpen={isFormAnimeOpen}
-						closeForm={closeForm}
-						user={user}
-						toSetUser={setUser}
-						setIsLoading={setIsLoading}
-						setMessageState={setMessageState}
-					/>
+					<Modal
+						isOpen={isOpenModal}
+						setIsOpen={setIsOpenModal}
+						backgroundColor="blue"
+					>
+						<FontAwesomeIcon
+							icon={faRightToBracket}
+							size="4x"
+						/>
+						<p>You need to be logged to add animes to your list.</p>
+						<Link
+							to="/login"
+							className="modal_link"
+						>
+							<button>Go to login page</button>
+						</Link>
+					</Modal>
+
+					{user && (
+						<FormAnime
+							anime={anime}
+							isOpen={isFormAnimeOpen}
+							closeForm={closeForm}
+							user={user}
+							toSetUser={setUser}
+							setIsLoading={setIsLoading}
+							setMessageState={setMessageState}
+						/>
+					)}
+
 					<Message
 						closeMessage={closeMessage}
 						isOpen={messageState.isOpen}

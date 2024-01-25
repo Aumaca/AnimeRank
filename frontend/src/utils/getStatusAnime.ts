@@ -11,28 +11,26 @@ import { AnimeType } from "../interfaces/common"
 import { UserState } from "../interfaces/user"
 
 export const getStatusAnime = (
-	user: UserState,
+	user: UserState | null,
 	anime: AnimeType,
-	toClassName: boolean
+	toClassName: boolean,
+	toSearch?: boolean
 ): string => {
-	if (user!.animes.filter((userAnime) => userAnime.id === anime.id)[0]) {
-		if (toClassName) {
-			return user!.animes
-				.filter((userAnime) => userAnime.id === anime.id)[0]
-				.status.toLowerCase()
-				.replace("-", "")
-				.replace(" ", "")
-				.replace(" ", "")
-		}
-		else {
-			const status = user!.animes.filter((userAnime) => userAnime.id === anime.id)
-			if (status.length <= 0) 
-				return "Add to List"
-			else
-				return status[0].status
-		}
+	if (!user && !toSearch) return "Add to List"
+	if (!user && toSearch) return ""
+
+	const animes = user!.animes.filter((userAnime) => userAnime.id === anime.id)
+	if (animes.length <= 0 && !toSearch) return "Add to List"
+	if (animes.length <= 0 && toSearch) return ""
+
+	if (toClassName) {
+		return animes[0].status
+			.toLowerCase()
+			.replace("-", "")
+			.replace(" ", "")
+			.replace(" ", "")
 	} else {
-		return ""
+		return animes[0].status
 	}
 }
 

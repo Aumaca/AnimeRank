@@ -5,7 +5,12 @@ import { useSelector } from "react-redux"
 import { Swiper, SwiperSlide } from "swiper/react"
 import { EffectCoverflow, Pagination } from "swiper/modules"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faFire, faStar, faRss } from "@fortawesome/free-solid-svg-icons"
+import {
+	faFire,
+	faStar,
+	faRss,
+	faRightToBracket,
+} from "@fortawesome/free-solid-svg-icons"
 
 import api from "../../api/api"
 import Navbar from "../../components/navbar/navbar"
@@ -29,10 +34,12 @@ import "swiper/css/pagination"
 import "swiper/css/scrollbar"
 import "swiper/css/effect-coverflow"
 import HomeSlider from "./homeSlider.tsx"
+import Modal from "../../components/modal/modal.tsx"
+import { Link } from "react-router-dom"
 
 const Homepage = () => {
 	const username = useSelector((state: AuthState) => state.username)
-	const [user, setUser] = useState<UserState>()
+	const [user, setUser] = useState<UserState | null>(null)
 
 	const [hasErrorAPI, setHasErrorAPI] = useState<boolean>(false)
 	const [popularAnimes, setPopularAnimes] = useState<AnimeType[] | null>(null)
@@ -46,6 +53,7 @@ const Homepage = () => {
 
 	const [isLoading, setIsLoading] = useState(true)
 	const [isFormAnimeOpen, setIsFormAnimeOpen] = useState(false)
+	const [isOpenModal, setIsOpenModal] = useState(false)
 
 	const [messageState, setMessageState] = useState<MessageProps>({
 		isOpen: false,
@@ -56,14 +64,9 @@ const Homepage = () => {
 
 	useEffect(() => {
 		// User
-		api
-			.get<UserState>(`/user/getUser/${username}`)
-			.then((response) => {
-				setUser(response.data)
-			})
-			.catch((error) => {
-				console.error("User request error:", error)
-			})
+		api.get<UserState>(`/user/getUser/${username}`).then((response) => {
+			setUser(response.data)
+		})
 
 		// Animes
 		api
@@ -74,8 +77,7 @@ const Homepage = () => {
 				setMostScoredAnimes(data.mostScoredAnimes.media)
 				setReleasingAnimes(data.releasingAnimes.media)
 			})
-			.catch((error) => {
-				console.error("Animes request error:", error)
+			.catch(() => {
 				setHasErrorAPI(true)
 			})
 
@@ -83,8 +85,12 @@ const Homepage = () => {
 	}, [username])
 
 	const handleClickAdd = (anime: AnimeType): void => {
-		setAnimeSelected(anime)
-		setIsFormAnimeOpen(true)
+		if (user) {
+			setAnimeSelected(anime)
+			setIsFormAnimeOpen(true)
+		} else {
+			setIsOpenModal(true)
+		}
 	}
 
 	const closeForm = (): void => {
@@ -96,10 +102,10 @@ const Homepage = () => {
 		setMessageState({ ...messageState, isOpen: false })
 	}
 
-	if (popularAnimes && mostScoredAnimes && releasingAnimes && user) {
+	if (popularAnimes && mostScoredAnimes && releasingAnimes) {
 		return (
 			<>
-				<Navbar user={user} />
+				{user ? <Navbar user={user} /> : <Navbar />}
 
 				<div className="homepage">
 					<div className="news">
@@ -156,6 +162,16 @@ const Homepage = () => {
 									<p>Somethiong about</p>
 								</div>
 							</SwiperSlide>
+							<SwiperSlide className="new">
+								<img
+									src={jujutsu}
+									alt=""
+								/>
+								<div className="content">
+									<h1>JUJUTSU KAISEN Season 2</h1>
+									<h3>Released last episode of the season!</h3>
+								</div>
+							</SwiperSlide>
 						</Swiper>
 					</div>
 
@@ -192,15 +208,35 @@ const Homepage = () => {
 						/>
 					</div>
 
-					<FormAnime
-						anime={animeSelected}
-						isOpen={isFormAnimeOpen}
-						user={user}
-						toSetUser={setUser}
-						closeForm={closeForm}
-						setIsLoading={setIsLoading}
-						setMessageState={setMessageState}
-					/>
+					<Modal
+						isOpen={isOpenModal}
+						setIsOpen={setIsOpenModal}
+						backgroundColor="blue"
+					>
+						<FontAwesomeIcon
+							icon={faRightToBracket}
+							size="4x"
+						/>
+						<p>You need to be logged to add animes to your list.</p>
+						<Link
+							to="/login"
+							className="modal_link"
+						>
+							<button>Go to login page</button>
+						</Link>
+					</Modal>
+
+					{user && (
+						<FormAnime
+							anime={animeSelected}
+							isOpen={isFormAnimeOpen}
+							user={user}
+							toSetUser={setUser}
+							closeForm={closeForm}
+							setIsLoading={setIsLoading}
+							setMessageState={setMessageState}
+						/>
+					)}
 
 					<Message
 						closeMessage={closeMessage}

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import type { Dispatch } from "redux"
 import { useDispatch } from "react-redux"
 
@@ -14,9 +14,11 @@ import "./userDropdown.css"
 
 const UserDropdown = ({ isActive, user }: userDropdownProps) => {
 	const dispatcher: Dispatch = useDispatch()
+	const navigator = useNavigate()
 
 	const logoutUser = () => {
 		dispatcher(setLogout())
+		return navigator(`/login`)
 	}
 
 	return (

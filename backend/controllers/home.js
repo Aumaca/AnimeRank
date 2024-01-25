@@ -107,8 +107,7 @@ export const animes = async (req, res) => {
 				const data = response.data.data
                 res.status(200).json({data: data})
 			})
-			.catch((error) => {
-				console.error("Animes request error:", error)
+			.catch((err) => {
                 res.status(400).json({ error: err.message })
 			})
 	} catch (err) {

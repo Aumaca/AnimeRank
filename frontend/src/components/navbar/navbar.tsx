@@ -59,9 +59,16 @@ const Navbar = ({ user }: { user?: UserBasicState<ProfileState> }) => {
 					/>
 				</nav>
 			) : (
-				<nav>
+				<nav className={`${sidemenuActive ? "active" : ""}`}>
 					<div className="container">
-						<div></div>
+						<div className="options">
+							<FontAwesomeIcon
+								className="options_icon"
+								icon={faBars}
+								size="2x"
+								onClick={() => setSidemenuActive(!sidemenuActive)}
+							/>
+						</div>
 						<div className="logo">
 							<Link to="/">
 								<img
@@ -70,8 +77,9 @@ const Navbar = ({ user }: { user?: UserBasicState<ProfileState> }) => {
 								/>
 							</Link>
 						</div>
-						<div></div>
+						<div className="user"></div>
 					</div>
+					<Sidemenu isActive={sidemenuActive} />
 				</nav>
 			)}
 		</header>

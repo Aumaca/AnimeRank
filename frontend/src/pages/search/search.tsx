@@ -20,10 +20,11 @@ import { AuthState, ProfileState } from "../../interfaces/user"
 import { Link } from "react-router-dom"
 import "./search.css"
 import ApiError from "../../components/apiError/apiError.tsx"
+import { getStatusAnime } from "../../utils/getStatusAnime.ts"
 
 const Search = () => {
 	const username = useSelector((state: AuthState) => state.username)
-	const [user, setUser] = useState<ProfileState>()
+	const [user, setUser] = useState<ProfileState | null>(null)
 	const [isLoading, setIsLoading] = useState(true)
 
 	const [listViewStyle, setListViewStyle] = useState<boolean>(false)
@@ -38,8 +39,8 @@ const Search = () => {
 			.then((res: ProfileResponse) => {
 				setUser(res.data)
 			})
-			.catch(() => {
-				setHasErrorAPI(true)
+			.catch((error) => {
+				if (error.message === "Network Error") setHasErrorAPI(true)
 			})
 			.finally(() => {
 				setIsLoading(false)
@@ -73,22 +74,10 @@ const Search = () => {
 			})
 	}
 
-	const setClassAnimeItem = (anime: AnimeType): string => {
-		if (user!.animes.filter((userAnime) => userAnime.id === anime.id)[0]) {
-			return user!.animes
-				.filter((userAnime) => userAnime.id === anime.id)[0]
-				.status.toLowerCase()
-				.replace(" ", "")
-				.replace(" ", "")
-		} else {
-			return ""
-		}
-	}
-
-	if (user) {
+	if (animes) {
 		return (
 			<>
-				<Navbar user={user} />
+				{user ? <Navbar user={user} /> : <Navbar />}
 
 				<div className="search">
 					<div className="header">
@@ -141,7 +130,7 @@ const Search = () => {
 											<img
 												src={anime.coverImage.large}
 												alt=""
-												className={`${setClassAnimeItem(anime)}`}
+												className={`${getStatusAnime(user, anime, true, true)}`}
 											/>
 											<div className="content">
 												<h2>{anime.title.english}</h2>
@@ -168,11 +157,11 @@ const Search = () => {
 											<img
 												src={anime.coverImage.large}
 												alt=""
-												className={`${setClassAnimeItem(anime)}`}
+												className={`${getStatusAnime(user, anime, true, true)}`}
 											/>
 											<div
 												className={`content ${
-													setClassAnimeItem(anime) ? "with-margin" : ""
+													getStatusAnime(user, anime, true, true) ? "with-margin" : ""
 												}`}
 											>
 												<h2>{anime.title.english}</h2>

@@ -118,8 +118,7 @@ const Profile = () => {
 					)
 					setFavoriteAnimes(newState)
 				}
-			} catch (error) {
-				console.error("Animes request error:", error)
+			} catch (_) {
 				setHasErrorAPI(true)
 			} finally {
 				setIsLoading(false)
