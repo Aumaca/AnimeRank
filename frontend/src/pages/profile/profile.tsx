@@ -60,7 +60,6 @@ const Profile = () => {
 				setUserProfile(res.data)
 			})
 			.catch((err) => {
-				console.log("Error user profile request: ", err.message)
 				if (err.response.status === 404) setNotFound(true)
 				else setHasErrorAPI(true)
 			})

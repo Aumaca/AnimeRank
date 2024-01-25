@@ -104,7 +104,6 @@ export const animes = async (req, res) => {
 				query: graphqlQuery,
 			})
 			.then((response) => {
-                console.log(response)
 				const data = response.data.data
                 res.status(200).json({data: data})
 			})
