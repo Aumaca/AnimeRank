@@ -40,7 +40,7 @@ const Profile = () => {
 
 	const [notFound, setNotFound] = useState<boolean>(false)
 	const [hasErrorAPI, setHasErrorAPI] = useState<boolean>(false)
-	const [isLoading, setIsLoading] = useState<boolean>(false)
+	const [isLoading, setIsLoading] = useState<boolean>(true)
 
 	const [messageState, setMessageState] = useState<MessageProps>({
 		isOpen: false,
@@ -65,11 +65,9 @@ const Profile = () => {
 				else setHasErrorAPI(true)
 			})
 
-		api
-			.get(`/user/getUser/${usernameLogged}`)
-			.then((res: ProfileResponse) => {
-				setUser(res.data)
-			})
+		api.get(`/user/getUser/${usernameLogged}`).then((res: ProfileResponse) => {
+			setUser(res.data)
+		})
 	}, [username, usernameLogged])
 
 	useEffect(() => {
@@ -243,15 +241,15 @@ const Profile = () => {
 											key={`swiper-${anime.id}`}
 											className="slide"
 										>
-											<img
-												src={anime.coverImage.large}
-												alt=""
-											/>
-											<div className="content">
-												<Link to={`/anime/${anime.id}`}>
+											<a href={`/anime/${anime.id}`}>
+												<img
+													src={anime.coverImage.large}
+													alt=""
+												/>
+												<div className="content">
 													<h3>{anime.title.english}</h3>
-												</Link>
-											</div>
+												</div>
+											</a>
 										</SwiperSlide>
 									))}
 								</Swiper>
@@ -285,12 +283,7 @@ const Profile = () => {
 			</>
 		)
 	} else if (hasErrorAPI) {
-		return (
-			<>
-				<Navbar />
-				<ApiError />
-			</>
-		)
+		return <ApiError />
 	} else if (notFound) {
 		return <Page404 />
 	}

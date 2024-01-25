@@ -1,18 +1,11 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
-import { Link } from "react-router-dom"
-import axios from "axios"
 
 import { Swiper, SwiperSlide } from "swiper/react"
-import { EffectCoverflow, Navigation, Pagination } from "swiper/modules"
+import { EffectCoverflow, Pagination } from "swiper/modules"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import {
-	faPlus,
-	faFire,
-	faStar,
-	faRss,
-} from "@fortawesome/free-solid-svg-icons"
+import { faFire, faStar, faRss } from "@fortawesome/free-solid-svg-icons"
 
 import api from "../../api/api"
 import Navbar from "../../components/navbar/navbar"
@@ -27,7 +20,7 @@ import { AuthState, UserState } from "../../interfaces/user"
 import { AnimeType } from "../../interfaces/common"
 import { HomePageResponse } from "../../interfaces/responses"
 import { MessageProps } from "../../interfaces/components/message"
-import ApiError from "../../components/apiError/apiError"
+import ApiError from "../../components/apiError/apiError.tsx"
 
 import "./home.css"
 import "swiper/css"
@@ -35,6 +28,7 @@ import "swiper/css/navigation"
 import "swiper/css/pagination"
 import "swiper/css/scrollbar"
 import "swiper/css/effect-coverflow"
+import HomeSlider from "./homeSlider.tsx"
 
 const Homepage = () => {
 	const username = useSelector((state: AuthState) => state.username)
@@ -60,103 +54,6 @@ const Homepage = () => {
 		children: "",
 	})
 
-	const graphqlQuery = `
-		query ($id: Int, $page: Int, $perPage: Int, $search: String) {
-			popularAnimes: Page(page: $page, perPage: $perPage) {
-				pageInfo {
-					currentPage
-				}
-				media(id: $id, search: $search, sort: POPULARITY_DESC, type: ANIME) {
-					id
-					title {
-						english
-					}
-					startDate {
-						day
-						month
-						year
-					}
-					endDate {
-						day
-						month
-						year
-					}
-					status
-					episodes
-					duration
-					genres
-					popularity
-					averageScore
-					coverImage {
-						large
-					}
-				}
-			}
-
-			mostScoredAnimes: Page(page: $page, perPage: $perPage) {
-				pageInfo {
-					currentPage
-				}
-				media(id: $id, search: $search, sort: SCORE_DESC, type: ANIME) {
-					id
-					title {
-						english
-					}
-					startDate {
-						day
-						month
-						year
-					}
-					endDate {
-						day
-						month
-						year
-					}
-					status
-					episodes
-					duration
-					genres
-					popularity
-					averageScore
-					coverImage {
-						large
-					}
-				}
-			}
-
-			releasingAnimes: Page(page: $page, perPage: $perPage) {
-				pageInfo {
-					currentPage
-				}
-				media(id: $id, search: $search, sort: SCORE_DESC, status: RELEASING, type: ANIME) {
-					id
-					title {
-						english
-					}
-					startDate {
-						day
-						month
-						year
-					}
-					endDate {
-						day
-						month
-						year
-					}
-					status
-					episodes
-					duration
-					genres
-					popularity
-					averageScore
-					coverImage {
-						large
-					}
-				}
-			}
-		}
-	`
-
 	useEffect(() => {
 		// User
 		api
@@ -169,10 +66,8 @@ const Homepage = () => {
 			})
 
 		// Animes
-		axios
-			.post<HomePageResponse>("https://graphql.anilist.co", {
-				query: graphqlQuery,
-			})
+		api
+			.get<HomePageResponse>("/home/animes")
 			.then((response) => {
 				const data = response.data.data
 				setPopularAnimes(data.popularAnimes.media)
@@ -185,7 +80,7 @@ const Homepage = () => {
 			})
 
 		setIsLoading(false)
-	}, [username, graphqlQuery])
+	}, [username])
 
 	const handleClickAdd = (anime: AnimeType): void => {
 		setAnimeSelected(anime)
@@ -195,17 +90,6 @@ const Homepage = () => {
 	const closeForm = (): void => {
 		setAnimeSelected(null)
 		setIsFormAnimeOpen(false)
-	}
-
-	const setClassSwiperSlide = (anime: AnimeType): string => {
-		if (user!.animes.filter((userAnime) => userAnime.id === anime.id)[0]) {
-			return user!.animes
-				.filter((userAnime) => userAnime.id === anime.id)[0]
-				.status.toLowerCase()
-				.replace("-", "")
-		} else {
-			return ""
-		}
 	}
 
 	const closeMessage = (): void => {
@@ -279,108 +163,33 @@ const Homepage = () => {
 						<h1 className="popular">
 							Most Popular <FontAwesomeIcon icon={faFire} />
 						</h1>
-						<Swiper
-							modules={[Navigation]}
-							spaceBetween={20}
-							slidesPerView={"auto"}
-							navigation
-						>
-							{popularAnimes.map((anime) => (
-								<SwiperSlide
-									key={anime.id}
-									className={`slide ${setClassSwiperSlide(anime)}`}
-								>
-									<img
-										src={anime.coverImage.large}
-										alt=""
-									/>
-
-									<FontAwesomeIcon
-										icon={faPlus}
-										size="2x"
-										onClick={() => handleClickAdd(anime)}
-									/>
-
-									<div className="content">
-										<Link to={`/anime/${anime.id}`}>
-											<h3>{anime.title.english}</h3>
-										</Link>
-									</div>
-								</SwiperSlide>
-							))}
-						</Swiper>
+						<HomeSlider
+							user={user}
+							animesArray={popularAnimes}
+							handleClickAdd={handleClickAdd}
+						/>
 					</div>
 
 					<div className="container">
 						<h1 className="scored">
 							Most Scored <FontAwesomeIcon icon={faStar} />
 						</h1>
-						<Swiper
-							modules={[Navigation]}
-							spaceBetween={20}
-							slidesPerView={"auto"}
-							navigation
-						>
-							{mostScoredAnimes.map((anime) => (
-								<SwiperSlide
-									key={anime.id}
-									className={`slide ${setClassSwiperSlide(anime)}`}
-								>
-									<img
-										src={anime.coverImage.large}
-										alt=""
-									/>
-
-									<FontAwesomeIcon
-										icon={faPlus}
-										size="2x"
-										onClick={() => handleClickAdd(anime)}
-									/>
-
-									<div className="content">
-										<Link to={`/anime/${anime.id}`}>
-											<h3>{anime.title.english}</h3>
-										</Link>
-									</div>
-								</SwiperSlide>
-							))}
-						</Swiper>
+						<HomeSlider
+							user={user}
+							animesArray={mostScoredAnimes}
+							handleClickAdd={handleClickAdd}
+						/>
 					</div>
 
 					<div className="container">
 						<h1 className="releasing">
 							Releasing Animes <FontAwesomeIcon icon={faRss} />
 						</h1>
-						<Swiper
-							modules={[Navigation]}
-							spaceBetween={20}
-							slidesPerView={"auto"}
-							navigation
-						>
-							{releasingAnimes.map((anime) => (
-								<SwiperSlide
-									key={anime.id}
-									className={`slide ${setClassSwiperSlide(anime)}`}
-								>
-									<img
-										src={anime.coverImage.large}
-										alt=""
-									/>
-
-									<FontAwesomeIcon
-										icon={faPlus}
-										size="2x"
-										onClick={() => handleClickAdd(anime)}
-									/>
-
-									<div className="content">
-										<Link to={`/anime/${anime.id}`}>
-											<h3>{anime.title.english}</h3>
-										</Link>
-									</div>
-								</SwiperSlide>
-							))}
-						</Swiper>
+						<HomeSlider
+							user={user}
+							animesArray={releasingAnimes}
+							handleClickAdd={handleClickAdd}
+						/>
 					</div>
 
 					<FormAnime
@@ -405,12 +214,7 @@ const Homepage = () => {
 			</>
 		)
 	} else if (hasErrorAPI) {
-		return (
-			<>
-				<Navbar />
-				<ApiError />
-			</>
-		)
+		return <ApiError />
 	} else {
 		return (
 			<>

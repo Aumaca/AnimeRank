@@ -11,6 +11,7 @@ import { fileURLToPath } from "url"
 import authRoutes from "./routes/auth.js"
 import userRoutes from "./routes/user.js"
 import searchRoutes from "./routes/search.js"
+import homeRoutes from "./routes/home.js"
 
 /* CONFIG */
 const __filename = fileURLToPath(import.meta.url)
@@ -38,6 +39,7 @@ app.use("/assets", express.static(path.join(__dirname, "public/assets")))
 app.use("/auth", authRoutes)
 app.use("/user", userRoutes)
 app.use("/search", searchRoutes)
+app.use("/home", homeRoutes)
 
 const PORT = process.env.PORT || 3001
 mongoose

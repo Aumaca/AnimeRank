@@ -19,7 +19,7 @@ import { AuthState, ProfileState } from "../../interfaces/user"
 
 import { Link } from "react-router-dom"
 import "./search.css"
-import ApiError from "../../components/apiError/apiError"
+import ApiError from "../../components/apiError/apiError.tsx"
 
 const Search = () => {
 	const username = useSelector((state: AuthState) => state.username)
@@ -38,7 +38,7 @@ const Search = () => {
 			.then((res: ProfileResponse) => {
 				setUser(res.data)
 			})
-			.catch((err) => {
+			.catch(() => {
 				setHasErrorAPI(true)
 			})
 			.finally(() => {
@@ -84,7 +84,6 @@ const Search = () => {
 			return ""
 		}
 	}
-				
 
 	if (user) {
 		return (
@@ -200,14 +199,8 @@ const Search = () => {
 				<Loader isActive={isLoading} />
 			</>
 		)
-	}
-	else if (hasErrorAPI) {
-		return (
-			<>
-				<Navbar />
-				<ApiError />
-			</>
-		)
+	} else if (hasErrorAPI) {
+		return <ApiError />
 	}
 }
 

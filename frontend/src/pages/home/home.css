@@ -54,12 +54,15 @@
 	border-radius: 0px 0px 8px 8px;
 	padding: 1rem 0.5rem;
 	background-color: white;
-	color: black;
 	height: 100%;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
 	gap: 1rem;
+}
+
+.homepage .container .slide .content a {
+	color: black;
 }
 
 .homepage .container .slide img {
@@ -74,6 +77,26 @@
 	padding: 1rem;
 	background-color: rgba(100, 100, 100, 0.5);
 	border-radius: 0 0 10px 0;
+}
+
+.homepage .container .slide.watching svg {
+	background-color: var(--watchingRGBA);
+}
+
+.homepage .container .slide.completed svg {
+	background-color: var(--completedRGBA);
+}
+
+.homepage .container .slide.onhold svg {
+	background-color: var(--onHoldRGBA);
+}
+
+.homepage .container .slide.dropped svg {
+	background-color: var(--droppedRGBA);
+}
+
+.homepage .container .slide.plantowatch svg {
+	background-color: var(--planToWatchRGBA);
 }
 
 @media screen and (min-width: 768px) {

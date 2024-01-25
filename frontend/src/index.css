@@ -22,6 +22,12 @@
 	--onHold: #9989F0;
 	--dropped: #C41E3A;
 	--planToWatch: #89CFF0;
+
+	--watchingRGBA: rgba(0, 71, 171, 0.75);
+	--completedRGBA: rgba(34, 139, 34, 0.75);
+	--onHoldRGBA: rgba(153, 137, 240, 0.75);
+	--droppedRGBA: rgba(196, 30, 58, 0.75);
+	--planToWatchRGBA: rgba(137, 207, 240, 0.75);
 }
 
 html {
@@ -40,5 +46,9 @@ a:link {
 a,
 svg,
 button {
+	cursor: pointer;
+}
+
+.with-cursor {
 	cursor: pointer;
 }

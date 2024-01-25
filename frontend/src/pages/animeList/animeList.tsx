@@ -48,11 +48,9 @@ const AnimeList = () => {
 	const [hasErrorAPI, setHasErrorAPI] = useState<boolean>(false)
 
 	useEffect(() => {
-		api
-			.get(`/user/getUser/${usernameLogged}`)
-			.then((res) => {
-				setUser(res.data)
-			})
+		api.get(`/user/getUser/${usernameLogged}`).then((res) => {
+			setUser(res.data)
+		})
 
 		api
 			.get<UserAndListResponse>(
@@ -197,7 +195,10 @@ const AnimeList = () => {
 						className={`animelist_container ${listViewStyle ? "list" : "grid"}`}
 					>
 						{animes.map((anime) => (
-							<div key={anime.id}>
+							<div
+								className="with-cursor"
+								key={anime.id}
+							>
 								{listViewStyle ? (
 									<Link to={`/anime/${anime.id}`}>
 										<div className="anime_item">
@@ -321,12 +322,7 @@ const AnimeList = () => {
 			</>
 		)
 	} else if (hasErrorAPI) {
-		return (
-			<>
-				<Navbar />
-				<ApiError />
-			</>
-		)
+		return <ApiError />
 	} else if (notFound) {
 		return <Page404 />
 	}

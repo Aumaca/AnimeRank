@@ -70,8 +70,32 @@ ul li:first-child {
 }
 
 .anime .anime__buttons button.add {
-	color: rgb(72, 132, 245);
-	border: 2px solid rgb(72, 132, 245);
+	color: rgb(133, 133, 133);
+}
+
+.anime .anime__buttons button.add.watching {
+	color: var(--watchingRGBA);
+	border: 2px solid var(--watchingRGBA);
+}
+
+.anime .anime__buttons button.add.completed {
+	color: var(--completedRGBA);
+	border: 2px solid var(--completedRGBA);
+}
+
+.anime .anime__buttons button.add.onhold {
+	color: var(--onHoldRGBA);
+	border: 2px solid var(--onHoldRGBA);
+}
+
+.anime .anime__buttons button.add.dropped {
+	color: var(--planToWatchRGBA);
+	border: 2px solid var(--planToWatchRGBA);
+}
+
+.anime .anime__buttons button.add.plantowatch {
+	color: var(--droppedRGBA);
+	border: 2px solid var(--droppedRGBA);
 }
 
 .anime .tags {

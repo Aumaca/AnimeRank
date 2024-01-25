@@ -5,7 +5,6 @@ import { useSelector } from "react-redux"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
 	faHeart,
-	faList,
 	faShareNodes,
 	faStar,
 	faUser,
@@ -32,6 +31,8 @@ import "swiper/css/pagination"
 import "swiper/css/scrollbar"
 import "swiper/css/effect-coverflow"
 import Page404 from "../../components/Page404/Page404.tsx"
+import { getIconAnime, getStatusAnime } from "../../utils/getStatusAnime.ts"
+import ApiError from "../../components/apiError/apiError.tsx"
 
 const Anime = () => {
 	const username = useSelector((state: AuthState) => state.username)
@@ -53,6 +54,7 @@ const Anime = () => {
 
 	const [descriptionState, setDescriptionState] = useState<boolean>(false)
 	const [notFound, setNotFound] = useState<boolean>(false)
+	const [hasErrorAPI, setHasErrorAPI] = useState<boolean>(false)
 
 	const { animeId } = useParams()
 
@@ -177,7 +179,7 @@ const Anime = () => {
 			})
 			.catch((error) => {
 				console.error("GraphQL request error:", error)
-				setNotFound(true)
+				error.message === "Network Error" ? setHasErrorAPI(true) : setNotFound(true)
 			})
 			.finally(() => {
 				setIsLoading(false)
@@ -261,13 +263,15 @@ const Anime = () => {
 									</div>
 								</button>
 								<button
-									className="add"
+									className={`add ${getStatusAnime(user, anime, true)}`}
 									onClick={() => setIsFormAnimeOpen(true)}
 								>
 									<div />
-									<div>Add to list</div>
+									<div>{getStatusAnime(user, anime, false)}</div>
 									<div>
-										<FontAwesomeIcon icon={faList} />
+										<FontAwesomeIcon
+											icon={getIconAnime(getStatusAnime(user, anime, false))}
+										/>
 									</div>
 								</button>
 							</div>
@@ -396,6 +400,8 @@ const Anime = () => {
 		)
 	} else if (notFound) {
 		return <Page404 />
+	} else if (hasErrorAPI) {
+		return <ApiError />
 	}
 }
 
