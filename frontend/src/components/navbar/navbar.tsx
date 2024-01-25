@@ -15,12 +15,18 @@ type UserBasicState<T> = Omit<
 	"favoriteAnimes" | "countEpisodes" | "statusData"
 >
 
-const Navbar = ({ user }: { user?: UserBasicState<ProfileState> }) => {
+const Navbar = ({
+	user,
+	isForHome,
+}: {
+	user?: UserBasicState<ProfileState>
+	isForHome?: boolean
+}) => {
 	const [sidemenuActive, setSidemenuActive] = useState(false)
 	const [userDropdownActive, setUserDropdownActive] = useState(false)
 
 	return (
-		<header>
+		<header className={`${isForHome && "forHome"}`}>
 			<nav className={`${sidemenuActive ? "active" : ""}`}>
 				<div className="container">
 					<div className="options">

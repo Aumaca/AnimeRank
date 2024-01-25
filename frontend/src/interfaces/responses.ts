@@ -18,6 +18,24 @@ export interface HomePageResponse {
 	}
 }
 
+export interface AnimeNewsResponse {
+	articles: AnimeNew[]
+}
+
+export interface AnimeNew {
+	source: {
+		id: string
+		name: string
+	}
+	author: string
+	title: string
+	description: string
+	url: string
+	urlToImage: string
+	publishedAt: string
+	content: string
+}
+
 export interface AnimeResponse {
 	data: {
 		Media: AnimeType

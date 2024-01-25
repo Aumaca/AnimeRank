@@ -5,14 +5,22 @@ header {
 	z-index: 998;
 }
 
+header ~ div {
+	margin-top: 95px;
+}
+
+header.forHome ~ div {
+	margin-top: 0;
+}
+
 nav {
-	background-color: var(--navbar-background-colorRGBA);
+	background-color: var(--navbar-background-color);
 	color: white;
 	transition: border-radius 0.5s ease-in-out;
 }
 
-nav.active {
-	background-color: var(--navbar-background-color);
+header.forHome nav {
+	background-color: var(--navbar-background-colorRGBA);
 }
 
 nav .container {
@@ -36,8 +44,13 @@ nav .container {
 }
 
 @media screen and (min-width: 992px) {
-	header ~ div {
+	header ~ div,
+	header.forHome ~ div {
 		margin-top: 136px;
+	}
+
+	header.forHome nav {
+		background-color: var(--navbar-background-color);
 	}
 
 	.options_icon {
