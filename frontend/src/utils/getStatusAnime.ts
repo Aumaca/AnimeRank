@@ -8,10 +8,10 @@ import {
 	faPlus,
 } from "@fortawesome/free-solid-svg-icons"
 import { AnimeType } from "../interfaces/common"
-import { UserState } from "../interfaces/user"
+import { ProfileState, UserState } from "../interfaces/user"
 
 export const getStatusAnime = (
-	user: UserState | null,
+	user: ProfileState | UserState | null,
 	anime: AnimeType,
 	toClassName: boolean,
 	toSearch?: boolean

@@ -208,6 +208,7 @@ const Register = () => {
 			
 			<Modal
 				isOpen={isModalOpen}
+				setIsOpen={setIsModalOpen}
 				backgroundColor={"#50C878"}
 			>
 				<FontAwesomeIcon

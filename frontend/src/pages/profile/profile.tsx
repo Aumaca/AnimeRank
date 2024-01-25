@@ -146,10 +146,10 @@ const Profile = () => {
 			})
 	}
 
-	if (userProfile && user) {
+	if (userProfile) {
 		return (
 			<>
-				<Navbar user={user} />
+				{user ? <Navbar user={user} /> : <Navbar />}
 
 				<div className="profile">
 					<div className="profile_container">
@@ -257,14 +257,12 @@ const Profile = () => {
 						<></>
 					)}
 
-					{user.username === userProfile.username ? (
+					{user && user.username === userProfile.username && (
 						<div className="delete">
 							<button onClick={() => deleteUser()}>
 								Delete profile <FontAwesomeIcon icon={faTrash} />
 							</button>
 						</div>
-					) : (
-						<></>
 					)}
 
 					<Message

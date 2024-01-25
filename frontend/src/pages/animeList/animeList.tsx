@@ -26,6 +26,7 @@ import { UserAndListResponse } from "../../interfaces/responses.ts"
 import "./animeList.css"
 import Page404 from "../../components/Page404/Page404.tsx"
 import ApiError from "../../components/apiError/apiError.tsx"
+import { getStatusAnime } from "../../utils/getStatusAnime.ts"
 
 const AnimeList = () => {
 	const navigator = useNavigate()
@@ -36,7 +37,7 @@ const AnimeList = () => {
 	const usernameLogged = useSelector((state: AuthState) => state.username)
 	const { username } = useParams()
 
-	const [user, setUser] = useState<ProfileState>()
+	const [user, setUser] = useState<ProfileState | null>(null)
 	const [userProfile, setUserProfile] = useState<ProfileState>()
 
 	const [animes, setAnimes] = useState<AnimeType[]>()
@@ -89,24 +90,10 @@ const AnimeList = () => {
 		}
 	}
 
-	const setClassAnimeItem = (anime: AnimeType): string => {
-		if (
-			userProfile!.animes.filter((userAnime) => userAnime.id === anime.id)[0]
-		) {
-			return userProfile!.animes
-				.filter((userAnime) => userAnime.id === anime.id)[0]
-				.status.toLowerCase()
-				.replace(" ", "")
-				.replace(" ", "")
-		} else {
-			return ""
-		}
-	}
-
-	if (user && userProfile && animes) {
+	if (userProfile && animes) {
 		return (
 			<>
-				<Navbar user={user} />
+				{user ? <Navbar user={user} /> : <Navbar />}
 
 				<div className="animelist">
 					<div className="animelist_header">
@@ -205,7 +192,7 @@ const AnimeList = () => {
 											<img
 												src={anime.coverImage.large}
 												alt=""
-												className={`${setClassAnimeItem(anime)}`}
+												className={`${getStatusAnime(user, anime, true)}`}
 											/>
 											<div className="content">
 												<h2>{anime.title.english}</h2>
@@ -282,7 +269,7 @@ const AnimeList = () => {
 											<img
 												src={anime.coverImage.large}
 												alt=""
-												className={`${setClassAnimeItem(anime)}`}
+												className={`${getStatusAnime(user, anime, true)}`}
 											/>
 											<div className="content">
 												<h2>{anime.title.english}</h2>

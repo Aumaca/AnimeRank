@@ -6,5 +6,5 @@ type UserBasicState<T> = Omit<
 
 export interface userDropdownProps {
 	isActive: boolean
-	user: UserBasicState<ProfileState>
+	user?: UserBasicState<ProfileState> | null
 }

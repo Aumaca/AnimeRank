@@ -15,7 +15,7 @@ import {
 	ProfileResponse,
 	SearchAnimeResponse,
 } from "../../interfaces/responses"
-import { AuthState, ProfileState } from "../../interfaces/user"
+import { AuthState, ProfileState, UserState } from "../../interfaces/user"
 
 import { Link } from "react-router-dom"
 import "./search.css"
@@ -24,7 +24,7 @@ import { getStatusAnime } from "../../utils/getStatusAnime.ts"
 
 const Search = () => {
 	const username = useSelector((state: AuthState) => state.username)
-	const [user, setUser] = useState<ProfileState | null>(null)
+	const [user, setUser] = useState<ProfileState | UserState | null>(null)
 	const [isLoading, setIsLoading] = useState(true)
 
 	const [listViewStyle, setListViewStyle] = useState<boolean>(false)

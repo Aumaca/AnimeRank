@@ -5,19 +5,14 @@ header {
 	z-index: 998;
 }
 
-header ~ div {
-	margin-top: 95px;
-}
-
 nav {
-	background-color: var(--navbar-background-color);
-	border-radius: 0 0 10px 10px;
+	background-color: var(--navbar-background-colorRGBA);
 	color: white;
 	transition: border-radius 0.5s ease-in-out;
 }
 
 nav.active {
-	border-radius: 0;
+	background-color: var(--navbar-background-color);
 }
 
 nav .container {
