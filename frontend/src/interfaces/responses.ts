@@ -19,21 +19,17 @@ export interface HomePageResponse {
 }
 
 export interface AnimeNewsResponse {
-	articles: AnimeNew[]
+	value: AnimeNew[]
 }
 
 export interface AnimeNew {
-	source: {
-		id: string
-		name: string
-	}
-	author: string
-	title: string
-	description: string
+	name: string
 	url: string
-	urlToImage: string
-	publishedAt: string
-	content: string
+	image: AnimeNewImage
+}
+
+interface AnimeNewImage {
+	contentUrl: string
 }
 
 export interface AnimeResponse {

@@ -87,15 +87,19 @@ const Homepage = () => {
 		setIsLoading(false)
 
 		// News
+		const config = {
+			headers: {
+				"Ocp-Apim-Subscription-Key": import.meta.env.VITE_NEWS_API_KEY,
+			},
+		}
 		axios
 			.get<AnimeNewsResponse>(
-				`https://newsapi.org/v2/everything?q=anime&pageSize=10&apiKey=${
-					import.meta.env.VITE_NEWS_API_KEY
-				}`
+				"https://api.bing.microsoft.com/v7.0/news/search?q=anime&mkt=en-us&sortBy=Date&originalImg=true",
+				config
 			)
 			.then((response) => {
-				const data = response.data
-				setAnimeNews(data.articles)
+				const data = response.data.value
+				setAnimeNews(data)
 			})
 	}, [username])
 
@@ -147,18 +151,21 @@ const Homepage = () => {
 							>
 								{animeNews.map(
 									(animeNew) =>
-										animeNew.urlToImage && (
-											<SwiperSlide className="new" id={animeNew.title}>
+										animeNew.image && (
+											<SwiperSlide
+												className="new"
+												key={animeNew.name}
+											>
 												<Link
 													to={animeNew.url}
 													target="_blank"
 												>
 													<img
-														src={animeNew.urlToImage}
+														src={animeNew.image.contentUrl}
 														alt=""
 													/>
 													<div className="content">
-														<h1>{animeNew.title}</h1>
+														<h1>{animeNew.name}</h1>
 													</div>
 												</Link>
 											</SwiperSlide>
