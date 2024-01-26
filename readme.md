@@ -1,28 +1,13 @@
 # [AnimeRank](https://aumaca-animerank.vercel.app/)
 
-This is a project created based on the website [MyAnimeList](https://myanimelist.net/), that allows users to create a list of animes and score them, also allowing comments.
+<p>This is a project created based on the website <a href="https://myanimelist.net/" target="_blank">MyAnimeList</a>, that allows users to create a list of animes and score them, also allowing comments.</p>
+<p>You can access the website clicking <a href="https://aumaca-animerank.vercel.app/" target="_blank">here</a>.</p>
 
 <p align="center">
   <img src=frontend/src/imgs/Logo.png width=350>
 </p>
 
-<p align="center">
-  <img src=readme/screenshot2.png>
-</p>
 
-<p align="center">
-  <img src=readme/screenshot.png width=297>
-  <img src=readme/screenshot3.png width=300>
-</p>
-
-<p align="center">
-  <img src=readme/screenshot4.png width=297>
-  <img src=readme/screenshot5.png width=300>
-</p>
-
-<p align="center">
-  <img src=readme/screenshot6.png width=297>
-</p>
 
 ## Tools used
 
@@ -33,14 +18,11 @@ This is a project created based on the website [MyAnimeList](https://myanimelist
   - Node.JS
 - Typescript/Javascript
 - Redux
+- Swiper
+- JWT
 - Mocha, Chai and Supertest
 
-## Functions
+## APIs used
 
-- Register / Login User
-- Add / Read / Update / Remove animes to user list
-- Show user statistics
-- Friends system
-- Sending email for alert of release etc
-
-**Not done yet!!**
+- [Bing News Search API](https://www.microsoft.com/en-us/bing/apis/bing-news-search-api)
+- [AniList API](https://anilist.gitbook.io/anilist-apiv2-docs/)
