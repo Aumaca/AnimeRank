@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
+import { Helmet } from "react-helmet"
 import axios from "axios"
 import { useSelector } from "react-redux"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -220,6 +221,9 @@ const Anime = () => {
 	if (anime) {
 		return (
 			<>
+				<Helmet>
+					<title>{`${anime.title.english}`} - AnimeRank</title>
+				</Helmet>
 				{user ? <Navbar user={user} /> : <Navbar />}
 				<div className="anime">
 					<div className="share_button">

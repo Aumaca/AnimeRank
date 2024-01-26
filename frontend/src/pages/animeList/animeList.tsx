@@ -2,6 +2,7 @@
 import { ChangeEvent, useEffect, useState } from "react"
 import { Link, useParams, useNavigate } from "react-router-dom"
 import { useSelector } from "react-redux"
+import { Helmet } from "react-helmet"
 
 import api from "../../api/api.ts"
 import Loader from "../../components/loader/loader.tsx"
@@ -93,6 +94,9 @@ const AnimeList = () => {
 	if (userProfile && animes) {
 		return (
 			<>
+				<Helmet>
+					<title>{`${username}'s AnimeList`} - AnimeRank</title>
+				</Helmet>
 				{user ? <Navbar user={user} /> : <Navbar />}
 
 				<div className="animelist">

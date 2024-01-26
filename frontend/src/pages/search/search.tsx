@@ -1,4 +1,5 @@
 import { ChangeEvent, useEffect, useState } from "react"
+import { Helmet } from "react-helmet"
 import Loader from "../../components/loader/loader"
 import Navbar from "../../components/navbar/navbar"
 import { useSelector } from "react-redux"
@@ -77,6 +78,9 @@ const Search = () => {
 	if (animes) {
 		return (
 			<>
+				<Helmet>
+					<title>Search - AnimeRank</title>
+				</Helmet>
 				{user ? <Navbar user={user} /> : <Navbar />}
 
 				<div className="search">
@@ -161,7 +165,9 @@ const Search = () => {
 											/>
 											<div
 												className={`content ${
-													getStatusAnime(user, anime, true, true) ? "with-margin" : ""
+													getStatusAnime(user, anime, true, true)
+														? "with-margin"
+														: ""
 												}`}
 											>
 												<h2>{anime.title.english}</h2>

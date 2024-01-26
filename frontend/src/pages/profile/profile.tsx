@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import type { Dispatch } from "redux"
+import { Helmet } from "react-helmet"
 
 import { Swiper, SwiperSlide } from "swiper/react"
 import { Navigation } from "swiper/modules"
@@ -149,6 +150,9 @@ const Profile = () => {
 	if (userProfile) {
 		return (
 			<>
+				<Helmet>
+					<title>{`${username}'s`} Profile - AnimeRank</title>
+				</Helmet>
 				{user ? <Navbar user={user} /> : <Navbar />}
 
 				<div className="profile">

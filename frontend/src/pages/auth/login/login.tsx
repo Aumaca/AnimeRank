@@ -2,6 +2,7 @@ import { ChangeEvent, FormEvent, useState } from "react"
 import { useDispatch } from "react-redux"
 import type { Dispatch } from "redux"
 import { Link, useNavigate } from "react-router-dom"
+import { Helmet } from "react-helmet"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons"
@@ -130,6 +131,9 @@ const Login = () => {
 
 	return (
 		<>
+			<Helmet>
+				<title>Login - AnimeRank</title>
+			</Helmet>
 			<Navbar />
 			<div className="auth">
 				<div className="container">
@@ -169,7 +173,7 @@ const Login = () => {
 					</form>
 				</div>
 			</div>
-			
+
 			<Message
 				closeMessage={closeMessage}
 				isOpen={messageState.isOpen}

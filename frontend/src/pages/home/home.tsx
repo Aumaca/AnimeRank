@@ -1,6 +1,7 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
+import { Helmet } from "react-helmet"
 
 import { Swiper, SwiperSlide } from "swiper/react"
 import { EffectCoverflow, Pagination } from "swiper/modules"
@@ -146,6 +147,9 @@ const Homepage = () => {
 	if (popularAnimes && mostScoredAnimes && releasingAnimes) {
 		return (
 			<>
+				<Helmet>
+					<title>Homepage - AnimeRank</title>
+				</Helmet>
 				{user ? (
 					<Navbar
 						user={user}

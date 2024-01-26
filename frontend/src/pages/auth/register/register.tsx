@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
+import { Helmet } from "react-helmet"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowRight, faCheckCircle } from "@fortawesome/free-solid-svg-icons"
@@ -125,6 +126,9 @@ const Register = () => {
 
 	return (
 		<>
+			<Helmet>
+				<title>Register - AnimeRank</title>
+			</Helmet>
 			<Navbar />
 			<div className="auth">
 				<div className="container">
@@ -205,7 +209,7 @@ const Register = () => {
 					</form>
 				</div>
 			</div>
-			
+
 			<Modal
 				isOpen={isModalOpen}
 				setIsOpen={setIsModalOpen}
