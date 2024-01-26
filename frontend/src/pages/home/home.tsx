@@ -84,23 +84,45 @@ const Homepage = () => {
 				setHasErrorAPI(true)
 			})
 
-		setIsLoading(false)
+		const fetchAnimeNews = () => {
+			const config = {
+				headers: {
+					"Ocp-Apim-Subscription-Key": import.meta.env.VITE_NEWS_API_KEY,
+				},
+			}
 
-		// News
-		const config = {
-			headers: {
-				"Ocp-Apim-Subscription-Key": import.meta.env.VITE_NEWS_API_KEY,
-			},
+			axios
+				.get<AnimeNewsResponse>(
+					"https://api.bing.microsoft.com/v7.0/news/search?q=anime&cc=US&sortBy=Date&originalImg=true&count=15&mkt=en-us",
+					config
+				)
+				.then((response) => {
+					const data = response.data.value
+					setAnimeNews(data)
+					localStorage.setItem("news", JSON.stringify(data))
+
+					const expiryDate = new Date()
+					expiryDate.setHours(expiryDate.getHours() + 24)
+					localStorage.setItem("newsExpiryDate", expiryDate.toISOString())
+				})
 		}
-		axios
-			.get<AnimeNewsResponse>(
-				"https://api.bing.microsoft.com/v7.0/news/search?q=anime&mkt=en-us&sortBy=Date&originalImg=true",
-				config
-			)
-			.then((response) => {
-				const data = response.data.value
-				setAnimeNews(data)
-			})
+
+		const localNews = localStorage.getItem("news")
+		const localNewsExpiryDate = localStorage.getItem("newsExpiryDate")
+
+		if (localNews && localNewsExpiryDate) {
+			const expiryDate = new Date(localNewsExpiryDate)
+			const currentDate = new Date()
+
+			if (currentDate < expiryDate) {
+				setAnimeNews(JSON.parse(localNews))
+				setIsLoading(false)
+				return
+			}
+		}
+
+		fetchAnimeNews()
+		setIsLoading(false)
 	}, [username])
 
 	const handleClickAdd = (anime: AnimeType): void => {
