@@ -6,29 +6,22 @@ import { useSelector } from "react-redux"
 import api from "../../api/api"
 import { AnimeType } from "../../interfaces/common"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import {
-	faBorderAll,
-	faListUl,
-	faSearch,
-	faStar,
-} from "@fortawesome/free-solid-svg-icons"
+import { faSearch } from "@fortawesome/free-solid-svg-icons"
 import {
 	ProfileResponse,
 	SearchAnimeResponse,
 } from "../../interfaces/responses"
 import { AuthState, ProfileState, UserState } from "../../interfaces/user"
 
-import { Link } from "react-router-dom"
-import "./search.css"
 import ApiError from "../../components/apiError/apiError.tsx"
-import { getStatusAnime } from "../../utils/getStatusAnime.ts"
+import AnimeListGrid from "../../components/animeListGrid/animeListGrid.tsx"
+
+import "./search.css"
 
 const Search = () => {
 	const username = useSelector((state: AuthState) => state.username)
 	const [user, setUser] = useState<ProfileState | UserState | null>(null)
 	const [isLoading, setIsLoading] = useState(true)
-
-	const [listViewStyle, setListViewStyle] = useState<boolean>(false)
 
 	const [searchString, setSearchString] = useState<string>("")
 	const [animes, setAnimes] = useState<AnimeType[]>([])
@@ -103,92 +96,11 @@ const Search = () => {
 						</div>
 					</div>
 
-					<div className="icons_container">
-						<div className="icons">
-							<FontAwesomeIcon
-								icon={faBorderAll}
-								size="2x"
-								className={`grid ${listViewStyle ? "" : "active"}`}
-								onClick={() => setListViewStyle(!listViewStyle)}
-							/>
-							<FontAwesomeIcon
-								icon={faListUl}
-								size="2x"
-								className={`list ${listViewStyle ? "active" : ""}`}
-								onClick={() => setListViewStyle(!listViewStyle)}
-							/>
-						</div>
-					</div>
-
-					<div
-						className={`result_container ${listViewStyle ? "list" : "grid"}`}
-					>
-						{animes.map((anime) => (
-							<div
-								className="result"
-								key={anime.id}
-							>
-								{listViewStyle ? (
-									<Link to={`/anime/${anime.id}`}>
-										<div className="anime_item">
-											<img
-												src={anime.coverImage.large}
-												alt=""
-												className={`${getStatusAnime(user, anime, true, true)}`}
-											/>
-											<div className="content">
-												<h2>{anime.title.english}</h2>
-
-												<div className="status"></div>
-
-												<div className="information">
-													<p>Episodes: {anime.episodes}</p>
-
-													<div className="score">
-														<h3>Score: {anime.averageScore}</h3>
-														<FontAwesomeIcon
-															icon={faStar}
-															size="xl"
-														/>
-													</div>
-												</div>
-											</div>
-										</div>
-									</Link>
-								) : (
-									<Link to={`/anime/${anime.id}`}>
-										<div className="anime_item">
-											<img
-												src={anime.coverImage.large}
-												alt=""
-												className={`${getStatusAnime(user, anime, true, true)}`}
-											/>
-											<div
-												className={`content ${
-													getStatusAnime(user, anime, true, true)
-														? "with-margin"
-														: ""
-												}`}
-											>
-												<h2>{anime.title.english}</h2>
-												<div className="information">
-													<p>Episodes: {anime.episodes}</p>
-
-													<div className="score">
-														<p>Score: {anime.averageScore}</p>
-														<FontAwesomeIcon
-															icon={faStar}
-															size="xl"
-														/>
-													</div>
-												</div>
-											</div>
-										</div>
-									</Link>
-								)}
-							</div>
-						))}
-					</div>
+					<AnimeListGrid
+						animes={animes}
+						listViewStyle={false}
+						userAnimes={user && user.animes.length ? user.animes : null}
+					/>
 				</div>
 
 				<Loader isActive={isLoading} />

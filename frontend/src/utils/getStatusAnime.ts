@@ -8,29 +8,29 @@ import {
 	faPlus,
 } from "@fortawesome/free-solid-svg-icons"
 import { AnimeType } from "../interfaces/common"
-import { ProfileState, UserState } from "../interfaces/user"
+import { UserAnime } from "../interfaces/user"
 
 export const getStatusAnime = (
-	user: ProfileState | UserState | null,
+	userAnimes: UserAnime[] | null,
 	anime: AnimeType,
 	toClassName: boolean,
 	toSearch?: boolean
 ): string => {
-	if (!user && !toSearch) return "Add to List"
-	if (!user && toSearch) return ""
+	if (!userAnimes?.length && !toSearch) return "Add to List"
+	if (!userAnimes?.length && toSearch) return ""
 
-	const animes = user!.animes.filter((userAnime) => userAnime.id === anime.id)
-	if (animes.length <= 0 && !toSearch) return "Add to List"
-	if (animes.length <= 0 && toSearch) return ""
+	const animes = userAnimes?.filter((userAnime) => userAnime.id === anime.id)
+	if (animes && animes.length <= 0 && !toSearch) return "Add to List"
+	if (animes && animes.length <= 0 && toSearch) return ""
 
 	if (toClassName) {
-		return animes[0].status
+		return animes![0].status
 			.toLowerCase()
 			.replace("-", "")
 			.replace(" ", "")
 			.replace(" ", "")
 	} else {
-		return animes[0].status
+		return animes![0].status
 	}
 }
 

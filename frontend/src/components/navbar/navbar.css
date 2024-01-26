@@ -13,14 +13,19 @@ header.forHome ~ div {
 	margin-top: 0;
 }
 
-nav {
+header nav {
 	background-color: var(--navbar-background-color);
 	color: white;
-	transition: border-radius 0.5s ease-in-out;
+	transition: border-radius 0.5s ease-in-out, background-color 0.5s ease-in-out;
 }
 
 header.forHome nav {
 	background-color: var(--navbar-background-colorRGBA);
+}
+
+header nav.active,
+header.forHome nav.active {
+	background-color: var(--navbar-background-color);
 }
 
 nav .container {

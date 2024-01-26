@@ -22,6 +22,7 @@ const setQuery = ({ searchString, format, sort, page }) => {
                     id
                     title {
                         english
+                        romaji
                     }
                     episodes
                     popularity

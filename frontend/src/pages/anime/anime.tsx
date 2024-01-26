@@ -105,7 +105,7 @@ const Anime = () => {
 						}
 					}
 				}
-				staff (perPage: 1) {
+				staff (perPage: 1, sort: RELEVANCE) {
 					nodes {
 						name {
 							full
@@ -164,11 +164,9 @@ const Anime = () => {
 
 	useEffect(() => {
 		// User
-		api
-			.get<UserState>(`/user/getUser/${username}`)
-			.then((response) => {
-				setUser(response.data)
-			})
+		api.get<UserState>(`/user/getUser/${username}`).then((response) => {
+			setUser(response.data)
+		})
 
 		const variables = {
 			id: animeId,
@@ -272,14 +270,30 @@ const Anime = () => {
 									</div>
 								</button>
 								<button
-									className={`add ${getStatusAnime(user, anime, true)}`}
+									className={`add ${getStatusAnime(
+										user && user.animes ? user.animes : null,
+										anime,
+										true
+									)}`}
 									onClick={() => openForm()}
 								>
 									<div />
-									<div>{getStatusAnime(user, anime, false)}</div>
+									<div>
+										{getStatusAnime(
+											user && user.animes ? user.animes : null,
+											anime,
+											false
+										)}
+									</div>
 									<div>
 										<FontAwesomeIcon
-											icon={getIconAnime(getStatusAnime(user, anime, false))}
+											icon={getIconAnime(
+												getStatusAnime(
+													user && user.animes ? user.animes : null,
+													anime,
+													false
+												)
+											)}
 										/>
 									</div>
 								</button>

@@ -14,12 +14,16 @@ import "swiper/css/navigation"
 import "swiper/css/scrollbar"
 
 type HomeSliderProps = {
-	user: UserState|null
+	user: UserState | null
 	animesArray: AnimeType[]
 	handleClickAdd: (anime: AnimeType) => void
 }
 
-const HomeSlider: React.FC<HomeSliderProps> = ({ user, animesArray, handleClickAdd }) => {
+const HomeSlider: React.FC<HomeSliderProps> = ({
+	user,
+	animesArray,
+	handleClickAdd,
+}) => {
 	return (
 		<SwiperComponent
 			modules={[Navigation]}
@@ -30,7 +34,11 @@ const HomeSlider: React.FC<HomeSliderProps> = ({ user, animesArray, handleClickA
 			{animesArray.map((anime) => (
 				<SwiperSlide
 					key={anime.id}
-					className={`slide ${getStatusAnime(user, anime, true)}`}
+					className={`slide ${getStatusAnime(
+						user && user.animes.length ? user.animes : null,
+						anime,
+						true
+					)}`}
 				>
 					<img
 						src={anime.coverImage.large}
@@ -38,7 +46,13 @@ const HomeSlider: React.FC<HomeSliderProps> = ({ user, animesArray, handleClickA
 					/>
 
 					<FontAwesomeIcon
-						icon={getIconAnime(getStatusAnime(user, anime, true))}
+						icon={getIconAnime(
+							getStatusAnime(
+								user && user.animes.length ? user.animes : null,
+								anime,
+								true
+							)
+						)}
 						size="2x"
 						onClick={() => handleClickAdd(anime)}
 					/>
