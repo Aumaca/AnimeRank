@@ -4,8 +4,7 @@ import setQuery from "../utils/setQuery.js"
 
 export const fetchQuery = async (req, res) => {
 	try {
-		const reqVariables = req.body.variables
-		const { query, variables } = setQuery(reqVariables)
+		const { query, variables } = setQuery(req.query)
 
 		await axios
 			.post("https://graphql.anilist.co", {

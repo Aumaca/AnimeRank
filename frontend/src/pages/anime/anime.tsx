@@ -209,11 +209,13 @@ const Anime = () => {
 	}
 
 	const setZeroToDate = (date: Date): string => {
-		const month = date.month < 10 ? `0${date.month}` : date.month
-		const day = date.day < 10 ? `0${date.day}` : date.day
-		const year = date.year
-
-		return `${month}/${day}/${year}`
+		if (date.day) {
+			const month = date.month < 10 ? `0${date.month}` : date.month
+			const day = date.day < 10 ? `0${date.day}` : date.day
+			const year = date.year
+			return `${month}/${day}/${year}`
+		}
+		return "RELEASING"
 	}
 
 	if (anime) {

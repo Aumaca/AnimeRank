@@ -179,7 +179,11 @@ const AnimeList = () => {
 						animes={animes}
 						listViewStyle={listViewStyle}
 						userAnimes={user && user.animes.length ? user.animes : null}
-						userProfileAnimes={userProfile && userProfile.animes.length ? userProfile.animes : null}
+						userProfileAnimes={
+							userProfile && userProfile.animes.length
+								? userProfile.animes
+								: null
+						}
 					/>
 				</div>
 

@@ -17,13 +17,54 @@ import ApiError from "../../components/apiError/apiError.tsx"
 import AnimeListGrid from "../../components/animeListGrid/animeListGrid.tsx"
 
 import "./search.css"
+import { useNavigate } from "react-router"
+import {
+	optionsNames,
+	options,
+	sortOptions,
+	statusOptions,
+	formatOptions,
+} from "./searchFilter.ts"
+
+type ParamsInterface = {
+	query: string | null
+	sort: string | null
+	status: string | null
+	format: string | null
+}
+
+type FilterState = {
+	sort: string
+	status: string
+	format: string
+}
+
+const initialFilterState: FilterState = {
+	sort: "",
+	status: "",
+	format: "",
+}
 
 const Search = () => {
+	const navigator = useNavigate()
+
+	// PARAMS
+	const urlParams = new URLSearchParams(location.search.split("?")[1])
+	const params: ParamsInterface = {
+		query: urlParams.get("q"),
+		sort: urlParams.get("sort"),
+		status: urlParams.get("status"),
+		format: urlParams.get("format"),
+	}
+
+	// FILTERS
+	const [queryString, setQueryString] = useState<string>("")
+	const [filter, setFilter] = useState<FilterState>(initialFilterState)
+
 	const username = useSelector((state: AuthState) => state.username)
 	const [user, setUser] = useState<ProfileState | UserState | null>(null)
 	const [isLoading, setIsLoading] = useState(true)
 
-	const [searchString, setSearchString] = useState<string>("")
 	const [animes, setAnimes] = useState<AnimeType[]>([])
 	const [hasErrorAPI, setHasErrorAPI] = useState<boolean>(false)
 
@@ -39,33 +80,72 @@ const Search = () => {
 			.finally(() => {
 				setIsLoading(false)
 			})
-	}, [username])
+
+		// Get animes
+		let urlToApi = "/search?"
+		if (params.query) {
+			urlToApi += `q=${params.query}&`
+			setQueryString(params.query)
+		}
+		if (params.sort) urlToApi += `sort=${params.sort}&`
+		if (params.status) urlToApi += `status=${params.status}&`
+		if (params.format) urlToApi += `format=${params.format}&`
+
+		if (urlToApi.split("?")[1]) {
+			api
+				.get<SearchAnimeResponse>(urlToApi)
+				.then((res) => {
+					setAnimes(res.data.data.Page.media)
+				})
+				.finally(() => {
+					setIsLoading(false)
+				})
+		}
+	}, [params.query, params.sort, params.status, params.format, username])
 
 	useEffect(() => {}, [animes])
 
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-		setSearchString(e.target.value)
+		setQueryString(e.target.value)
 	}
 
-	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault()
-		setIsLoading(true)
+	const handleSubmit = (e: React.FormEvent<HTMLFormElement> | undefined) => {
+		e?.preventDefault()
+		let redirectUrl = "/search?"
+		if (queryString) redirectUrl += `q=${queryString}&`
+		if (filter?.sort && filter.sort !== sortOptions[0])
+			redirectUrl += `sort=${filter?.sort}&`
+		if (filter?.status) redirectUrl += `status=${filter?.status}&`
+		if (filter?.format) redirectUrl += `format=${filter?.format}&`
+		navigator(redirectUrl)
+	}
 
-		await api
-			.post<SearchAnimeResponse>("/search/fetchQuery", {
-				variables: {
-					searchString: searchString,
-					sort: "",
-					format: "",
-					page: 0,
-				},
-			})
-			.then((res) => {
-				setAnimes(res.data.data.Page.media)
-			})
-			.finally(() => {
-				setIsLoading(false)
-			})
+	const handleFastQuery = (type: string) => {
+		let redirectUrl = "/search?"
+		switch (type) {
+			case "Top Animes":
+				redirectUrl += "sort=POPULARITY_DESC&"
+				break
+			case "Most Scored":
+				redirectUrl += "sort=SCORE_DESC&"
+				break
+			case "Releasing":
+				redirectUrl += "status=RELEASING"
+				break
+		}
+		setQueryString("")
+		navigator(redirectUrl)
+	}
+
+	const handleFilterChange = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+	) => {
+		const { name, value } = e.target
+
+		setFilter((prevData) => ({
+			...prevData,
+			[name]: value,
+		}))
 	}
 
 	if (animes) {
@@ -90,9 +170,59 @@ const Search = () => {
 								<input
 									type="text"
 									onChange={handleChange}
+									value={queryString}
 								/>
 								<button type="submit">Submit</button>
 							</form>
+
+							<div className="fast_querys">
+								<div
+									className="query green"
+									onClick={() => handleFastQuery("Top Animes")}
+								>
+									<h3>Top Animes</h3>
+								</div>
+								<div
+									className="query blue"
+									onClick={() => handleFastQuery("Most Scored")}
+								>
+									<h3>Most Scored</h3>
+								</div>
+								<div
+									className="query yellow"
+									onClick={() => handleFastQuery("Releasing")}
+								>
+									<h3>Releasing</h3>
+								</div>
+							</div>
+
+							<div className="filters">
+								{optionsNames.map((optionName, i) => (
+									<div
+										className="filter"
+										key={i}
+									>
+										<div className="label">
+											<h3>{optionName}</h3>
+										</div>
+										<select
+											name={optionName.toLowerCase()}
+											onChange={handleFilterChange}
+											value={filter[optionName as keyof FilterState]}
+										>
+											{options[i].map((option, j) => (
+												<option
+													key={j + i}
+													value={option}
+													defaultValue={j === 0 ? option : undefined}
+												>
+													{option ? option.split("_").join(" ") : "-----"}
+												</option>
+											))}
+										</select>
+									</div>
+								))}
+							</div>
 						</div>
 					</div>
 

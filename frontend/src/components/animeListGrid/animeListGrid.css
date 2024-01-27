@@ -58,7 +58,7 @@
 }
 
 .anime-list-grid.grid .anime_item .content.with-margin {
-    margin-bottom: 4px;
+	margin-bottom: 4px;
 }
 
 .anime-list-grid.grid .anime_item .content h2 {
@@ -215,10 +215,14 @@
 }
 
 @media screen and (min-width: 992px) {
+	.anime-list-grid {
+		padding: 0 10vw;
+	}
+
 	.anime-list-grid.grid {
 		display: grid;
-		grid-template-columns: repeat(5, 1fr);
-		grid-template-rows: repeat(5, 1fr);
+		grid-template-columns: repeat(4, 1fr);
+		grid-template-rows: repeat(4, 1fr);
 		width: 100%;
 		gap: 1rem;
 	}
@@ -232,10 +236,14 @@
 }
 
 @media screen and (min-width: 1200px) {
+	.anime-list-grid {
+		padding: 0 15vw;
+	}
+
 	.anime-list-grid.grid {
 		display: grid;
-		grid-template-columns: repeat(6, 1fr);
-		grid-template-rows: repeat(6, 1fr);
+		grid-template-columns: repeat(5, 1fr);
+		grid-template-rows: repeat(5, 1fr);
 		width: 100%;
 		gap: 1rem;
 	}

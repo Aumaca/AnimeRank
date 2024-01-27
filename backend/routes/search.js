@@ -3,6 +3,6 @@ import { fetchQuery } from "../controllers/search.js"
 
 const router = express.Router()
 
-router.post("/fetchQuery", fetchQuery)
+router.get("/", fetchQuery)
 
 export default router

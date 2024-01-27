@@ -2,23 +2,21 @@
  * Return the query and his variables as an object
  * @returns {{query: string, variables: {search?: string, format?: string}}}
  */
-const setQuery = ({ searchString, format, sort, page }) => {
+const setQuery = ({ q, format, sort, page, status }) => {
 	// Variables
 	const variables = {}
 
-	if (searchString) variables.search = searchString
-
+	if (q) variables.search = q
+    if (status) variables.status = status
 	if (format) variables.format = format
-
-	sort ? (variables.sort = sort) : (variables.sort = "POPULARITY_DESC")
-
 	if (page) variables.page = page
+	sort ? (variables.sort = sort) : (variables.sort = "POPULARITY_DESC")
 
 	// Query
 	const query = `
-        query ($id: Int, $page: Int, $search: String, $sort: [MediaSort], $format: MediaFormat) {
-            Page (page: $page, perPage: 10) {
-                media(id: $id, format: $format, search: $search, sort: $sort, type: ANIME) {
+        query ($id: Int, $search: String, $sort: [MediaSort], $status: [MediaStatus], $page: Int, $format: MediaFormat) {
+            Page (page: $page, perPage: 50) {
+                media(id: $id, search: $search, sort: $sort, status_in: $status, format: $format, type: ANIME) {
                     id
                     title {
                         english
@@ -36,7 +34,7 @@ const setQuery = ({ searchString, format, sort, page }) => {
             }
         }
     `
-
+    console.log(variables)
 	return { query: query, variables: variables }
 }
 
