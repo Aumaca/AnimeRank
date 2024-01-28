@@ -3,6 +3,10 @@
 	color: #ffbf00;
 }
 
+.anime-list-grid .result {
+	cursor: pointer;
+}
+
 .anime-list-grid .result .form-button svg {
 	position: absolute;
 	padding: 1rem;
