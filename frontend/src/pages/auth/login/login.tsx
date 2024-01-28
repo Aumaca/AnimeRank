@@ -169,17 +169,17 @@ const Login = () => {
 						</Link>
 					</form>
 				</div>
-			</div>
 
-			<Message
-				closeMessage={closeMessage}
-				isOpen={messageState.isOpen}
-				title={messageState.title}
-				backgroundColor={messageState.backgroundColor}
-			>
-				{messageState.children}
-			</Message>
-			<Loader isActive={isLoaderOpen} />
+				<Message
+					closeMessage={closeMessage}
+					isOpen={messageState.isOpen}
+					title={messageState.title}
+					backgroundColor={messageState.backgroundColor}
+				>
+					{messageState.children}
+				</Message>
+				<Loader isActive={isLoaderOpen} />
+			</div>
 		</>
 	)
 }

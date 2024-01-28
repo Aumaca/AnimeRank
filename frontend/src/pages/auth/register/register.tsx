@@ -205,34 +205,33 @@ const Register = () => {
 						</Link>
 					</form>
 				</div>
-			</div>
-
-			<Modal
-				isOpen={isModalOpen}
-				setIsOpen={setIsModalOpen}
-				backgroundColor={"#50C878"}
-			>
-				<FontAwesomeIcon
-					icon={faCheckCircle}
-					size="4x"
-				/>
-				<p>Registration successful! You can now log in.</p>
-				<Link
-					to="/login"
-					className="modal_link"
+				<Modal
+					isOpen={isModalOpen}
+					setIsOpen={setIsModalOpen}
+					backgroundColor={"#50C878"}
 				>
-					<button>Go to Login</button>
-				</Link>
-			</Modal>
-			<Message
-				closeMessage={closeMessage}
-				isOpen={messageState.isOpen}
-				title={messageState.title}
-				backgroundColor={messageState.backgroundColor}
-			>
-				{messageState.children}
-			</Message>
-			<Loader isActive={isLoading} />
+					<FontAwesomeIcon
+						icon={faCheckCircle}
+						size="4x"
+					/>
+					<p>Registration successful! You can now log in.</p>
+					<Link
+						to="/login"
+						className="modal_link"
+					>
+						<button>Go to Login</button>
+					</Link>
+				</Modal>
+				<Message
+					closeMessage={closeMessage}
+					isOpen={messageState.isOpen}
+					title={messageState.title}
+					backgroundColor={messageState.backgroundColor}
+				>
+					{messageState.children}
+				</Message>
+				<Loader isActive={isLoading} />
+			</div>
 		</>
 	)
 }
