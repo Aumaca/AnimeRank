@@ -6,9 +6,9 @@ const AnimeTrailer = ({
 	animeReleaseYear,
 	animeTrailerId,
 }: {
-	animeTitle: string|null
-	animeReleaseYear: number|null
-	animeTrailerId: string|null
+	animeTitle: string | null
+	animeReleaseYear: number | null
+	animeTrailerId: string | null
 }) => {
 	const [videoId, setVideoId] = useState(null)
 

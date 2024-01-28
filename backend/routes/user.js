@@ -6,11 +6,13 @@ import {
 	addUpdateAnimeUserList,
 	setIsFavorite,
 	deleteAnimeUserList,
+	getUsers,
 } from "../controllers/user.js"
 import { verifyToken } from "../middleware/auth.js"
 
 const router = express.Router()
 
+router.get("/getUsers", getUsers)
 router.get("/getUser/:username", getUser)
 router.get("/getUserAndList/:username", getUserAndList)
 router.delete("/deleteUser", verifyToken, deleteUser)

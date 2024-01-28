@@ -10,6 +10,10 @@ export interface ProfileResponse {
 	data: ProfileState
 }
 
+export interface ProfilesResponse {
+	data: ProfileState[]
+}
+
 export interface UserResponse {
 	data: UserState
 }

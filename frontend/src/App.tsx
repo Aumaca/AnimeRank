@@ -12,6 +12,7 @@ import Anime from "./pages/anime/anime.tsx"
 import Page404 from "./components/Page404/Page404.tsx"
 
 import "./index.css"
+import Profiles from "./pages/profiles/profiles.tsx"
 
 function App() {
 	const token = useSelector((state: AuthState) => state.token)
@@ -44,9 +45,15 @@ function App() {
 						element={<Profile />}
 					/>
 					<Route
+						path="/profiles/"
+						element={<Profiles />}
+					/>
+
+					<Route
 						path="/list/:username"
 						element={<AnimeList />}
 					/>
+
 					<Route
 						path="/anime/:animeId"
 						element={<Anime />}

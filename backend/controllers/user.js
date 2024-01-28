@@ -28,6 +28,25 @@ export const getUser = async (req, res) => {
 	}
 }
 
+export const getUsers = async (req, res) => {
+	try {
+		const profilesData = await User.find({}).select(
+			"username picture country createdAt animes"
+		)
+		if (!profilesData) return res.status(404).json({ error: "User not found" })
+
+		const profilesDataObj = profilesData.map((profileData) => {
+			const profile = profileData.toObject()
+			profile.countEpisodes = profileData.countEpisodes()
+			return profile
+		})
+
+		res.status(200).json(profilesDataObj)
+	} catch (err) {
+		res.status(400).json({ error: err })
+	}
+}
+
 export const getUserAndList = async (req, res) => {
 	try {
 		const username = req.params.username

@@ -24,16 +24,28 @@ const Sidemenu = ({
 					Homepage
 				</Link>
 				<Link
-					to="/"
+					to="/search?sort=SCORE_DESC"
 					className="item"
 				>
 					Top Animes
 				</Link>
 				<Link
-					to="/"
+					to="/search?sort=POPULARITY_DESC"
 					className="item"
 				>
-					Most Popular Animes
+					Popular Animes
+				</Link>
+				<Link
+					to="/search?status=RELEASING"
+					className="item"
+				>
+					Releasing Animes
+				</Link>
+				<Link
+					to="/profiles"
+					className="item"
+				>
+					Profiles
 				</Link>
 				{username ? (
 					<Link

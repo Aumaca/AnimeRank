@@ -88,6 +88,7 @@ const Search = () => {
 	})
 
 	useEffect(() => {
+		console.log("useEffect top")
 		document.title = "Search - AnimeRank"
 		setIsLoading(true)
 
@@ -108,6 +109,13 @@ const Search = () => {
 		if (params.format) urlToApi += `format=${params.format}&`
 		if (params.page) urlToApi += `page=${params.page}&`
 
+		setFilter((prevData) => ({
+			...prevData,
+			sort: params.sort ? params.sort : "",
+			format: params.format ? params.format : "",
+			status: params.status ? params.status : "",
+		}))
+
 		if (urlToApi.split("?")[1]) {
 			api.get<SearchAnimeResponse>(urlToApi).then((res) => {
 				setAnimes(res.data.data.Page.media)
@@ -125,7 +133,9 @@ const Search = () => {
 		username,
 	])
 
-	useEffect(() => {}, [animes])
+	useEffect(() => {
+		console.log("useEffect simples")
+	}, [animes])
 
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setQueryString(e.target.value)
@@ -133,7 +143,6 @@ const Search = () => {
 
 	const handleSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
 		e?.preventDefault()
-		console.log("handlesubmit")
 		let redirectUrl = "/search?"
 		if (queryString) redirectUrl += `q=${queryString}&`
 		if (filter?.sort && filter.sort !== sortOptions[0])
