@@ -40,10 +40,12 @@ const HomeSlider: React.FC<HomeSliderProps> = ({
 						true
 					)}`}
 				>
-					<img
-						src={anime.coverImage.large}
-						alt=""
-					/>
+					<Link to={`/anime/${anime.id}`}>
+						<img
+							src={anime.coverImage.large}
+							alt=""
+						/>
+					</Link>
 
 					<FontAwesomeIcon
 						icon={getIconAnime(
