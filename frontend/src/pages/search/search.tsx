@@ -9,13 +9,11 @@ import {
 	faBackward,
 	faChevronLeft,
 	faChevronRight,
+	faRightToBracket,
 	faSearch,
 } from "@fortawesome/free-solid-svg-icons"
-import {
-	ProfileResponse,
-	SearchAnimeResponse,
-} from "../../interfaces/responses"
-import { AuthState, ProfileState, UserState } from "../../interfaces/user"
+import { SearchAnimeResponse, UserResponse } from "../../interfaces/responses"
+import { AuthState, UserState } from "../../interfaces/user"
 
 import ApiError from "../../components/apiError/apiError.tsx"
 import AnimeListGrid from "../../components/animeListGrid/animeListGrid.tsx"
@@ -24,6 +22,11 @@ import "./search.css"
 import { useNavigate } from "react-router"
 import { optionsNames, options, sortOptions } from "./searchFilter.ts"
 import ReactPaginate from "react-paginate"
+import FormAnime from "../../components/formAnime/formAnime.tsx"
+import { Link } from "react-router-dom"
+import Message from "../../components/message/message.tsx"
+import Modal from "../../components/modal/modal.tsx"
+import { MessageProps } from "../../interfaces/components/message.ts"
 
 type ParamsInterface = {
 	query: string | null
@@ -65,7 +68,7 @@ const Search = () => {
 	const [filter, setFilter] = useState<FilterState>(initialFilterState)
 
 	const username = useSelector((state: AuthState) => state.username)
-	const [user, setUser] = useState<ProfileState | UserState | null>(null)
+	const [user, setUser] = useState<UserState | null>(null)
 	const [isLoading, setIsLoading] = useState(true)
 
 	const [animes, setAnimes] = useState<AnimeType[]>([])
@@ -73,13 +76,24 @@ const Search = () => {
 
 	const [pages, setPages] = useState(0)
 
+	const [animeSelected, setAnimeSelected] = useState<AnimeType | null>(null)
+	const [isFormAnimeOpen, setIsFormAnimeOpen] = useState(false)
+	const [isOpenModal, setIsOpenModal] = useState(false)
+
+	const [messageState, setMessageState] = useState<MessageProps>({
+		isOpen: false,
+		title: "",
+		backgroundColor: "",
+		children: "",
+	})
+
 	useEffect(() => {
 		document.title = "Search - AnimeRank"
 		setIsLoading(true)
 
 		api
 			.get(`/user/getUser/${username}`)
-			.then((res: ProfileResponse) => {
+			.then((res: UserResponse) => {
 				setUser(res.data)
 			})
 			.catch((error) => {
@@ -95,16 +109,13 @@ const Search = () => {
 		if (params.page) urlToApi += `page=${params.page}&`
 
 		if (urlToApi.split("?")[1]) {
-			api
-				.get<SearchAnimeResponse>(urlToApi)
-				.then((res) => {
-					setAnimes(res.data.data.Page.media)
-					setPages(parseInt(res.data.data.Page.pageInfo.lastPage))
-				})
-				.finally(() => {
-					setIsLoading(false)
-				})
+			api.get<SearchAnimeResponse>(urlToApi).then((res) => {
+				setAnimes(res.data.data.Page.media)
+				setPages(parseInt(res.data.data.Page.pageInfo.lastPage))
+			})
 		}
+
+		setIsLoading(false)
 	}, [
 		params.format,
 		params.page,
@@ -161,9 +172,31 @@ const Search = () => {
 		}))
 	}
 
-	const handlePageClick = (e) => {
-		page = parseInt(e.selected) + 1
+	type paginationClickInterface = {
+		selected: number
+	}
+
+	const handlePageClick = (e: paginationClickInterface) => {
+		page = e.selected + 1
 		handleSubmit()
+	}
+
+	const closeForm = (): void => {
+		setAnimeSelected(null)
+		setIsFormAnimeOpen(false)
+	}
+
+	const closeMessage = (): void => {
+		setMessageState({ ...messageState, isOpen: false })
+	}
+
+	const handleClickAdd = (anime: AnimeType): void => {
+		if (user) {
+			setAnimeSelected(anime)
+			setIsFormAnimeOpen(true)
+		} else {
+			setIsOpenModal(true)
+		}
 	}
 
 	if (animes.length || (!animes.length && !params.page)) {
@@ -246,8 +279,50 @@ const Search = () => {
 					<AnimeListGrid
 						animes={animes}
 						listViewStyle={false}
-						userAnimes={user && user.animes.length ? user.animes : null}
+						userAnimes={user?.animes || null}
+						userProfileAnimes={null}
+						handleClickAdd={handleClickAdd}
+						toSearch={true}
 					/>
+
+					{user && (
+						<FormAnime
+							anime={animeSelected}
+							isOpen={isFormAnimeOpen}
+							user={user}
+							toSetUser={setUser}
+							closeForm={closeForm}
+							setIsLoading={setIsLoading}
+							setMessageState={setMessageState}
+						/>
+					)}
+
+					<Modal
+						isOpen={isOpenModal}
+						setIsOpen={setIsOpenModal}
+						backgroundColor="blue"
+					>
+						<FontAwesomeIcon
+							icon={faRightToBracket}
+							size="4x"
+						/>
+						<p>You need to be logged to add animes to your list.</p>
+						<Link
+							to="/login"
+							className="modal_link"
+						>
+							<button>Go to login page</button>
+						</Link>
+					</Modal>
+
+					<Message
+						closeMessage={closeMessage}
+						isOpen={messageState.isOpen}
+						title={messageState.title}
+						backgroundColor={messageState.backgroundColor}
+					>
+						{messageState.children}
+					</Message>
 
 					{animes.length ? (
 						<div className="pages">

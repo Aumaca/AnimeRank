@@ -3,6 +3,14 @@
 	color: #ffbf00;
 }
 
+.anime-list-grid .result .form-button svg {
+	position: absolute;
+	padding: 1rem;
+	background-color: rgba(100, 100, 100, 0.5);
+	border-radius: 0 0 10px 0;
+	z-index: 99;
+}
+
 .anime-list-grid a {
 	all: unset;
 }
@@ -122,6 +130,26 @@
 	border-left: 4px solid var(--planToWatch);
 }
 /* END IMAGE BORDER LEFT */
+
+.anime-list-grid .form-button.watching svg {
+	background-color: var(--watchingRGBA);
+}
+
+.anime-list-grid .form-button.completed svg {
+	background-color: var(--completedRGBA);
+}
+
+.anime-list-grid .form-button.onhold svg {
+	background-color: var(--onHoldRGBA);
+}
+
+.anime-list-grid .form-button.dropped svg {
+	background-color: var(--droppedRGBA);
+}
+
+.anime-list-grid .form-button.plantowatch svg {
+	background-color: var(--planToWatchRGBA);
+}
 
 .anime-list-grid.list .anime_item .content {
 	display: flex;

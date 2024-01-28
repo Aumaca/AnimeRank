@@ -1,4 +1,4 @@
-import { ProfileState } from "./user"
+import { ProfileState, UserState } from "./user"
 import { PageData, AnimeType } from "./common"
 
 export interface LoginResponse {
@@ -8,6 +8,10 @@ export interface LoginResponse {
 
 export interface ProfileResponse {
 	data: ProfileState
+}
+
+export interface UserResponse {
+	data: UserState
 }
 
 export interface HomePageResponse {

@@ -9,10 +9,10 @@ import Navbar from "../../components/navbar/navbar.tsx"
 import ProfilePicture from "../../components/profilePicture/profilePicture.tsx"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faBorderAll, faListUl } from "@fortawesome/free-solid-svg-icons"
+import { faBorderAll, faListUl, faRightToBracket } from "@fortawesome/free-solid-svg-icons"
 
 import { AnimeType } from "../../interfaces/common.ts"
-import { AuthState, ProfileState } from "../../interfaces/user.ts"
+import { AuthState, ProfileState, UserState } from "../../interfaces/user.ts"
 import { UserAndListResponse } from "../../interfaces/responses.ts"
 
 import Page404 from "../../components/Page404/Page404.tsx"
@@ -20,6 +20,10 @@ import ApiError from "../../components/apiError/apiError.tsx"
 import AnimeListGrid from "../../components/animeListGrid/animeListGrid.tsx"
 
 import "./animeList.css"
+import FormAnime from "../../components/formAnime/formAnime.tsx"
+import Message from "../../components/message/message.tsx"
+import Modal from "../../components/modal/modal.tsx"
+import { MessageProps } from "../../interfaces/components/message.ts"
 
 const AnimeList = () => {
 	const navigator = useNavigate()
@@ -30,12 +34,22 @@ const AnimeList = () => {
 	const usernameLogged = useSelector((state: AuthState) => state.username)
 	const { username } = useParams()
 
-	const [user, setUser] = useState<ProfileState | null>(null)
+	const [user, setUser] = useState<UserState | null>(null)
 	const [userProfile, setUserProfile] = useState<ProfileState>()
 
 	const [animes, setAnimes] = useState<AnimeType[]>()
 	const [listViewStyle, setListViewStyle] = useState<boolean>(false)
 	const [filter, setFilter] = useState<string>(statusParam ? statusParam : "")
+
+	const [animeSelected, setAnimeSelected] = useState<AnimeType | null>(null)
+	const [isFormAnimeOpen, setIsFormAnimeOpen] = useState(false)
+	const [isOpenModal, setIsOpenModal] = useState(false)
+	const [messageState, setMessageState] = useState<MessageProps>({
+		isOpen: false,
+		title: "",
+		backgroundColor: "",
+		children: "",
+	})
 
 	const [isLoading, setIsLoading] = useState(true)
 	const [notFound, setNotFound] = useState<boolean>(false)
@@ -82,6 +96,24 @@ const AnimeList = () => {
 				}).toString()}`
 			)
 		}
+	}
+
+	const handleClickAdd = (anime: AnimeType): void => {
+		if (user) {
+			setAnimeSelected(anime)
+			setIsFormAnimeOpen(true)
+		} else {
+			setIsOpenModal(true)
+		}
+	}
+
+	const closeForm = (): void => {
+		setAnimeSelected(null)
+		setIsFormAnimeOpen(false)
+	}
+
+	const closeMessage = (): void => {
+		setMessageState({ ...messageState, isOpen: false })
 	}
 
 	if (userProfile && animes) {
@@ -175,13 +207,49 @@ const AnimeList = () => {
 					<AnimeListGrid
 						animes={animes}
 						listViewStyle={listViewStyle}
-						userAnimes={user && user.animes.length ? user.animes : null}
-						userProfileAnimes={
-							userProfile && userProfile.animes.length
-								? userProfile.animes
-								: null
-						}
+						userAnimes={user?.animes || null}
+						userProfileAnimes={user?.username === userProfile?.username ? null : userProfile?.animes}
+						handleClickAdd={handleClickAdd}
 					/>
+
+					{user && (
+						<FormAnime
+							anime={animeSelected}
+							isOpen={isFormAnimeOpen}
+							user={user}
+							toSetUser={setUser}
+							closeForm={closeForm}
+							setIsLoading={setIsLoading}
+							setMessageState={setMessageState}
+						/>
+					)}
+
+					<Modal
+						isOpen={isOpenModal}
+						setIsOpen={setIsOpenModal}
+						backgroundColor="blue"
+					>
+						<FontAwesomeIcon
+							icon={faRightToBracket}
+							size="4x"
+						/>
+						<p>You need to be logged to add animes to your list.</p>
+						<Link
+							to="/login"
+							className="modal_link"
+						>
+							<button>Go to login page</button>
+						</Link>
+					</Modal>
+
+					<Message
+						closeMessage={closeMessage}
+						isOpen={messageState.isOpen}
+						title={messageState.title}
+						backgroundColor={messageState.backgroundColor}
+					>
+						{messageState.children}
+					</Message>
 				</div>
 
 				<Loader isActive={isLoading} />
