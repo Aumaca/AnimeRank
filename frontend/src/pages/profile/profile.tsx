@@ -261,13 +261,13 @@ const Profile = () => {
 						<></>
 					)}
 
-					{user && user.username === userProfile.username && (
+					{user?.username === userProfile?.username ? (
 						<div className="delete">
 							<button onClick={() => deleteUser()}>
 								Delete profile <FontAwesomeIcon icon={faTrash} />
 							</button>
 						</div>
-					)}
+					) : ""}
 
 					<Message
 						closeMessage={closeMessage}
