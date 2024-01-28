@@ -92,7 +92,6 @@ const Search = () => {
 	})
 
 	useEffect(() => {
-		console.log("useEffect top")
 		document.title = "Search - AnimeRank"
 		setIsLoading(true)
 
@@ -137,9 +136,7 @@ const Search = () => {
 		username,
 	])
 
-	useEffect(() => {
-		console.log("useEffect simples")
-	}, [animes])
+	useEffect(() => {}, [animes])
 
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setQueryString(e.target.value)
