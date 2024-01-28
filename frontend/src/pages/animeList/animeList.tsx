@@ -207,7 +207,7 @@ const AnimeList = () => {
 					<AnimeListGrid
 						animes={animes}
 						listViewStyle={listViewStyle}
-						userAnimes={user?.animes || null}
+						userAnimes={user?.animes.length ? user.animes : null}
 						userProfileAnimes={user?.username === userProfile?.username ? null : userProfile?.animes}
 						handleClickAdd={handleClickAdd}
 					/>

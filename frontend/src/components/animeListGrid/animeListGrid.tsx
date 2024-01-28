@@ -178,70 +178,142 @@ const AnimeListGrid: React.FC<AnimeListGridProps> = ({
 				<div className={`anime-list-grid ${listViewStyle ? "list" : "grid"}`}>
 					{animes.map((anime) => (
 						<div
-							className="result"
+							className="with-cursor"
 							key={anime.id}
 						>
-							<div
-								className={`form-button ${getStatusAnime(
-									userAnimes,
-									anime,
-									true
-								)}`}
-							>
-								<FontAwesomeIcon
-									icon={getIconAnime(getStatusAnime(userAnimes, anime, true))}
-									size="2x"
-									onClick={() => handleClickAdd(anime)}
-								/>
-							</div>
-							<div
-								className={`form-button ${getStatusAnime(
-									userAnimes,
-									anime,
-									true
-								)}`}
-							>
-								<FontAwesomeIcon
-									icon={getIconAnime(getStatusAnime(userAnimes, anime, true))}
-									size="2x"
-									onClick={() => handleClickAdd(anime)}
-								/>
-							</div>
-							<Link to={`/anime/${anime.id}`}>
-								<div className="anime_item">
-									<img
-										src={anime.coverImage.large}
-										alt=""
-										className={`${getStatusAnime(userAnimes, anime, true)}`}
-									/>
-									<div
-										className={`content ${
-											getStatusAnime(userAnimes, anime, true, true) &&
-											"with-margin"
-										}`}
-									>
-										<h2>
-											{anime.title.english
-												? anime.title.english
-												: anime.title.romaji}
-										</h2>
+							{listViewStyle ? (
+								<>
+									<Link to={`/anime/${anime.id}`}>
+										<div className="anime_item">
+											<img
+												src={anime.coverImage.large}
+												alt=""
+												className={`${getStatusAnime(
+													userAnimes,
+													anime,
+													true
+												)}`}
+											/>
+											<div className="content with-margin">
+												<h2>
+													{anime.title.english
+														? anime.title.english
+														: anime.title.romaji}
+												</h2>
 
-										<div className="status"></div>
+												{userAnimes.length && (
+													<div className="status">
+														<h3
+															className={`${getStatusAnime(
+																userAnimes,
+																anime,
+																true
+															)}`}
+														>
+															{getStatusAnime(userAnimes, anime, false)}
+														</h3>
+													</div>
+												)}
 
-										<div className="information">
-											<p>Episodes: {anime.episodes}</p>
+												{userAnimes.length && (
+													<div className="notes">
+														<h3>
+															{userAnimes.filter(
+																(userAnime) => userAnime.id === anime.id
+															)[0].notes &&
+																`"${
+																	userAnimes.filter(
+																		(userAnime) => userAnime.id === anime.id
+																	)[0].notes
+																}"`}
+														</h3>
+													</div>
+												)}
 
-											<div className="score">
-												<h3>Score: {anime.averageScore}</h3>
-												<FontAwesomeIcon
-													icon={faStar}
-													size="xl"
-												/>
+												<div className="information">
+													<p>
+														Watched:&nbsp;
+														{
+															userAnimes.filter(
+																(userAnime) => userAnime.id === anime.id
+															)[0].episodes
+														}
+													</p>
+
+													<div className="score">
+														<h3>
+															{
+																userAnimes.filter(
+																	(userAnime) => userAnime.id === anime.id
+																)[0].score
+															}
+														</h3>
+														<FontAwesomeIcon
+															icon={faStar}
+															size="xl"
+														/>
+														<h3>
+															{
+																scoreOnlyLabels[
+																	userAnimes.filter(
+																		(userAnime) => userAnime.id === anime.id
+																	)[0].score - 1
+																]
+															}
+														</h3>
+													</div>
+												</div>
 											</div>
 										</div>
-									</div>
-								</div>
-							</Link>
+									</Link>
+								</>
+							) : (
+								<>
+									<Link to={`/anime/${anime.id}`}>
+										<div className="anime_item">
+											<img
+												src={anime.coverImage.large}
+												alt=""
+												className={`${getStatusAnime(
+													userAnimes,
+													anime,
+													true
+												)}`}
+											/>
+											<div className="content with-margin">
+												<h2>
+													{anime.title.english
+														? anime.title.english
+														: anime.title.romaji}
+												</h2>
+												<div className="information">
+													<p>
+														Watched:&nbsp;
+														{
+															userAnimes.filter(
+																(userAnime) => userAnime.id === anime.id
+															)[0].episodes
+														}
+													</p>
+													<div className="score">
+														<h3>
+															{
+																userAnimes.filter(
+																	(userAnime) => userAnime.id === anime.id
+																)[0].score
+															}
+														</h3>
+														<FontAwesomeIcon
+															icon={faStar}
+															size="xl"
+														/>
+													</div>
+												</div>
+											</div>
+										</div>
+									</Link>
+								</>
+							)}
 						</div>
 					))}
 				</div>
