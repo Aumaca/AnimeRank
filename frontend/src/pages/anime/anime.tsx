@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
-import { Helmet } from "react-helmet"
 import axios from "axios"
 import { useSelector } from "react-redux"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -163,6 +162,8 @@ const Anime = () => {
 	}
 
 	useEffect(() => {
+		document.title = `Anime - AnimeRank`
+
 		// User
 		api.get<UserState>(`/user/getUser/${username}`).then((response) => {
 			setUser(response.data)
@@ -188,7 +189,11 @@ const Anime = () => {
 			.finally(() => {
 				setIsLoading(false)
 			})
-	}, [graphqlQuery, animeId, username])
+
+		document.title = `${
+			anime?.title.english || anime?.title.romaji || "Anime"
+		} - AnimeRank`
+	}, [graphqlQuery, animeId, username, anime])
 
 	useEffect(() => {
 		if (
@@ -221,9 +226,6 @@ const Anime = () => {
 	if (anime) {
 		return (
 			<>
-				<Helmet>
-					<title>{`${anime.title.english}`} - AnimeRank</title>
-				</Helmet>
 				{user ? <Navbar user={user} /> : <Navbar />}
 				<div className="anime">
 					<div className="share_button">

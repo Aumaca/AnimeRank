@@ -2,7 +2,6 @@ import { ChangeEvent, FormEvent, useState } from "react"
 import { useDispatch } from "react-redux"
 import type { Dispatch } from "redux"
 import { Link, useNavigate } from "react-router-dom"
-import { Helmet } from "react-helmet"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons"
@@ -24,6 +23,7 @@ const initialFormErrorState = {
 }
 
 const Login = () => {
+	document.title = "Login - AnimeRank"
 	const dispatch: Dispatch = useDispatch()
 	const navigate = useNavigate()
 
@@ -131,9 +131,6 @@ const Login = () => {
 
 	return (
 		<>
-			<Helmet>
-				<title>Login - AnimeRank</title>
-			</Helmet>
 			<Navbar />
 			<div className="auth">
 				<div className="container">

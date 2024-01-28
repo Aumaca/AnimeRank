@@ -2,7 +2,6 @@
 import { ChangeEvent, useEffect, useState } from "react"
 import { Link, useParams, useNavigate } from "react-router-dom"
 import { useSelector } from "react-redux"
-import { Helmet } from "react-helmet"
 
 import api from "../../api/api.ts"
 import Loader from "../../components/loader/loader.tsx"
@@ -43,6 +42,7 @@ const AnimeList = () => {
 	const [hasErrorAPI, setHasErrorAPI] = useState<boolean>(false)
 
 	useEffect(() => {
+		document.title = `${username}'s AnimeList - AnimeRank`
 		api.get(`/user/getUser/${usernameLogged}`).then((res) => {
 			setUser(res.data)
 		})
@@ -87,9 +87,6 @@ const AnimeList = () => {
 	if (userProfile && animes) {
 		return (
 			<>
-				<Helmet>
-					<title>{`${username}'s AnimeList`} - AnimeRank</title>
-				</Helmet>
 				{user ? <Navbar user={user} /> : <Navbar />}
 
 				<div className="animelist">

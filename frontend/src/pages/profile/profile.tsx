@@ -3,7 +3,6 @@ import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import type { Dispatch } from "redux"
-import { Helmet } from "react-helmet"
 
 import { Swiper, SwiperSlide } from "swiper/react"
 import { Navigation } from "swiper/modules"
@@ -55,6 +54,8 @@ const Profile = () => {
 	}
 
 	useEffect(() => {
+		document.title = `User Profile - AnimeRank`
+
 		api
 			.get(`/user/getUser/${username}`)
 			.then((res: ProfileResponse) => {
@@ -68,6 +69,8 @@ const Profile = () => {
 		api.get(`/user/getUser/${usernameLogged}`).then((res: ProfileResponse) => {
 			setUser(res.data)
 		})
+
+		document.title = `${username}'s Profile - AnimeRank`
 	}, [username, usernameLogged])
 
 	useEffect(() => {
@@ -150,9 +153,6 @@ const Profile = () => {
 	if (userProfile) {
 		return (
 			<>
-				<Helmet>
-					<title>{`${username}'s`} Profile - AnimeRank</title>
-				</Helmet>
 				{user ? <Navbar user={user} /> : <Navbar />}
 
 				<div className="profile">

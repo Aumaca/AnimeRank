@@ -46,7 +46,12 @@ export interface UserAndListResponse {
 export interface SearchAnimeResponse {
 	data: {
 		Page: {
+			pageInfo: PageInfo
 			media: AnimeType[]
 		}
 	}
+}
+
+export interface PageInfo {
+	lastPage: string
 }

@@ -1,7 +1,6 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
-import { Helmet } from "react-helmet"
 
 import { Swiper, SwiperSlide } from "swiper/react"
 import { EffectCoverflow, Pagination } from "swiper/modules"
@@ -41,6 +40,8 @@ import { Link } from "react-router-dom"
 import axios from "axios"
 
 const Homepage = () => {
+	document.title = "Homepage - AnimeRank"
+
 	const username = useSelector((state: AuthState) => state.username)
 	const [user, setUser] = useState<UserState | null>(null)
 
@@ -73,18 +74,45 @@ const Homepage = () => {
 		})
 
 		// Animes
-		api
-			.get<HomePageResponse>("/home/animes")
-			.then((response) => {
-				const data = response.data.data
-				setPopularAnimes(data.popularAnimes.media)
-				setMostScoredAnimes(data.mostScoredAnimes.media)
-				setReleasingAnimes(data.releasingAnimes.media)
-			})
-			.catch(() => {
-				setHasErrorAPI(true)
-			})
+		const fetchAnimes = () => {
+			api
+				.get<HomePageResponse>("/home/animes")
+				.then((response) => {
+					const data = response.data.data
+					setPopularAnimes(data.popularAnimes.media)
+					setMostScoredAnimes(data.mostScoredAnimes.media)
+					setReleasingAnimes(data.releasingAnimes.media)
 
+					localStorage.setItem("animes", JSON.stringify(data))
+
+					const expiryDate = new Date()
+					expiryDate.setHours(expiryDate.getHours() + 24)
+					localStorage.setItem("animesExpiryDate", expiryDate.toISOString())
+				})
+				.catch(() => {
+					setHasErrorAPI(true)
+				})
+		}
+		const localAnimes = localStorage.getItem("animes")
+		const localAnimesExpiryDate = localStorage.getItem("animesExpiryDate")
+
+		if (localAnimes && localAnimesExpiryDate) {
+			const expiryDate = new Date(localAnimesExpiryDate)
+			const currentDate = new Date()
+
+			if (currentDate < expiryDate) {
+				const animes = JSON.parse(localAnimes)
+				setPopularAnimes(animes.popularAnimes.media)
+				setMostScoredAnimes(animes.mostScoredAnimes.media)
+				setReleasingAnimes(animes.releasingAnimes.media)
+				setIsLoading(false)
+			}
+		} else {
+			fetchAnimes()
+			setIsLoading(false)
+		}
+
+		// Animes News
 		const fetchAnimeNews = () => {
 			const config = {
 				headers: {
@@ -120,10 +148,10 @@ const Homepage = () => {
 				setIsLoading(false)
 				return
 			}
+		} else {
+			fetchAnimeNews()
+			setIsLoading(false)
 		}
-
-		fetchAnimeNews()
-		setIsLoading(false)
 	}, [username])
 
 	const handleClickAdd = (anime: AnimeType): void => {
@@ -147,9 +175,6 @@ const Homepage = () => {
 	if (popularAnimes && mostScoredAnimes && releasingAnimes) {
 		return (
 			<>
-				<Helmet>
-					<title>Homepage - AnimeRank</title>
-				</Helmet>
 				{user ? (
 					<Navbar
 						user={user}

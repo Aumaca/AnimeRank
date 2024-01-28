@@ -102,6 +102,37 @@
 	cursor: pointer;
 }
 
+.search .pages {
+	display: flex;
+	justify-content: center;
+	padding: 4rem;
+	gap: 1rem;
+}
+
+.search .pages ul {
+	display: flex;
+	gap: 1rem;
+	list-style: none;
+}
+
+.search .page_error {
+	margin-top: 25%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.search .page_error h1 {
+	text-align: center;
+}
+
+.search .page_error button {
+	margin-top: 2rem;
+	padding: 1rem;
+	border-radius: 10px;
+	border: none;
+}
 
 @media screen and (min-width: 576px) {
 	.search .header {
