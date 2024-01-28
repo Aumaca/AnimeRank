@@ -175,7 +175,7 @@ const AnimeListGrid: React.FC<AnimeListGridProps> = ({
 	} else if (!toSearch && userAnimes) {
 		return (
 			<>
-				<div className="anime-list-grid grid">
+				<div className={`anime-list-grid ${listViewStyle ? "list" : "grid"}`}>
 					{animes.map((anime) => (
 						<div
 							className="result"
@@ -189,9 +189,7 @@ const AnimeListGrid: React.FC<AnimeListGridProps> = ({
 								)}`}
 							>
 								<FontAwesomeIcon
-									icon={getIconAnime(
-										getStatusAnime(userAnimes, anime, true)
-									)}
+									icon={getIconAnime(getStatusAnime(userAnimes, anime, true))}
 									size="2x"
 									onClick={() => handleClickAdd(anime)}
 								/>
@@ -204,9 +202,7 @@ const AnimeListGrid: React.FC<AnimeListGridProps> = ({
 								)}`}
 							>
 								<FontAwesomeIcon
-									icon={getIconAnime(
-										getStatusAnime(userAnimes, anime, true)
-									)}
+									icon={getIconAnime(getStatusAnime(userAnimes, anime, true))}
 									size="2x"
 									onClick={() => handleClickAdd(anime)}
 								/>
@@ -216,11 +212,7 @@ const AnimeListGrid: React.FC<AnimeListGridProps> = ({
 									<img
 										src={anime.coverImage.large}
 										alt=""
-										className={`${getStatusAnime(
-											userAnimes,
-											anime,
-											true
-										)}`}
+										className={`${getStatusAnime(userAnimes, anime, true)}`}
 									/>
 									<div
 										className={`content ${
@@ -258,7 +250,7 @@ const AnimeListGrid: React.FC<AnimeListGridProps> = ({
 	} else {
 		return (
 			<>
-				<div className="anime-list-grid grid">
+				<div className={`anime-list-grid ${listViewStyle ? "list" : "grid"}`}>
 					{animes.map((anime) => (
 						<div
 							className="result"
@@ -272,9 +264,7 @@ const AnimeListGrid: React.FC<AnimeListGridProps> = ({
 								)}`}
 							>
 								<FontAwesomeIcon
-									icon={getIconAnime(
-										getStatusAnime(userAnimes, anime, true)
-									)}
+									icon={getIconAnime(getStatusAnime(userAnimes, anime, true))}
 									size="2x"
 									onClick={() => handleClickAdd(anime)}
 								/>
@@ -284,11 +274,7 @@ const AnimeListGrid: React.FC<AnimeListGridProps> = ({
 									<img
 										src={anime.coverImage.large}
 										alt=""
-										className={`${getStatusAnime(
-											userAnimes,
-											anime,
-											true
-										)}`}
+										className={`${getStatusAnime(userAnimes, anime, true)}`}
 									/>
 									<div
 										className={`content ${

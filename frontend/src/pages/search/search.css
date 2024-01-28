@@ -1,6 +1,7 @@
 .search .header {
-	padding: 2rem;
 	display: flex;
+	padding: 2rem;
+	padding-bottom: 0;
 	justify-content: center;
 }
 
@@ -32,6 +33,16 @@
 
 .search .header .header_container .form input:focus {
 	outline: 2px solid blue;
+}
+
+.search .icons {
+	padding: 0 0 2rem 0;
+	display: flex;
+	gap: 1rem;
+}
+
+.search .icons svg.active {
+	color: #0096ff;
 }
 
 .search .header .header_container .form button {
@@ -66,17 +77,11 @@
 	background-color: rgb(191, 168, 36);
 }
 
-.search .icons_container {
-	padding: 1rem;
+.search .icons {
+	padding: 2rem;
 	background-color: var(--body-primary);
 	display: flex;
 	justify-content: end;
-}
-
-.search .icons {
-	right: 2rem;
-	display: flex;
-	gap: 1rem;
 }
 
 .search .icons svg.active {
@@ -151,7 +156,7 @@
 @media screen and (min-width: 768px) {
 	.search .header .header_container {
 		padding: 0 20vw;
-	}
+	} 
 }
 
 @media screen and (min-width: 992px) {

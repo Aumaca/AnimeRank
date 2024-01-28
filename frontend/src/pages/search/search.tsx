@@ -7,8 +7,10 @@ import { AnimeType } from "../../interfaces/common"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
 	faBackward,
+	faBorderAll,
 	faChevronLeft,
 	faChevronRight,
+	faListUl,
 	faRightToBracket,
 	faSearch,
 } from "@fortawesome/free-solid-svg-icons"
@@ -66,6 +68,8 @@ const Search = () => {
 		format: params.format || "",
 	}
 	const [filter, setFilter] = useState<FilterState>(initialFilterState)
+
+	const [listViewStyle, setListViewStyle] = useState<boolean>(false)
 
 	const username = useSelector((state: AuthState) => state.username)
 	const [user, setUser] = useState<UserState | null>(null)
@@ -282,12 +286,26 @@ const Search = () => {
 									</div>
 								))}
 							</div>
+							<div className="icons">
+								<FontAwesomeIcon
+									icon={faBorderAll}
+									size="2x"
+									className={`grid ${listViewStyle ? "" : "active"}`}
+									onClick={() => setListViewStyle(!listViewStyle)}
+								/>
+								<FontAwesomeIcon
+									icon={faListUl}
+									size="2x"
+									className={`list ${listViewStyle ? "active" : ""}`}
+									onClick={() => setListViewStyle(!listViewStyle)}
+								/>
+							</div>
 						</div>
 					</div>
 
 					<AnimeListGrid
 						animes={animes}
-						listViewStyle={false}
+						listViewStyle={listViewStyle}
 						userAnimes={user?.animes || null}
 						userProfileAnimes={null}
 						handleClickAdd={handleClickAdd}
