@@ -105,11 +105,11 @@ const Homepage = () => {
 				setPopularAnimes(animes.popularAnimes.media)
 				setMostScoredAnimes(animes.mostScoredAnimes.media)
 				setReleasingAnimes(animes.releasingAnimes.media)
-				setIsLoading(false)
+			} else {
+				fetchAnimes()
 			}
 		} else {
 			fetchAnimes()
-			setIsLoading(false)
 		}
 
 		// Animes News
@@ -145,13 +145,14 @@ const Homepage = () => {
 
 			if (currentDate < expiryDate) {
 				setAnimeNews(JSON.parse(localNews))
-				setIsLoading(false)
-				return
+			} else {
+				fetchAnimeNews()
 			}
 		} else {
 			fetchAnimeNews()
-			setIsLoading(false)
 		}
+
+		setIsLoading(false)
 	}, [username])
 
 	const handleClickAdd = (anime: AnimeType): void => {
